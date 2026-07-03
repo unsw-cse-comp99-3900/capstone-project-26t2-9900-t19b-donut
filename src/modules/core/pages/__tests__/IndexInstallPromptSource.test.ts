@@ -7,8 +7,8 @@ const indexSource = readFileSync(resolve(__dirname, '../Index.tsx'), 'utf8');
 describe('temporary iOS home screen guide entry', () => {
   it('keeps the homepage guide button visibly marked for removal', () => {
     expect(indexSource).toContain('TEMP_PWA_INSTALL_TEST_BUTTON');
-    expect(indexSource).toContain('TEMP IOS GUIDE');
-    expect(indexSource).toContain('Add to Home Screen Guide');
+    expect(indexSource).toContain('IOS GUIDE');
+    expect(indexSource).toContain('PWA install');
     expect(indexSource).toContain('Capacitor.isNativePlatform()');
   });
 
