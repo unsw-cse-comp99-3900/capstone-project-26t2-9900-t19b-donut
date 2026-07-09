@@ -7,6 +7,7 @@ import { cn } from '@/modules/core/lib/utils';
 import { useEmployeeBroadcasts } from '../../state/useBroadcasts';
 import { MessageItem } from '../components/MessageItem';
 import { EmptyMessages } from '../components/EmptyStates';
+import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
 export interface ChannelViewProps {
   channelId: string;
@@ -25,7 +26,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
   searchQuery,
   compact,
 }) => {
-  const { broadcasts, isLoading, loadMore, hasMore, isLoadingMore } =
+  const { broadcasts, isLoading, loadMore, hasMore, isLoadingMore, offlineState } =
     useEmployeeBroadcasts(channelId);
 
   const filteredBroadcasts = useMemo(() => {
@@ -100,6 +101,12 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
           </div>
         </div>
       </div>
+
+      <OfflineDataBanner
+        state={offlineState}
+        cachedLabel="Offline - showing saved messages"
+        emptyLabel="Offline - saved messages are not available yet"
+      />
 
       {/* Messages */}
       <ScrollArea className="flex-1 bg-transparent">
