@@ -1,13 +1,10 @@
-
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { format, addDays, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { useAuth } from '@/platform/auth/useAuth';
 import { CalendarView } from '@/modules/rosters/contexts/RosterUIContext';
 import { shiftsQueries } from '@/modules/rosters/api/shifts.queries';
 import { shiftKeys } from '@/modules/rosters/api/queryKeys';
 import { Shift, doesShiftTrulyCrossMidnight } from '@/modules/rosters/domain/shift.entity';
-import { getDepartmentColor } from '@/modules/core/lib/utils';
+import { useOfflineAwareQuery } from '@/platform/offline/useOfflineAwareQuery';
 
 interface ShiftWithDetails {
     shift: Shift;
@@ -23,7 +20,7 @@ import { ScopeSelection } from '@/platform/auth/types';
 export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: ScopeSelection | null) => {
     const { user } = useAuth();
     // We still use orgSelection for legacy/fallback context if needed, but scope takes precedence for filtering
-    const { organizationId, departmentId, subDepartmentId } = useOrgSelection();
+    const { organizationId } = useOrgSelection();
 
     // Calculate date range based on the view
     const calculateDateRange = () => {
@@ -60,7 +57,15 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
     const endDateStr = format(end, 'yyyy-MM-dd');
 
     // Fetch shifts for the date range using unified keys
-    const { data: shifts = [], isLoading, error } = useQuery({
+    const {
+        data: shifts = [],
+        isLoading,
+        error,
+        offlineState,
+        isOffline,
+        hasCachedData,
+        isShowingCachedData,
+    } = useOfflineAwareQuery<Shift[]>({
         // Use the centralized query key factory
         queryKey: shiftKeys.byEmployee(user?.id || '', startDateStr, endDateStr),
         queryFn: async () => {
@@ -185,6 +190,10 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         shifts,
         isLoading,
         error,
+        offlineState,
+        isOffline,
+        hasCachedData,
+        isShowingCachedData,
         getShiftsForDate,
         goToPrevious,
         goToNext
