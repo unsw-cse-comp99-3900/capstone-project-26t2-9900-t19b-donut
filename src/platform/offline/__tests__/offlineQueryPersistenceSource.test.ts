@@ -28,6 +28,7 @@ describe('offline query persistence allow-list', () => {
     expect(shouldPersistOfflineQuery(['shifts', 'list', 'byEmployee', 'user-1', '2026-06-01', '2026-06-30'])).toBe(true);
     expect(shouldPersistOfflineQuery(['broadcasts', 'groups', 'employee', null, null, null])).toBe(true);
     expect(shouldPersistOfflineQuery(['broadcasts', 'messages', 'byChannel', 'channel-1', 'employee', 'user-1', 1])).toBe(true);
+    expect(shouldPersistOfflineQuery(['notifications', 'forUser', 'user-1'])).toBe(true);
 
     expect(shouldPersistOfflineQuery(['shifts', 'list', 'byRange', 'org-1', '2026-06-01', '2026-06-30', null])).toBe(false);
     expect(shouldPersistOfflineQuery(['shifts', 'list', 'byDate', 'org-1', '2026-06-01', null])).toBe(false);
@@ -36,6 +37,7 @@ describe('offline query persistence allow-list', () => {
     expect(shouldPersistOfflineQuery(['broadcasts', 'groups', 'manager', null, null, null])).toBe(false);
     expect(shouldPersistOfflineQuery(['broadcasts', 'messages', 'byChannel', 'channel-1'])).toBe(false);
     expect(shouldPersistOfflineQuery(['broadcasts', 'notifications', 'forUser', 'user-1'])).toBe(false);
+    expect(shouldPersistOfflineQuery(['notifications', 'markRead', 'notification-1'])).toBe(false);
     expect(shouldPersistOfflineQuery(['profiles', 'all'])).toBe(false);
   });
 });

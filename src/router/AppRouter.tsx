@@ -148,7 +148,7 @@ const AppRouter: React.FC = () => {
 
                 {/* MobileAccessGuard: blocks non-workspace paths on mobile viewports */}
                 <Route element={<MobileAccessGuard />}>
-                    <Route element={<OfflineRouteGuard offlinePaths={['/my-roster', '/my-broadcasts']} />}>
+                    <Route element={<OfflineRouteGuard offlinePaths={['/my-roster', '/my-broadcasts', '/my-notifications']} />}>
 
 
                         {/* ── My Workspace ── */}

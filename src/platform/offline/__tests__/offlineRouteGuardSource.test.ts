@@ -17,7 +17,7 @@ describe('offline route guard wiring', () => {
     const offlineRouteGuardSource = readFileSync(offlineRouteGuardPath, 'utf8');
 
     expect(appRouterSource).toContain('OfflineRouteGuard');
-    expect(appRouterSource).toContain("offlinePaths={['/my-roster', '/my-broadcasts']}");
+    expect(appRouterSource).toContain("offlinePaths={['/my-roster', '/my-broadcasts', '/my-notifications']}");
     expect(offlineRouteGuardSource).toContain('useOnlineStatus');
     expect(offlineRouteGuardSource).toContain('Offline data is not available');
     expect(offlineRouteGuardSource).toContain('Outlet');

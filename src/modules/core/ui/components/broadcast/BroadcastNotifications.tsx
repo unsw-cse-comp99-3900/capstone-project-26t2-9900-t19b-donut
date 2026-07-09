@@ -109,11 +109,13 @@ function NotificationRow({
   isSeen,
   onRead,
   onDismiss,
+  isOffline,
 }: {
   n: AppNotification;
   isSeen: boolean;
   onRead: (id: string) => Promise<void>;
   onDismiss: (id: string) => Promise<void>;
+  isOffline: boolean;
 }) {
   const navigate = useNavigate();
   const meta = getMeta(n.type);
@@ -123,7 +125,7 @@ function NotificationRow({
   const isFresh = isUnread && !isSeen;
 
   const handleClick = async () => {
-    if (isUnread) await onRead(n.id);
+    if (!isOffline && isUnread) await onRead(n.id);
     navigate(resolveNotificationLink(n));
   };
 
@@ -155,13 +157,15 @@ function NotificationRow({
           >
             {n.title}
           </p>
-          <button
-            className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
-            onClick={(e) => { e.stopPropagation(); onDismiss(n.id); }}
-            aria-label="Dismiss"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
+          {!isOffline && (
+            <button
+              className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
+              onClick={(e) => { e.stopPropagation(); onDismiss(n.id); }}
+              aria-label="Dismiss"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
 
         {n.message && (
@@ -199,11 +203,13 @@ function GroupedList({
   seenIds,
   onRead,
   onDismiss,
+  isOffline,
 }: {
   sorted: AppNotification[];
   seenIds: Set<string>;
   onRead: (id: string) => Promise<void>;
   onDismiss: (id: string) => Promise<void>;
+  isOffline: boolean;
 }) {
   // Build group sections
   const sections = useMemo(() => {
@@ -228,6 +234,7 @@ function GroupedList({
               isSeen={seenIds.has(n.id)}
               onRead={onRead}
               onDismiss={onDismiss}
+              isOffline={isOffline}
             />
           ))}
         </div>
@@ -242,11 +249,13 @@ function FlatList({
   seenIds,
   onRead,
   onDismiss,
+  isOffline,
 }: {
   sorted: AppNotification[];
   seenIds: Set<string>;
   onRead: (id: string) => Promise<void>;
   onDismiss: (id: string) => Promise<void>;
+  isOffline: boolean;
 }) {
   return (
     <div className="divide-y divide-border/30">
@@ -257,6 +266,7 @@ function FlatList({
           isSeen={seenIds.has(n.id)}
           onRead={onRead}
           onDismiss={onDismiss}
+          isOffline={isOffline}
         />
       ))}
     </div>
@@ -273,6 +283,8 @@ export function BroadcastNotifications({ isCollapsed: _isCollapsed }: BroadcastN
     notifications,
     unreadCount,
     loading,
+    isOffline,
+    offlineState,
     seenIds,
     markSeen,
     markRead,
@@ -332,7 +344,7 @@ export function BroadcastNotifications({ isCollapsed: _isCollapsed }: BroadcastN
             )}
           </div>
 
-          {unreadCount > 0 && (
+          {!isOffline && unreadCount > 0 && (
             <Button
               variant="ghost"
               size="sm"
@@ -347,6 +359,11 @@ export function BroadcastNotifications({ isCollapsed: _isCollapsed }: BroadcastN
 
         {/* Body */}
         <ScrollArea className="h-[380px]">
+          {offlineState === 'offline-with-cache' && (
+            <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-700 dark:text-amber-200">
+              Offline - saved notifications
+            </div>
+          )}
           {loading ? (
             <div className="flex flex-col gap-2 p-4">
               {[1, 2, 3].map((i) => (
@@ -372,6 +389,7 @@ export function BroadcastNotifications({ isCollapsed: _isCollapsed }: BroadcastN
               seenIds={seenIds}
               onRead={markRead}
               onDismiss={dismiss}
+              isOffline={isOffline}
             />
           ) : (
             <FlatList
@@ -379,6 +397,7 @@ export function BroadcastNotifications({ isCollapsed: _isCollapsed }: BroadcastN
               seenIds={seenIds}
               onRead={markRead}
               onDismiss={dismiss}
+              isOffline={isOffline}
             />
           )}
         </ScrollArea>

@@ -26,11 +26,16 @@ function isEmployeeBroadcastMessagesQuery(queryKey: readonly unknown[]) {
   );
 }
 
+function isUserNotificationsQuery(queryKey: readonly unknown[]) {
+  return queryKey[0] === 'notifications' && queryKey[1] === 'forUser';
+}
+
 export function shouldPersistOfflineQuery(queryKey: readonly unknown[]) {
   return (
     isEmployeeRosterQuery(queryKey) ||
     isEmployeeBroadcastGroupsQuery(queryKey) ||
-    isEmployeeBroadcastMessagesQuery(queryKey)
+    isEmployeeBroadcastMessagesQuery(queryKey) ||
+    isUserNotificationsQuery(queryKey)
   );
 }
 
