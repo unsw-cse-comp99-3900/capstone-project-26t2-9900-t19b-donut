@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/platform/auth/useAuth';
+import { Capacitor } from '@capacitor/core';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight,
   ChevronRight,
   Plus,
   Star,
   CalendarDays,
-  Bell,
-  Repeat,
-  Clock,
   BarChart3,
   Gavel,
   ArrowLeftRight,
   TrendingUp,
   Sparkles,
+  Share2,
+  SquarePlus,
+  X,
 } from 'lucide-react';
 
 /* -------------------------------------------------------------------------- */
@@ -205,11 +205,10 @@ const CapItem: React.FC<{
 }> = ({ label, icon: Icon, accent }) => (
   <div className="flex items-center gap-3 whitespace-nowrap px-4 py-2 transition-transform hover:scale-105 duration-200">
     <Icon
-      className={`h-7 w-7 transition-all ${
-        accent
-          ? 'text-fuchsia-400 drop-shadow-[0_0_8px_rgba(217,70,239,0.8)]'
-          : 'text-fuchsia-200/90 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]'
-      }`}
+      className={`h-7 w-7 transition-all ${accent
+        ? 'text-fuchsia-400 drop-shadow-[0_0_8px_rgba(217,70,239,0.8)]'
+        : 'text-fuchsia-200/90 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.6)]'
+        }`}
     />
     <span className="text-lg font-semibold text-white/90 drop-shadow-md">{label}</span>
   </div>
@@ -297,6 +296,103 @@ const SocialProof: React.FC = () => (
 
 /* -------------------------------------------------------------------------- */
 
+const PwaInstallTestButton: React.FC = () => {
+  const [showGuide, setShowGuide] = useState(false);
+
+  if (Capacitor.isNativePlatform()) return null;
+
+  return (
+    <>
+      {/* TEMP_PWA_INSTALL_TEST_BUTTON: remove after Add to Home Screen QA is complete. */}
+      <button
+        type="button"
+        onClick={() => setShowGuide(true)}
+        className="group inline-flex w-fit items-center gap-2 rounded-full border border-amber-200/80 bg-amber-300/95 px-4 py-2.5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#2a1d09] shadow-[0_0_18px_rgba(251,191,36,0.28)] transition-all hover:scale-[1.02] hover:bg-amber-200 active:scale-95"
+        aria-describedby="ios-home-screen-guide-status"
+      >
+        <span>PWA install</span>
+        <span
+          id="ios-home-screen-guide-status"
+          className="rounded-full bg-[#140d2c]/90 px-2 py-0.5 text-[9px] font-black tracking-[0.14em] text-amber-100"
+        >
+          GUIDE
+        </span>
+      </button>
+
+      <AnimatePresence>
+        {showGuide && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-[#090514]/70 px-5 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ios-home-screen-guide-title"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 18, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
+              className="relative w-full max-w-md rounded-[28px] border border-white/15 bg-[#150d2f]/95 p-6 text-white shadow-2xl shadow-black/40"
+            >
+              <button
+                type="button"
+                aria-label="Close add to home screen guide"
+                onClick={() => setShowGuide(false)}
+                className="absolute right-4 top-4 rounded-full border border-white/10 bg-white/10 p-2 text-white/70 transition hover:bg-white/20 hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="mb-4 inline-flex rounded-full bg-amber-300 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#2a1d09]">
+                IOS GUIDE
+              </div>
+              <h2 id="ios-home-screen-guide-title" className="text-2xl font-black tracking-tight">
+                Add Shiftopia to your Home Screen
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-white/72">
+                iOS cannot trigger the Home Screen install flow automatically. Use
+                Safari and follow these manual steps instead.
+              </p>
+              <div className="mt-5 space-y-3 rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-sm leading-6 text-white/82">
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-300 text-[11px] font-black text-[#2a1d09]">
+                    1
+                  </span>
+                  <p>Open this page in Safari.</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-300 text-[11px] font-black text-[#2a1d09]">
+                    2
+                  </span>
+                  <p className="flex items-center gap-2">
+                    Tap the Share button <Share2 className="h-4 w-4 text-amber-200" /> in Safari.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-300 text-[11px] font-black text-[#2a1d09]">
+                    3
+                  </span>
+                  <p>Choose "Add to Home Screen".</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGuide(false)}
+                className="mt-5 w-full rounded-2xl bg-white px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-[#140d2c] transition hover:bg-amber-100"
+              >
+                Got it
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+/* -------------------------------------------------------------------------- */
+
 const Index: React.FC = () => {
   const { isAuthenticated, getLandingPage } = useAuth();
   // Authenticated visitors landing on the marketing page jump straight to
@@ -318,7 +414,7 @@ const Index: React.FC = () => {
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative z-20 mx-auto flex w-full max-w-[1500px] items-center justify-between px-8 py-6 lg:px-16"
+        className="relative z-20 mx-auto flex w-full max-w-[1500px] items-center justify-between px-6 pb-4 pt-[calc(env(safe-area-inset-top,0px)+1rem)] sm:px-8 lg:px-16"
       >
         <Logo />
         <div className="flex items-center gap-2">
@@ -345,7 +441,7 @@ const Index: React.FC = () => {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="text-[clamp(3.5rem,6vw,5.5rem)] font-medium leading-[1.08] tracking-tight text-[#160e2e]"
+            className="text-[2.65rem] font-medium leading-[1.08] tracking-tight text-[#160e2e] sm:text-[3.5rem] lg:text-[5.5rem]"
           >
             <span className="text-white drop-shadow-md">Stop Chasing Shifts.</span>{' '}
             <span className="text-fuchsia-200/90 drop-shadow-md">
@@ -367,7 +463,7 @@ const Index: React.FC = () => {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center"
+            className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <div className="relative">
               <Link
@@ -392,7 +488,7 @@ const Index: React.FC = () => {
                     fill="currentColor"
                   />
                 </svg>
-                
+
                 {/* Pill */}
                 <div className="flex items-center gap-1.5 rounded-full bg-violet-500 px-3.5 py-1.5 text-[14px] font-semibold text-white shadow-lg shadow-purple-500/25 border border-white/20 backdrop-blur-md whitespace-nowrap">
                   {/* ICC Sydney geometric logo */}
@@ -405,6 +501,7 @@ const Index: React.FC = () => {
                 </div>
               </motion.div>
             </div>
+            <PwaInstallTestButton />
           </motion.div>
 
           <motion.div
