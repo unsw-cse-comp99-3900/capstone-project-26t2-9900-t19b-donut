@@ -296,10 +296,27 @@ const SocialProof: React.FC = () => (
 
 /* -------------------------------------------------------------------------- */
 
+const isStandalonePwa = () => {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(display-mode: standalone)').matches
+    || Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone);
+};
+
+const isIosWebSafari = () => {
+  if (typeof window === 'undefined') return false;
+
+  const userAgent = window.navigator.userAgent;
+  const isIos = /iPad|iPhone|iPod/.test(userAgent);
+  const isWebKit = /WebKit/.test(userAgent);
+  const isNonSafariIosBrowser = /CriOS|FxiOS|EdgiOS|OPiOS/.test(userAgent);
+
+  return isIos && isWebKit && !isNonSafariIosBrowser;
+};
+
 const PwaInstallTestButton: React.FC = () => {
   const [showGuide, setShowGuide] = useState(false);
 
-  if (Capacitor.isNativePlatform()) return null;
+  if (Capacitor.isNativePlatform() || isStandalonePwa() || !isIosWebSafari()) return null;
 
   return (
     <>
