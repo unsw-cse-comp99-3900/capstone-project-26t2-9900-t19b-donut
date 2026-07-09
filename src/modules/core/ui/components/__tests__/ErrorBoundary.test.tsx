@@ -34,6 +34,10 @@ function silenceConsoleError() {
 describe('ErrorBoundary', () => {
     beforeEach(() => {
         vi.restoreAllMocks();
+        Object.defineProperty(window.navigator, 'onLine', {
+            configurable: true,
+            value: true,
+        });
     });
 
     it('renders children when no error occurs', () => {
@@ -179,5 +183,26 @@ describe('ErrorBoundary', () => {
 
         fireEvent.click(screen.getByRole('button', { name: /reload/i }));
         expect(reload).toHaveBeenCalledOnce();
+    });
+
+    it('shows a friendly offline fallback instead of the incident panel while offline', () => {
+        Object.defineProperty(window.navigator, 'onLine', {
+            configurable: true,
+            value: false,
+        });
+
+        const restore = silenceConsoleError();
+        render(
+            <ErrorBoundary>
+                <BombComponent shouldThrow />
+            </ErrorBoundary>,
+        );
+        restore();
+
+        expect(screen.getByText('You are offline')).toBeInTheDocument();
+        expect(screen.getByText(/cached views/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+        expect(screen.queryByText('Component render failure')).not.toBeInTheDocument();
+        expect(screen.queryByText(/System Incident/i)).not.toBeInTheDocument();
     });
 });

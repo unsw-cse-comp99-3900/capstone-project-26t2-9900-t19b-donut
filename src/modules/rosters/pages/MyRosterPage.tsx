@@ -4,9 +4,10 @@ import MyRosterCalendar from '@/modules/rosters/ui/my-roster/MyRosterCalendar';
 import { MyOffersModal } from '@/modules/rosters/ui/my-roster/MyOffersModal';
 import { useRosterView, useMyRoster } from '@/modules/rosters';
 import { usePendingOfferCount, useMyOffers } from '@/modules/rosters/state/useRosterShifts';
-import { CalendarDays, Info, Loader2, Mail } from 'lucide-react';
+import { CalendarDays, Info, Loader2, Mail, WifiOff } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
@@ -140,7 +141,7 @@ const MyRosterPage: React.FC = () => {
   useOrgSelection(); // keeps context subscription without unused destructure
   const { scope, setScope, isGammaLocked } = useScopeFilter('personal');
 
-  const { shifts, isLoading, error, getShiftsForDate } = useMyRoster(view, selectedDate, scope);
+  const { shifts, isLoading, error, offlineState, getShiftsForDate } = useMyRoster(view, selectedDate, scope);
 
   const [showOffersModal, setShowOffersModal] = useState(false);
 
@@ -225,38 +226,59 @@ const MyRosterPage: React.FC = () => {
                 ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                 : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
         )}>
-          {isLoading ? (
-            <div className="h-full flex flex-col items-center justify-center gap-3">
-              <Loader2 className="h-9 w-9 animate-spin text-primary/60" />
-              <span className="text-sm text-muted-foreground font-medium tracking-wide">
-                Loading your roster…
-              </span>
-            </div>
-          ) : error ? (
-            <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
-              <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center">
-                <Info className="h-7 w-7 text-destructive" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-foreground">Could not load roster</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Failed to fetch shifts. Try refreshing the page.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <MyRosterCalendar
-              view={view}
-              onViewChange={setView}
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
-              getShiftsForDate={getShiftsForDate}
-              shifts={shifts || []}
-              pendingOfferCount={pendingOfferCount}
-              offerDates={offerDates}
-              onOffersClick={() => setShowOffersModal(true)}
+          <div className="flex h-full flex-col">
+            <OfflineDataBanner
+              state={offlineState}
+              cachedLabel="Offline - showing saved roster"
+              emptyLabel="Offline - saved roster is not available yet"
             />
-          )}
+            <div className="min-h-0 flex-1">
+              {isLoading ? (
+                <div className="h-full flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="h-9 w-9 animate-spin text-primary/60" />
+                  <span className="text-sm text-muted-foreground font-medium tracking-wide">
+                    Loading your roster…
+                  </span>
+                </div>
+              ) : offlineState === 'offline-empty' ? (
+                <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
+                  <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+                    <WifiOff className="h-7 w-7 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">No cached roster available</h3>
+                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                      Reconnect once to load your roster, then this page can show the saved schedule offline.
+                    </p>
+                  </div>
+                </div>
+              ) : error ? (
+                <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
+                  <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center">
+                    <Info className="h-7 w-7 text-destructive" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground">Could not load roster</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Failed to fetch shifts. Try refreshing the page.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <MyRosterCalendar
+                  view={view}
+                  onViewChange={setView}
+                  selectedDate={selectedDate}
+                  onDateChange={setSelectedDate}
+                  getShiftsForDate={getShiftsForDate}
+                  shifts={shifts || []}
+                  pendingOfferCount={pendingOfferCount}
+                  offerDates={offerDates}
+                  onOffersClick={() => setShowOffersModal(true)}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

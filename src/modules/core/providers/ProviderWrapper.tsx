@@ -12,6 +12,7 @@ import { RosterUIProvider } from '@/modules/rosters/contexts/RosterUIContext';
 import { SidebarProvider } from '@/modules/core/ui/primitives/sidebar';
 import { Toaster } from '@/modules/core/ui/primitives/toaster';
 import { Toaster as Sonner } from '@/modules/core/ui/primitives/sonner';
+import { setupOfflineQueryPersistence } from '@/platform/offline/offlineQueryPersistence';
 import { LocaleProvider } from './LocaleProvider';
 
 /**
@@ -42,6 +43,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+setupOfflineQueryPersistence(queryClient);
 
 interface ProviderWrapperProps {
   children: React.ReactNode;
@@ -80,4 +83,3 @@ const ProviderWrapper: React.FC<ProviderWrapperProps> = ({ children }) => {
 };
 
 export default ProviderWrapper;
-

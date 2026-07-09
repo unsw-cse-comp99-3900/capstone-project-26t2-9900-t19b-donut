@@ -6,6 +6,7 @@ import { supabase } from '@/platform/supabase/client';
 import { User, AccessLevel, Role, UserContract, AccessCertificate, PermissionObject } from './types';
 import { authService } from './auth.service';
 import { hasAccess as checkAccess } from './access.policy';
+import { clearOfflineQueryCache } from '@/platform/offline/offlineQueryPersistence';
 
 // Re-export types for backward compatibility with existing imports
 export type { User, AccessLevel, Role };
@@ -196,6 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (typeof window !== 'undefined') {
       sessionStorage.clear();
     }
+    await clearOfflineQueryCache();
     setUser(null);
     setActiveContractId(null);
     setActiveCertificateId(null);
