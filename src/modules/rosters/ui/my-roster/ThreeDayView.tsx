@@ -18,6 +18,7 @@ interface ShiftWithDetails {
 interface ThreeDayViewProps {
   startDate: Date;
   getShiftsForDate: (date: Date, options?: { includeContinuations?: boolean }) => ShiftWithDetails[];
+  isOffline: boolean;
 }
 
 // Helper to format time for display
@@ -45,6 +46,7 @@ const getGradientClass = (color: string): string => {
 const ThreeDayView: React.FC<ThreeDayViewProps> = ({
   startDate,
   getShiftsForDate,
+  isOffline,
 }) => {
   const [selectedShift, setSelectedShift] = useState<{
     data: ShiftWithDetails;
@@ -93,6 +95,7 @@ const ThreeDayView: React.FC<ThreeDayViewProps> = ({
         onClose={() => setSelectedShift(null)}
         shiftData={selectedShift?.data || null}
         shiftDate={selectedShift?.date || new Date()}
+        isOffline={isOffline}
       />
     </div>
   );

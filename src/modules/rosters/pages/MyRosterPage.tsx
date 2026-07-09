@@ -145,7 +145,7 @@ const MyRosterPage: React.FC = () => {
   useOrgSelection(); // keeps context subscription without unused destructure
   const { scope, setScope, isGammaLocked } = useScopeFilter('personal');
 
-  const { shifts, isLoading, error, offlineState, getShiftsForDate } = useMyRoster(view, selectedDate, scope);
+  const { shifts, isLoading, error, offlineState, isOffline, getShiftsForDate } = useMyRoster(view, selectedDate, scope);
 
   const [showOffersModal, setShowOffersModal] = useState(false);
 
@@ -279,6 +279,7 @@ const MyRosterPage: React.FC = () => {
                   pendingOfferCount={pendingOfferCount}
                   offerDates={offerDates}
                   onOffersClick={() => setShowOffersModal(true)}
+                  isOffline={isOffline}
                 />
               )}
             </div>
