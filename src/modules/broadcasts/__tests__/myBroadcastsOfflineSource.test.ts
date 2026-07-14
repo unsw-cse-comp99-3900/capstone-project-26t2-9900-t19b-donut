@@ -33,7 +33,7 @@ describe('My Broadcasts offline cache wiring', () => {
     const screenSource = readSource('src/modules/broadcasts/ui/screens/MyBroadcastsScreen.tsx');
     const channelViewSource = readSource('src/modules/broadcasts/ui/views/ChannelView.view.tsx');
 
-    expect(routerSource).toContain("offlinePaths={['/my-roster', '/my-broadcasts']}");
+    expect(routerSource).toContain("offlinePaths={['/my-roster', '/my-broadcasts', '/my-notifications']}");
     expect(screenSource).toContain('Offline - showing saved broadcasts');
     expect(screenSource).toContain("offlineState === 'offline-empty'");
     expect(channelViewSource).toContain('Offline - showing saved messages');

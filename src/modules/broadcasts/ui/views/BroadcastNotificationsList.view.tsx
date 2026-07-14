@@ -88,7 +88,7 @@ export const BroadcastNotificationsList: React.FC = () => {
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-center gap-2">
                                         <Badge variant={notification.isRead ? "secondary" : "default"}>
-                                            {notification.priority.replace('_', ' ')}
+                                            {(notification.priority ?? 'normal').replace('_', ' ')}
                                         </Badge>
                                         {!notification.isRead && (
                                             <Badge variant="destructive" className="text-xs">
@@ -98,16 +98,18 @@ export const BroadcastNotificationsList: React.FC = () => {
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                         <Clock className="h-3 w-3" />
-                                        {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                        {notification.createdAt
+                                            ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })
+                                            : 'Just now'}
                                     </div>
                                 </div>
 
                                 <div className="mb-3">
                                     <div className="font-medium mb-1">
-                                        {notification.subject}
+                                        {notification.subject ?? 'Broadcast notification'}
                                     </div>
                                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                                        {notification.authorName}
+                                        {notification.authorName ?? 'Broadcast system'}
                                     </p>
                                 </div>
 
