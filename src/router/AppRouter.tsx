@@ -4,6 +4,7 @@ import AppLayout from '@/modules/core/ui/layout/AppLayout';
 import { useAuth } from '@/platform/auth/useAuth';
 import { MobileAccessGuard } from '@/modules/core/ui/components/MobileAccessGuard';
 import { ErrorBoundary } from '@/modules/core';
+import { OfflineRouteGuard } from '@/platform/offline/OfflineRouteGuard';
 
 /* =======================
    EAGER LOADED PAGES
@@ -105,7 +106,7 @@ const AuthLayout: React.FC = () => {
 
     return (
         <AppLayout noPadding={noPadding}>
-            <ErrorBoundary module="AuthLayout">
+            <ErrorBoundary key={location.pathname} module="AuthLayout">
                 <Suspense fallback={<PageLoader />}>
                     <Outlet />
                 </Suspense>
@@ -148,70 +149,71 @@ const AppRouter: React.FC = () => {
 
                 {/* MobileAccessGuard: blocks non-workspace paths on mobile viewports */}
                 <Route element={<MobileAccessGuard />}>
+                    <Route element={<OfflineRouteGuard offlinePaths={['/my-roster', '/my-broadcasts', '/my-notifications']} />}>
+
+                        {/* ── My Workspace ── */}
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/my-roster" element={<MyRosterPage />} />
+                        <Route path="/shifts/:shiftId" element={<ShiftDeepLinkPage />} />
+                        <Route path="/my-attendance" element={<AttendancePage />} />
+                        <Route path="/my-availabilities" element={<AvailabilityPage />} />
+                        <Route path="/my-bids" element={<EmployeeBidsPage />} />
+                        <Route path="/my-swaps" element={<EmployeeSwapsPage />} />
+                        <Route path="/my-notifications" element={<MyNotificationsPage />} />
+
+                        <Route element={<FeatureGate feature="my-broadcasts" />}>
+                            <Route path="/my-broadcasts" element={<MyBroadcastsPage />} />
+                        </Route>
+
+                        {/* ── Rostering ── */}
+                        <Route element={<FeatureGate feature="templates" />}>
+                            <Route path="/templates" element={<TemplatesPage />} />
+                        </Route>
+
+                        <Route element={<FeatureGate feature="rosters" />}>
+                            <Route path="/rosters" element={<RostersPlannerPage />} />
+                            <Route path="/rosters/shift/new" element={<ShiftFormPage />} />
+                            <Route path="/labor-demand" element={<LaborDemandForecastingPage />} />
+                        </Route>
+
+                        <Route element={<FeatureGate feature="timesheet-view" />}>
+                            <Route path="/timesheet" element={<TimesheetPage />} />
+                        </Route>
+
+                        {/* ── Management ── */}
+                        <Route element={<FeatureGate feature="management" />}>
+                            <Route path="/management/bids" element={<ManagerBidsPage />} />
+                            <Route path="/management/swaps" element={<ManagerSwapsPage />} />
+                            <Route path="/performance" element={<PerformancePage />} />
+
+                        </Route>
+
+                        {/* ── Broadcast ── */}
+                        <Route element={<FeatureGate feature="broadcast" />}>
+                            <Route path="/broadcast" element={<BroadcastManagerPage />} />
+                        </Route>
+
+                        {/* ── Insights ── */}
+                        <Route element={<FeatureGate feature="insights" />}>
+                            <Route path="/insights" element={<InsightsPage />} />
+                            <Route path="/insights/:metricId" element={<AnalysisPage />} />
+                            <Route path="/grid" element={<GridPage />} />
+                        </Route>
+
+                        {/* ── Compliance audit ── */}
+                        <Route path="/compliance/rejections" element={<ComplianceRejectionsPage />} />
 
 
-                    {/* ── My Workspace ── */}
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/my-roster" element={<MyRosterPage />} />
-                    <Route path="/shifts/:shiftId" element={<ShiftDeepLinkPage />} />
-                    <Route path="/my-attendance" element={<AttendancePage />} />
-                    <Route path="/my-availabilities" element={<AvailabilityPage />} />
-                    <Route path="/my-bids" element={<EmployeeBidsPage />} />
-                    <Route path="/my-swaps" element={<EmployeeSwapsPage />} />
-                    <Route path="/my-notifications" element={<MyNotificationsPage />} />
+                        <Route element={<FeatureGate feature="users" />}>
+                            <Route path="/users" element={<UsersPage />} />
+                        </Route>
 
-                    <Route element={<FeatureGate feature="my-broadcasts" />}>
-                        <Route path="/my-broadcasts" element={<MyBroadcastsPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                        <Route path="/settings/:section" element={<SettingsPage />} />
+
+                        {/* ── Utility ── */}
+                        <Route path="/search" element={<SearchPage />} />
                     </Route>
-
-                    {/* ── Rostering ── */}
-                    <Route element={<FeatureGate feature="templates" />}>
-                        <Route path="/templates" element={<TemplatesPage />} />
-                    </Route>
-
-                    <Route element={<FeatureGate feature="rosters" />}>
-                        <Route path="/rosters" element={<RostersPlannerPage />} />
-                        <Route path="/rosters/shift/new" element={<ShiftFormPage />} />
-                        <Route path="/labor-demand" element={<LaborDemandForecastingPage />} />
-                    </Route>
-
-                    <Route element={<FeatureGate feature="timesheet-view" />}>
-                        <Route path="/timesheet" element={<TimesheetPage />} />
-                    </Route>
-
-                    {/* ── Management ── */}
-                    <Route element={<FeatureGate feature="management" />}>
-                        <Route path="/management/bids" element={<ManagerBidsPage />} />
-                        <Route path="/management/swaps" element={<ManagerSwapsPage />} />
-                        <Route path="/performance" element={<PerformancePage />} />
-
-                    </Route>
-
-                    {/* ── Broadcast ── */}
-                    <Route element={<FeatureGate feature="broadcast" />}>
-                        <Route path="/broadcast" element={<BroadcastManagerPage />} />
-                    </Route>
-
-                    {/* ── Insights ── */}
-                    <Route element={<FeatureGate feature="insights" />}>
-                        <Route path="/insights" element={<InsightsPage />} />
-                        <Route path="/insights/:metricId" element={<AnalysisPage />} />
-                        <Route path="/grid" element={<GridPage />} />
-                    </Route>
-
-                    {/* ── Compliance audit ── */}
-                    <Route path="/compliance/rejections" element={<ComplianceRejectionsPage />} />
-
-
-                    <Route element={<FeatureGate feature="users" />}>
-                        <Route path="/users" element={<UsersPage />} />
-                    </Route>
-
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/settings/:section" element={<SettingsPage />} />
-
-                    {/* ── Utility ── */}
-                    <Route path="/search" element={<SearchPage />} />
 
                 </Route>{/* /MobileAccessGuard */}
 

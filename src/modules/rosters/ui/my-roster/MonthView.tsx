@@ -48,6 +48,7 @@ interface MonthViewProps {
   onNext?: () => void;
   view?: CalendarView;
   onViewChange?: (view: CalendarView) => void;
+  isOffline: boolean;
 }
 
 const SYDNEY_TZ = 'Australia/Sydney';
@@ -83,7 +84,8 @@ const MonthView: React.FC<MonthViewProps> = ({
   onPrevious, 
   onNext,
   view,
-  onViewChange
+  onViewChange,
+  isOffline
 }) => {
   const isMobile = useIsMobile();
   const [selectedDay, setSelectedDay] = useState<Date>(date);
@@ -276,6 +278,7 @@ const MonthView: React.FC<MonthViewProps> = ({
           onClose={() => setSelectedShift(null)}
           shiftData={selectedShift?.data || null}
           shiftDate={selectedDay}
+          isOffline={isOffline}
         />
       </div>
     );
@@ -373,6 +376,7 @@ const MonthView: React.FC<MonthViewProps> = ({
         onClose={() => setSelectedShift(null)}
         shiftData={selectedShift?.data || null}
         shiftDate={selectedShift?.date ?? getTodayInTimezone(SYDNEY_TZ)}
+        isOffline={isOffline}
       />
     </div>
   );

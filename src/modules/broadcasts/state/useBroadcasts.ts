@@ -10,6 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { useAuth } from '@/platform/auth/useAuth';
+import { useOfflineAwareQuery, type OfflineQueryState } from '@/platform/offline/useOfflineAwareQuery';
 import {
     broadcastGroupQueries,
     broadcastGroupCommands,
@@ -35,6 +36,7 @@ import type {
     CreateBroadcastRequest,
     BroadcastFilters,
     BroadcastParticipantRole,
+    PaginatedResponse,
 } from '../model/broadcast.types';
 
 // ============================================================
@@ -144,7 +146,7 @@ export function useBroadcastGroups(
 
     return {
         groups: query.data ?? [],
-        isLoading: query.isPending || query.isLoading,
+        isLoading: query.offlineState === 'offline-empty' ? false : query.isPending || query.isLoading,
         error: query.error as Error | null,
         refetch,
         createGroup,
@@ -162,6 +164,9 @@ interface UseEmployeeBroadcastGroupsReturn {
     isLoading: boolean;
     error: Error | null;
     refetch: () => Promise<void>;
+    isOffline: boolean;
+    isShowingCachedData: boolean;
+    offlineState: OfflineQueryState;
 }
 
 export function useEmployeeBroadcastGroups(
@@ -169,7 +174,7 @@ export function useEmployeeBroadcastGroups(
 ): UseEmployeeBroadcastGroupsReturn {
     const { user } = useAuth();
 
-    const query = useQuery({
+    const query = useOfflineAwareQuery<EmployeeBroadcastGroup[]>({
         queryKey: broadcastKeys.groups.forEmployee(scope),
         queryFn: () => broadcastGroupQueries.getForEmployee(user!.id, scope),
         enabled: !!user?.id,
@@ -182,9 +187,12 @@ export function useEmployeeBroadcastGroups(
 
     return {
         groups: query.data ?? [],
-        isLoading: query.isPending || query.isLoading,
+        isLoading: query.offlineState === 'offline-empty' ? false : query.isPending || query.isLoading,
         error: query.error as Error | null,
         refetch,
+        isOffline: query.isOffline,
+        isShowingCachedData: query.isShowingCachedData,
+        offlineState: query.offlineState,
     };
 }
 
@@ -564,6 +572,9 @@ interface UseEmployeeBroadcastsReturn {
     refetch: () => Promise<void>;
     loadMore: () => void;
     hasMore: boolean;
+    isOffline: boolean;
+    isShowingCachedData: boolean;
+    offlineState: OfflineQueryState;
 }
 
 export function useEmployeeBroadcasts(channelId: string | null): UseEmployeeBroadcastsReturn {
@@ -580,7 +591,7 @@ export function useEmployeeBroadcasts(channelId: string | null): UseEmployeeBroa
         setTotalPages(1);
     }, [channelId]);
 
-    const query = useQuery({
+    const query = useOfflineAwareQuery<PaginatedResponse<BroadcastWithDetails>>({
         queryKey: [
             ...broadcastKeys.broadcasts.byChannel(channelId ?? ''),
             'employee',
@@ -618,11 +629,12 @@ export function useEmployeeBroadcasts(channelId: string | null): UseEmployeeBroa
     }, [query]);
 
     const loadMore = useCallback(() => {
+        if (query.isOffline) return;
         if (!isLoadingMore && page < totalPages) {
             setIsLoadingMore(true);
             setPage((prev) => prev + 1);
         }
-    }, [isLoadingMore, page, totalPages]);
+    }, [isLoadingMore, page, query.isOffline, totalPages]);
 
     return {
         broadcasts: accumulatedBroadcasts,
@@ -631,7 +643,10 @@ export function useEmployeeBroadcasts(channelId: string | null): UseEmployeeBroa
         error: query.error as Error | null,
         refetch,
         loadMore,
-        hasMore: page < totalPages,
+        hasMore: !query.isOffline && page < totalPages,
+        isOffline: query.isOffline,
+        isShowingCachedData: query.isShowingCachedData,
+        offlineState: query.offlineState,
     };
 }
 

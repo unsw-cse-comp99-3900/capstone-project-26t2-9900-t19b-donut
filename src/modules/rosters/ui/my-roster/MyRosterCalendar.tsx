@@ -29,6 +29,7 @@ interface MyRosterCalendarProps {
   pendingOfferCount: number;
   offerDates: Set<string>;
   onOffersClick: () => void;
+  isOffline: boolean;
 }
 
 
@@ -42,6 +43,7 @@ const MyRosterCalendar: React.FC<MyRosterCalendarProps> = ({
   pendingOfferCount,
   offerDates,
   onOffersClick: _onOffersClick,
+  isOffline,
 }) => {
   const isMobile = useIsMobile();
 
@@ -55,6 +57,7 @@ const MyRosterCalendar: React.FC<MyRosterCalendarProps> = ({
               <DayView
                 date={selectedDate}
                 shifts={getShiftsForDate(selectedDate)}
+                isOffline={isOffline}
               />
             </motion.div>
           )}
@@ -63,12 +66,13 @@ const MyRosterCalendar: React.FC<MyRosterCalendarProps> = ({
               <ThreeDayView
                 startDate={selectedDate}
                 getShiftsForDate={getShiftsForDate}
+                isOffline={isOffline}
               />
             </motion.div>
           )}
           {view === 'week' && (
             <motion.div key="week" {...tabTransition} className="h-full">
-              <WeekView date={selectedDate} getShiftsForDate={getShiftsForDate} />
+              <WeekView date={selectedDate} getShiftsForDate={getShiftsForDate} isOffline={isOffline} />
             </motion.div>
           )}
           {view === 'month' && (
@@ -82,6 +86,7 @@ const MyRosterCalendar: React.FC<MyRosterCalendarProps> = ({
                 onNext={() => onDateChange(navigateDate(selectedDate, 'month', 1))}
                 view={view}
                 onViewChange={onViewChange}
+                isOffline={isOffline}
               />
             </motion.div>
           )}
