@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Clock,
   ArrowRight,
+  WifiOff,
 } from 'lucide-react';
 import {
   formatDistanceToNow,
@@ -33,6 +34,7 @@ import { cn } from '@/modules/core/lib/utils';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { pageVariants, itemVariants, listItemSpring } from '@/modules/core/ui/motion/presets';
+import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
 /* ── Badge color helper ─────────────────────────────────────── */
 type BadgeTone = 'info' | 'urgent' | 'warning' | 'success' | 'neutral';
@@ -88,6 +90,8 @@ const MyNotificationsPage: React.FC = () => {
     markRead,
     markAllRead,
     dismiss,
+    isOffline,
+    offlineState,
   } = useNotifications();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,9 +146,10 @@ const MyNotificationsPage: React.FC = () => {
         title="My Notifications"
         Icon={Bell}
         rightActions={
-          unreadCount > 0 && (
+          !isOffline && unreadCount > 0 && (
             <Button
               onClick={markAllRead}
+              disabled={isOffline}
               variant="link"
               size="sm"
               className="text-primary font-semibold hover:no-underline px-0 text-[10px] uppercase tracking-widest"
@@ -219,12 +224,30 @@ const MyNotificationsPage: React.FC = () => {
             ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20"
             : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
         )}>
+          <OfflineDataBanner
+            state={offlineState}
+            cachedLabel="Offline - showing saved notifications"
+            emptyLabel="Offline - saved notifications are not available yet"
+          />
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map(i => (
                 <div key={i} className="h-24 w-full bg-primary/5 rounded-2xl animate-pulse" />
               ))}
             </div>
+          ) : offlineState === 'offline-empty' ? (
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col items-center justify-center py-24 text-center opacity-70"
+            >
+              <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-6">
+                <WifiOff className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-black uppercase tracking-widest text-foreground/80">No cached notifications</h3>
+              <p className="text-muted-foreground max-w-sm mt-1 text-sm">
+                Reconnect once to load your notifications, then this page can show saved notifications offline.
+              </p>
+            </motion.div>
           ) : filteredNotifications.length === 0 ? (
             <motion.div
               variants={itemVariants}
@@ -317,7 +340,7 @@ const MyNotificationsPage: React.FC = () => {
                             </div>
 
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                              {isUnread && (
+                              {!isOffline && isUnread && (
                                 <Button
                                   size="icon"
                                   variant="ghost"
@@ -327,14 +350,16 @@ const MyNotificationsPage: React.FC = () => {
                                   <CheckCheck className="h-4 w-4" />
                                 </Button>
                               )}
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-9 w-9 rounded-xl hover:bg-rose-500/20 text-rose-500"
-                                onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
+                              {!isOffline && (
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-9 w-9 rounded-xl hover:bg-rose-500/20 text-rose-500"
+                                  onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              )}
                             </div>
                           </motion.div>
                         );

@@ -29,7 +29,7 @@ export function useOfflineAwareQuery<TData, TError = Error>(
   const query = useQuery<TData, TError, TData, QueryKey>({
     ...options,
     enabled: resolvedEnabled && !isOffline,
-    initialData: options.initialData ?? cachedData,
+    initialData: isOffline ? options.initialData ?? cachedData : options.initialData,
   });
 
   const isShowingCachedData = isOffline && query.data !== undefined;

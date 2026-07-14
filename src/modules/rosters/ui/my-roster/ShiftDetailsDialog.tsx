@@ -9,6 +9,7 @@ import {
   X,
   ArrowLeftRight,
   Loader2,
+  WifiOff,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/modules/core/lib/utils';
@@ -41,6 +42,7 @@ interface ShiftDetailsDialogProps {
   onClose: () => void;
   shiftData: ShiftWithDetails | null;
   shiftDate: Date;
+  isOffline?: boolean;
 }
 
 // ── Cost Tooltip ──────────────────────────────────────────────────────────
@@ -82,6 +84,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   isOpen,
   onClose,
   shiftData,
+  isOffline = false,
 }) => {
   const { toast } = useToast();
   const { mySwapRequests, myActiveOfferDetails, isLoadingOfferDetails } = useSwaps();
@@ -129,7 +132,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
 
   const isS3PendingOffer = shiftData?.shift.lifecycle_status === 'Published' && shiftData?.shift.assignment_status === 'assigned' && !shiftData?.shift.assignment_outcome;
 
-  const isLockedFromActions = shiftData?.shift.is_cancelled || !!existingSwapRequest || isPendingInOffer || isWithinLockoutPeriod || isS3PendingOffer || isActiveOrCommenced || hasCheckedIn || isPast;
+  const isLockedFromActions = isOffline || shiftData?.shift.is_cancelled || !!existingSwapRequest || isPendingInOffer || isWithinLockoutPeriod || isS3PendingOffer || isActiveOrCommenced || hasCheckedIn || isPast;
 
   const paidBreak = (shiftData?.shift as any)?.paid_break_minutes ?? 0;
   const unpaidBreak = (shiftData?.shift as any)?.unpaid_break_minutes ?? shiftData?.shift.break_minutes ?? 0;
@@ -174,10 +177,34 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   const shiftDate = new Date(shift.shift_date);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
-  const handleDropShift = () => setIsCancelConfirmOpen(true);
-  const handleSwapShift = () => setIsSwapModalOpen(true);
+  const offlineActionToast = () => {
+    toast({
+      title: 'Offline mode',
+      description: 'Reconnect to swap or drop this shift. Saved shift details are read-only offline.',
+    });
+  };
+
+  const handleDropShift = () => {
+    if (isOffline) {
+      offlineActionToast();
+      return;
+    }
+    setIsCancelConfirmOpen(true);
+  };
+
+  const handleSwapShift = () => {
+    if (isOffline) {
+      offlineActionToast();
+      return;
+    }
+    setIsSwapModalOpen(true);
+  };
 
   const confirmDrop = async () => {
+    if (isOffline) {
+      offlineActionToast();
+      return;
+    }
     if (!cancelReason.trim()) {
       toast({ title: 'Reason Required', description: 'Please provide a reason for dropping this shift.', variant: 'destructive' });
       return;
@@ -219,6 +246,12 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
 
         {/* Shift Card Content */}
         <div className="p-0">
+          {isOffline && (
+            <div className="mx-4 mt-4 flex items-center gap-2 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-700 dark:text-amber-200">
+              <WifiOff className="h-4 w-4 flex-shrink-0" />
+              <span>Offline - showing saved shift details</span>
+            </div>
+          )}
           <SharedShiftCard
             variant="timecard"
             isFlat={true}
@@ -255,6 +288,11 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
             statusIcons={null}
             footerActions={
               <div className="flex flex-col gap-2 w-full">
+                {isOffline && (
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-[11px] font-semibold text-amber-700 dark:text-amber-200">
+                    Reconnect to swap or drop this shift.
+                  </div>
+                )}
                 {!isLockedFromActions && (
                   <div className="flex gap-2">
                       <Button

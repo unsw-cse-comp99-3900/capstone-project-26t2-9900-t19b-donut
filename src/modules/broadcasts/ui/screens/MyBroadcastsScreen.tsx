@@ -24,6 +24,7 @@ import {
   AlertTriangle,
   RefreshCw,
   Loader2,
+  WifiOff,
 } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { ScrollArea } from '@/modules/core/ui/primitives/scroll-area';
@@ -54,6 +55,7 @@ import { EmployeeGroupCard } from '../components/EmployeeGroupCard';
 import { ChannelItem } from '../components/ChannelItem';
 import { EmptyGroups, EmptyChannels } from '../components/EmptyStates';
 import { ChannelView } from '../views/ChannelView.view';
+import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
 // ============================================================================
 // TYPES
@@ -90,22 +92,19 @@ export function MyBroadcastsScreen({
   const effectiveGroupSearch = hoistedSearchQuery;
   const effectiveChannelSearch = internalSearchQuery;
 
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [channelSheetOpen, setChannelSheetOpen] = useState(false);
 
   // Data
-  const { groups, isLoading, error, refetch } =
+  const { groups, isLoading, error, refetch, offlineState } =
     useEmployeeBroadcastGroups();
 
   // Online/Offline detection
   useEffect(() => {
     const handleOnline = () => {
-      setIsOnline(true);
       toast({ title: 'Back online', description: 'Connection restored' });
       refetch();
     };
     const handleOffline = () => {
-      setIsOnline(false);
       toast({
         title: 'Offline',
         description: 'You are now offline. Some features may be unavailable.',
@@ -185,6 +184,24 @@ export function MyBroadcastsScreen({
           <div className="text-center">
             <h3 className="text-lg md:text-xl font-bold text-foreground mb-1">Loading System</h3>
             <p className="text-muted-foreground text-sm md:text-base">Retrieving broadcast frequencies...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (offlineState === 'offline-empty') {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-6">
+        <div className="flex max-w-sm flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 text-center shadow-sm">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+            <WifiOff className="h-7 w-7 text-muted-foreground" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-foreground">No cached broadcasts available</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Reconnect once to load your broadcasts, then this page can show saved announcements offline.
+            </p>
           </div>
         </div>
       </div>
@@ -300,7 +317,13 @@ export function MyBroadcastsScreen({
           : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
 
     return (
-      <div className="w-full h-full p-4 md:p-8 overflow-y-auto">
+      <div className="w-full h-full overflow-y-auto">
+        <OfflineDataBanner
+          state={offlineState}
+          cachedLabel="Offline - showing saved broadcasts"
+          emptyLabel="Offline - saved broadcasts are not available yet"
+        />
+        <div className="p-4 md:p-8">
         {finalFilteredGroups.length === 0 ? (
           <EmptyGroups />
         ) : (
@@ -321,6 +344,7 @@ export function MyBroadcastsScreen({
             ))}
           </div>
         )}
+        </div>
       </div>
     );
   }

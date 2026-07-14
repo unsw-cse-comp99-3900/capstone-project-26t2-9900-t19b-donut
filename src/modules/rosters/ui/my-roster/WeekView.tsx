@@ -18,6 +18,7 @@ interface ShiftWithDetails {
 interface WeekViewProps {
   date: Date;
   getShiftsForDate: (date: Date, options?: { includeContinuations?: boolean }) => ShiftWithDetails[];
+  isOffline: boolean;
 }
 
 // Helper to format time for display
@@ -42,7 +43,7 @@ const getGradientClass = (color: string): string => {
   }
 };
 
-const WeekView: React.FC<WeekViewProps> = ({ date, getShiftsForDate }) => {
+const WeekView: React.FC<WeekViewProps> = ({ date, getShiftsForDate, isOffline }) => {
   const [selectedShift, setSelectedShift] = useState<{
     data: ShiftWithDetails;
     date: Date;
@@ -92,6 +93,7 @@ const WeekView: React.FC<WeekViewProps> = ({ date, getShiftsForDate }) => {
         onClose={() => setSelectedShift(null)}
         shiftData={selectedShift?.data || null}
         shiftDate={selectedShift?.date || new Date()}
+        isOffline={isOffline}
       />
     </div>
   );

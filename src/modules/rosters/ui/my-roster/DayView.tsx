@@ -18,6 +18,7 @@ interface ShiftWithDetails {
 interface DayViewProps {
   date: Date;
   shifts: ShiftWithDetails[];
+  isOffline: boolean;
 }
 
 // Helper to format time for display
@@ -42,7 +43,7 @@ const getGradientClass = (color: string): string => {
   }
 };
 
-const DayView: React.FC<DayViewProps> = ({ date, shifts }) => {
+const DayView: React.FC<DayViewProps> = ({ date, shifts, isOffline }) => {
   const [selectedShift, setSelectedShift] = useState<ShiftWithDetails | null>(null);
 
 
@@ -81,6 +82,7 @@ const DayView: React.FC<DayViewProps> = ({ date, shifts }) => {
         onClose={() => setSelectedShift(null)}
         shiftData={selectedShift}
         shiftDate={date}
+        isOffline={isOffline}
       />
     </div>
   );

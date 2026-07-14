@@ -24,6 +24,7 @@ describe('offline aware query abstraction', () => {
     expect(useOfflineAwareQuerySource).toContain('useQueryClient');
     expect(useOfflineAwareQuerySource).toContain('getQueryData');
     expect(useOfflineAwareQuerySource).toContain('enabled: resolvedEnabled && !isOffline');
+    expect(useOfflineAwareQuerySource).toContain('initialData: isOffline');
     expect(useOfflineAwareQuerySource).toContain('offline-with-cache');
     expect(useOfflineAwareQuerySource).toContain('offline-empty');
     expect(offlineDataBannerSource).toContain('OfflineQueryState');

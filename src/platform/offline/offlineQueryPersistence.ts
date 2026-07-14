@@ -13,8 +13,30 @@ function isEmployeeRosterQuery(queryKey: readonly unknown[]) {
   return queryKey[0] === 'shifts' && queryKey[1] === 'list' && queryKey[2] === 'byEmployee';
 }
 
+function isEmployeeBroadcastGroupsQuery(queryKey: readonly unknown[]) {
+  return queryKey[0] === 'broadcasts' && queryKey[1] === 'groups' && queryKey[2] === 'employee';
+}
+
+function isEmployeeBroadcastMessagesQuery(queryKey: readonly unknown[]) {
+  return (
+    queryKey[0] === 'broadcasts' &&
+    queryKey[1] === 'messages' &&
+    queryKey[2] === 'byChannel' &&
+    queryKey[4] === 'employee'
+  );
+}
+
+function isUserNotificationsQuery(queryKey: readonly unknown[]) {
+  return queryKey[0] === 'notifications' && queryKey[1] === 'forUser';
+}
+
 export function shouldPersistOfflineQuery(queryKey: readonly unknown[]) {
-  return isEmployeeRosterQuery(queryKey);
+  return (
+    isEmployeeRosterQuery(queryKey) ||
+    isEmployeeBroadcastGroupsQuery(queryKey) ||
+    isEmployeeBroadcastMessagesQuery(queryKey) ||
+    isUserNotificationsQuery(queryKey)
+  );
 }
 
 function createIndexedDbPersister(): Persister {

@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/platform/supabase/client';
 import { useAuth } from '@/platform/auth/useAuth';
+import { useOfflineAwareQuery } from '@/platform/offline/useOfflineAwareQuery';
 
 export type AppNotification = {
   id: string;
@@ -39,33 +41,43 @@ export function resolveNotificationLink(n: AppNotification): string {
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
+const notificationKeys = {
+  forUser: (userId: string) => ['notifications', 'forUser', userId] as const,
+};
+
+async function fetchUserNotifications(userId: string) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('id, type, title, message, link, entity_id, entity_type, read_at, created_at')
+    .eq('profile_id', userId)
+    .is('dismissed_at', null)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (error) throw error;
+
+  return (data as AppNotification[]) ?? [];
+}
+
 export function useNotifications() {
   const { user } = useAuth();
-  const [rawNotifications, setRawNotifications] = useState<AppNotification[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   // Local-only "seen" state — no DB round-trip needed
   const [seenIds, setSeenIds] = useState<Set<string>>(new Set());
 
-  // Initial fetch
-  useEffect(() => {
-    if (!user?.id) return;
-    setLoading(true);
-    supabase
-      .from('notifications')
-      .select('id, type, title, message, link, entity_id, entity_type, read_at, created_at')
-      .eq('profile_id', user.id)
-      .is('dismissed_at', null)
-      .order('created_at', { ascending: false })
-      .limit(50)
-      .then(({ data }) => {
-        setRawNotifications((data as AppNotification[]) ?? []);
-        setLoading(false);
-      });
-  }, [user?.id]);
+  const query = useOfflineAwareQuery<AppNotification[]>({
+    queryKey: notificationKeys.forUser(user?.id ?? ''),
+    queryFn: () => fetchUserNotifications(user!.id),
+    enabled: !!user?.id,
+    staleTime: 30_000,
+  });
+
+  const isOffline = query.isOffline;
+  const rawNotifications = query.data ?? [];
 
   // Realtime subscription
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || isOffline) return;
 
     const channel = supabase
       .channel(`notifications:${user.id}`)
@@ -79,7 +91,7 @@ export function useNotifications() {
         },
         (payload) => {
           const incoming = payload.new as AppNotification;
-          setRawNotifications((prev) => {
+          queryClient.setQueryData<AppNotification[]>(notificationKeys.forUser(user.id), (prev = []) => {
             // Map-based dedup: handles initial fetch overlap + backend retries
             const map = new Map(prev.map((n) => [n.id, n]));
             if (map.has(incoming.id)) return prev;
@@ -99,7 +111,7 @@ export function useNotifications() {
           filter: `profile_id=eq.${user.id}`,
         },
         (payload) => {
-          setRawNotifications((prev) =>
+          queryClient.setQueryData<AppNotification[]>(notificationKeys.forUser(user.id), (prev = []) =>
             prev.map((n) => (n.id === payload.new.id ? (payload.new as AppNotification) : n))
           );
         }
@@ -109,7 +121,7 @@ export function useNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user?.id]);
+  }, [isOffline, queryClient, user?.id]);
 
   // Auto-clean: hide read notifications older than 7 days from the displayed list
   const notifications = useMemo(() => {
@@ -135,14 +147,16 @@ export function useNotifications() {
   }, []);
 
   const markRead = useCallback(async (id: string) => {
+    if (isOffline) return;
     const now = new Date().toISOString();
     await supabase.from('notifications').update({ read_at: now }).eq('id', id);
-    setRawNotifications((prev) =>
+    queryClient.setQueryData<AppNotification[]>(notificationKeys.forUser(user?.id ?? ''), (prev = []) =>
       prev.map((n) => (n.id === id ? { ...n, read_at: now } : n))
     );
-  }, []);
+  }, [isOffline, queryClient, user?.id]);
 
   const markAllRead = useCallback(async () => {
+    if (isOffline) return;
     if (!user?.id) return;
     const now = new Date().toISOString();
     await supabase
@@ -150,21 +164,29 @@ export function useNotifications() {
       .update({ read_at: now })
       .eq('profile_id', user.id)
       .is('read_at', null);
-    setRawNotifications((prev) => prev.map((n) => (n.read_at ? n : { ...n, read_at: now })));
-  }, [user?.id]);
+    queryClient.setQueryData<AppNotification[]>(notificationKeys.forUser(user.id), (prev = []) =>
+      prev.map((n) => (n.read_at ? n : { ...n, read_at: now }))
+    );
+  }, [isOffline, queryClient, user?.id]);
 
   const dismiss = useCallback(async (id: string) => {
+    if (isOffline) return;
     await supabase
       .from('notifications')
       .update({ dismissed_at: new Date().toISOString() })
       .eq('id', id);
-    setRawNotifications((prev) => prev.filter((n) => n.id !== id));
-  }, []);
+    queryClient.setQueryData<AppNotification[]>(notificationKeys.forUser(user?.id ?? ''), (prev = []) =>
+      prev.filter((n) => n.id !== id)
+    );
+  }, [isOffline, queryClient, user?.id]);
 
   return {
     notifications,
     unreadCount,
-    loading,
+    loading: query.offlineState === 'offline-empty' ? false : query.isPending || query.isLoading,
+    isOffline,
+    isShowingCachedData: query.isShowingCachedData,
+    offlineState: query.offlineState,
     seenIds,
     markSeen,
     markRead,
