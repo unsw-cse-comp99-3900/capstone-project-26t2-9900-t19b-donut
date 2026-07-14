@@ -25,6 +25,7 @@ const NotFound = lazy(() => import('@/modules/core/pages/NotFound.tsx'));
 // My Workspace
 const ProfilePage = lazy(() => import('@/modules/users/pages/ProfilePage.tsx'));
 const MyRosterPage = lazy(() => import('@/modules/rosters/pages/MyRosterPage.tsx'));
+const ShiftDeepLinkPage = lazy(() => import('@/modules/rosters/pages/ShiftDeepLinkPage.tsx'));
 const AvailabilityPage = lazy(() => import('@/modules/availability/pages/AvailabilityPage.tsx'));
 const EmployeeBidsPage = lazy(() => import('@/modules/planning/bidding/ui/pages/EmployeeBids.page.tsx'));
 const EmployeeSwapsPage = lazy(() => import('@/modules/planning/swapping/ui/pages/EmployeeSwaps.page.tsx'));
@@ -150,10 +151,10 @@ const AppRouter: React.FC = () => {
                 <Route element={<MobileAccessGuard />}>
                     <Route element={<OfflineRouteGuard offlinePaths={['/my-roster', '/my-broadcasts', '/my-notifications']} />}>
 
-
                         {/* ── My Workspace ── */}
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/my-roster" element={<MyRosterPage />} />
+                        <Route path="/shifts/:shiftId" element={<ShiftDeepLinkPage />} />
                         <Route path="/my-attendance" element={<AttendancePage />} />
                         <Route path="/my-availabilities" element={<AvailabilityPage />} />
                         <Route path="/my-bids" element={<EmployeeBidsPage />} />
