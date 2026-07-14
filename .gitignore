@@ -39,4 +39,9 @@ __pycache__/
 # Capacitor iOS
 ios/App/Pods/
 ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcshareddata/
+ios/App/CapApp-SPM/.swiftpm/
 ios/.DS_Store
+
+# Generated local artifacts
+outputs/

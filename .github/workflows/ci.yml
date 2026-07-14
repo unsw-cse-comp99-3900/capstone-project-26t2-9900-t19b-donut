@@ -43,6 +43,10 @@ jobs:
       - name: Install dependencies
         run: npm install --include=optional
 
+      - name: Repair Rollup native optional dependency
+        if: runner.os == 'Linux'
+        run: npm install --no-save --include=optional @rollup/rollup-linux-x64-gnu@$(node -p "require('rollup/package.json').version")
+
       - name: Type-check
         run: npm run type-check
 
