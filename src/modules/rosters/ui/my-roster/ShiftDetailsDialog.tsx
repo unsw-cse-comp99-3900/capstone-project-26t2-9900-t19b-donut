@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
 import { isShiftLocked, isShiftCommenced } from '@/modules/rosters/domain/shift-locking.utils';
 import { ResponsiveDialog } from '@/modules/core/ui/components/ResponsiveDialog';
 import { Button } from '@/modules/core/ui/primitives/button';
@@ -8,7 +10,9 @@ import { Label } from '@/modules/core/ui/primitives/label';
 import {
   X,
   ArrowLeftRight,
+  CheckCircle2,
   Loader2,
+  Share2,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/modules/core/lib/utils';
@@ -42,6 +46,17 @@ interface ShiftDetailsDialogProps {
   shiftData: ShiftWithDetails | null;
   shiftDate: Date;
 }
+
+export const buildShiftShareUrl = (shiftId: string) => {
+  const encodedShiftId = encodeURIComponent(shiftId);
+  if (Capacitor.isNativePlatform()) {
+    return `shiftopia:///shifts/${encodedShiftId}`;
+  }
+  if (typeof window === 'undefined') {
+    return `/shifts/${encodedShiftId}`;
+  }
+  return `${window.location.origin}/shifts/${encodedShiftId}`;
+};
 
 // ── Cost Tooltip ──────────────────────────────────────────────────────────
 export const CostBreakdownTooltip: React.FC<{ breakdown: any }> = ({ breakdown }) => {
@@ -89,6 +104,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const dropShiftMutation = useDropShift();
   const isDropping = dropShiftMutation.isPending;
@@ -130,6 +146,12 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   const isS3PendingOffer = shiftData?.shift.lifecycle_status === 'Published' && shiftData?.shift.assignment_status === 'assigned' && !shiftData?.shift.assignment_outcome;
 
   const isLockedFromActions = shiftData?.shift.is_cancelled || !!existingSwapRequest || isPendingInOffer || isWithinLockoutPeriod || isS3PendingOffer || isActiveOrCommenced || hasCheckedIn || isPast;
+
+  React.useEffect(() => {
+    if (shareStatus === 'idle') return undefined;
+    const timer = window.setTimeout(() => setShareStatus('idle'), 2200);
+    return () => window.clearTimeout(timer);
+  }, [shareStatus]);
 
   const paidBreak = (shiftData?.shift as any)?.paid_break_minutes ?? 0;
   const unpaidBreak = (shiftData?.shift as any)?.unpaid_break_minutes ?? shiftData?.shift.break_minutes ?? 0;
@@ -176,6 +198,46 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleDropShift = () => setIsCancelConfirmOpen(true);
   const handleSwapShift = () => setIsSwapModalOpen(true);
+  const handleShareShift = async () => {
+    const shareUrl = buildShiftShareUrl(shift.id);
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        await Share.share({
+          title: 'Shiftopia shift',
+          text: 'Open this shift in Shiftopia.',
+          url: shareUrl,
+          dialogTitle: 'Share shift',
+        });
+        setShareStatus('copied');
+        return;
+      }
+
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Shiftopia shift',
+          text: 'Open this shift in Shiftopia.',
+          url: shareUrl,
+        });
+        setShareStatus('copied');
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+      setShareStatus('copied');
+    } catch (error) {
+      if ((error as DOMException)?.name === 'AbortError') {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareStatus('copied');
+      } catch {
+        setShareStatus('failed');
+      }
+    }
+  };
 
   const confirmDrop = async () => {
     if (!cancelReason.trim()) {
@@ -255,6 +317,33 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
             statusIcons={null}
             footerActions={
               <div className="flex flex-col gap-2 w-full">
+                <Button
+                  onClick={handleShareShift}
+                  variant="secondary"
+                  className="h-11 w-full rounded-2xl font-black uppercase tracking-widest text-[11px] active:scale-95"
+                >
+                  <Share2 size={16} className="mr-2" />
+                  Share link
+                </Button>
+                {shareStatus !== 'idle' && (
+                  <div
+                    className={cn(
+                      'flex items-center justify-center gap-2 rounded-2xl border px-3 py-2 text-[11px] font-black uppercase tracking-widest',
+                      shareStatus === 'copied'
+                        ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300'
+                        : 'border-rose-400/30 bg-rose-500/10 text-rose-300'
+                    )}
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {shareStatus === 'copied' ? (
+                      <CheckCircle2 size={14} />
+                    ) : (
+                      <X size={14} />
+                    )}
+                    {shareStatus === 'copied' ? 'Link copied' : 'Share failed'}
+                  </div>
+                )}
                 {!isLockedFromActions && (
                   <div className="flex gap-2">
                       <Button
