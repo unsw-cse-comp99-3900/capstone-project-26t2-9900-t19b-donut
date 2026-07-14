@@ -296,21 +296,36 @@ const SocialProof: React.FC = () => (
 
 /* -------------------------------------------------------------------------- */
 
-const PwaInstallTestButton: React.FC = () => {
+const isStandaloneDisplay = () => {
+  if (typeof window === 'undefined') return false;
+  const nav = window.navigator as Navigator & { standalone?: boolean };
+  return window.matchMedia('(display-mode: standalone)').matches || nav.standalone === true;
+};
+
+const isIosWebSafari = () => {
+  if (typeof window === 'undefined') return false;
+  const userAgent = window.navigator.userAgent;
+  const isIosDevice =
+    /iPad|iPhone|iPod/.test(userAgent) ||
+    (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+  const isSafari = /Safari/i.test(userAgent) && !/CriOS|FxiOS|EdgiOS|Chrome|Android/i.test(userAgent);
+  return isIosDevice && isSafari && !Capacitor.isNativePlatform();
+};
+
+const IosHomeScreenGuideButton: React.FC = () => {
   const [showGuide, setShowGuide] = useState(false);
 
-  if (Capacitor.isNativePlatform()) return null;
+  if (!isIosWebSafari() || isStandaloneDisplay()) return null;
 
   return (
     <>
-      {/* TEMP_PWA_INSTALL_TEST_BUTTON: remove after Add to Home Screen QA is complete. */}
       <button
         type="button"
         onClick={() => setShowGuide(true)}
-        className="group inline-flex w-fit items-center gap-2 rounded-full border border-amber-200/80 bg-amber-300/95 px-4 py-2.5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#2a1d09] shadow-[0_0_18px_rgba(251,191,36,0.28)] transition-all hover:scale-[1.02] hover:bg-amber-200 active:scale-95"
+        className="group inline-flex w-fit items-center gap-2 rounded-full border border-amber-200/80 bg-amber-300/95 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.1em] text-[#2a1d09] shadow-[0_0_18px_rgba(251,191,36,0.24)] transition-all hover:scale-[1.02] hover:bg-amber-200 active:scale-95"
         aria-describedby="ios-home-screen-guide-status"
       >
-        <span>PWA install</span>
+        <span>Add to Home Screen</span>
         <span
           id="ios-home-screen-guide-status"
           className="rounded-full bg-[#140d2c]/90 px-2 py-0.5 text-[9px] font-black tracking-[0.14em] text-amber-100"
@@ -501,7 +516,7 @@ const Index: React.FC = () => {
                 </div>
               </motion.div>
             </div>
-            <PwaInstallTestButton />
+            <IosHomeScreenGuideButton />
           </motion.div>
 
           <motion.div
