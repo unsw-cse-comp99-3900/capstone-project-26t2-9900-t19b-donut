@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { useAuth } from '@/platform/auth/useAuth';
-import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
 
@@ -114,8 +114,18 @@ const LoginPage: React.FC = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
+        className="relative flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
       >
+        <button
+          type="button"
+          onClick={() => navigate('/')}
+          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/10 hover:text-white md:left-12"
+          aria-label="Back to home"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back</span>
+        </button>
+
         <div className="w-full max-w-md">
 
           {/* Header */}
