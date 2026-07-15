@@ -20,6 +20,7 @@ FOR SELECT
 TO authenticated
 USING (
   employee_id = (SELECT auth.uid())
+  OR public.is_manager_or_above()
   OR public.is_admin()
 );
 
