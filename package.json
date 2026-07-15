@@ -20,7 +20,9 @@
     "test:coverage": "vitest run --coverage",
     "verify": "npm run type-check && npm run test && npm run build",
     "ship": "npm run verify && git push",
-    "seed:generate": "npx tsx scripts/generate-venueops-seed.ts > supabase/seed.sql"
+    "seed:generate": "npx tsx scripts/generate-venueops-seed.ts > supabase/seed.sql",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",
@@ -113,6 +115,7 @@
     "@capacitor/assets": "^3.0.5",
     "@eslint/js": "^9.9.0",
     "@faker-js/faker": "^10.4.0",
+    "@playwright/test": "^1.61.1",
     "@supabase/supabase-js": "^2.97.0",
     "@tailwindcss/typography": "^0.5.15",
     "@testing-library/jest-dom": "^6.9.1",
