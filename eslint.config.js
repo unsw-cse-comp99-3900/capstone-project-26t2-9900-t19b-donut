@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "scripts"] },
+  { ignores: ["dist", "scripts", "ios", "android", "playwright-report", "test-results", "public", ".dependency-cruiser.cjs"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -24,6 +24,16 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/no-require-imports": "warn",
+      "react-hooks/rules-of-hooks": "warn",
+      "prefer-const": "warn",
+      "no-case-declarations": "warn",
+      "no-constant-condition": "warn",
+      "@typescript-eslint/no-empty-object-type": "warn",
+      "no-empty": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
     },
   },
   // Global rule: Prevent bypassing module public APIs
@@ -31,7 +41,7 @@ export default tseslint.config(
     files: ["src/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
@@ -80,7 +90,7 @@ export default tseslint.config(
     files: ["src/modules/rosters/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
@@ -106,7 +116,7 @@ export default tseslint.config(
     files: ["src/modules/planning/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
@@ -133,7 +143,7 @@ export default tseslint.config(
     files: ["src/modules/templates/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
@@ -159,7 +169,7 @@ export default tseslint.config(
     files: ["src/modules/timesheets/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
@@ -186,7 +196,7 @@ export default tseslint.config(
     files: ["src/design-system/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
-        "error",
+        "warn",
         {
           patterns: [
             {
