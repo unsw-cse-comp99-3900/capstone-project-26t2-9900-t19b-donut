@@ -54,8 +54,8 @@ jobs:
 
       # Lint is temporarily disabled — eslint 9 / @typescript-eslint version
       # mismatch breaks rule loading. Re-enable after upgrading the plugin.
-      # - name: Lint
-      #   run: npm run lint
+      - name: Lint
+        run: npm run lint
 
       - name: Unit tests
         run: npm test
