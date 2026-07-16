@@ -25,7 +25,7 @@ import type {
     PaginationOptions,
     PaginatedResponse,
 } from '../model/broadcast.types';
-import { toCamelCase, normalizeAuthor } from './broadcasts.dto';
+import { toCamelCase, normalizeAuthor, formatProfileName } from './broadcasts.dto';
 
 // ── Broadcast Groups ──────────────────────────────────────────────────────────
 
@@ -169,7 +169,7 @@ export const broadcastGroupQueries = {
             employee: p.profiles
                 ? {
                     id: p.profiles.id,
-                    name: `${p.profiles.first_name} ${p.profiles.last_name}`,
+                    name: formatProfileName(p.profiles),
                     email: p.profiles.email,
                 }
                 : null,
@@ -438,7 +438,7 @@ export const groupParticipantQueries = {
             employee: p.profiles
                 ? {
                     id:    p.profiles.id,
-                    name:  `${p.profiles.first_name} ${p.profiles.last_name}`,
+                    name:  formatProfileName(p.profiles),
                     email: p.profiles.email,
                 }
                 : null,

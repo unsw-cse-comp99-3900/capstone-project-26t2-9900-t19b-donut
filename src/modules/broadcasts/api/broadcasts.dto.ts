@@ -72,6 +72,19 @@ export function getFileTypeFromName(fileName: string): BroadcastFileType {
 
 // ── Row normalisers ───────────────────────────────────────────────────────────
 
+export function formatProfileName(raw: any): string {
+    if (!raw) return 'Unknown';
+
+    const fullName = typeof raw.full_name === 'string' ? raw.full_name.trim() : '';
+    if (fullName) return fullName;
+
+    const parts = [raw.first_name, raw.last_name]
+        .filter((part) => typeof part === 'string' && part.trim().length > 0)
+        .map((part) => part.trim());
+
+    return parts.join(' ') || raw.email || 'Unknown';
+}
+
 /**
  * Normalise a raw broadcast row that was joined with profiles via
  * `profiles!author_id(id, first_name, last_name, email)`.
@@ -83,7 +96,7 @@ export function normalizeAuthor(
     if (!raw) return null;
     return {
         id: raw.id,
-        name: `${raw.first_name} ${raw.last_name}`,
+        name: formatProfileName(raw),
         email: raw.email,
     };
 }

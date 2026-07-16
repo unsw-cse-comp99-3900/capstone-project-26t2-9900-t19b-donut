@@ -463,10 +463,11 @@ export function useBroadcasts(channelId: string | null): UseBroadcastsReturn {
                 description: 'Your message has been delivered.',
             });
         },
-        onError: () => {
+        onError: (error) => {
+            console.error('[Broadcasts] Failed to send broadcast:', error);
             toast({
                 title: 'Error',
-                description: 'Failed to send broadcast',
+                description: error instanceof Error ? error.message : 'Failed to send broadcast',
                 variant: 'destructive',
             });
         },
