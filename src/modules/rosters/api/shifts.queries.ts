@@ -1356,7 +1356,7 @@ export const shiftsQueries = {
                     roles(name),
                     remuneration_levels(level_name, hourly_rate_min),
                     assigned_profiles:profiles!assigned_employee_id(first_name, last_name),
-                    shift_bids(id)
+                    shift_bids(id, status)
                 `)
                 .eq('organization_id', organizationId)
                 .is('deleted_at', null)
@@ -1445,4 +1445,3 @@ export interface ShiftDeltaRow {
     sub_department_id: string | null;
     role_id: string | null;
 }
-

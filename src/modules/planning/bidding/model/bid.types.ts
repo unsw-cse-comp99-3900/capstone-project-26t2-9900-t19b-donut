@@ -27,6 +27,7 @@ export interface Bid {
     created_at: string;
     updated_at?: string;
     notes?: string;
+    allocation_reason?: string | null;
     manager_notes?: string;
     shift?: Shift;
     employee?: {

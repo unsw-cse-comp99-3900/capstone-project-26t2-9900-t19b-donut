@@ -50,9 +50,10 @@ export const useAuth = () => {
     return activeContract?.accessLevel || 'alpha';
   };
 
-  // Check if active contract OR certificate is delta, epsilon or zeta
+  // Admin is intentionally distinct from Manager:
+  // delta = department manager; epsilon/zeta = administrators.
   const isAdmin = (): boolean =>
-    ['delta', 'epsilon', 'zeta'].includes(getEffectiveLevel());
+    ['epsilon', 'zeta'].includes(getEffectiveLevel());
 
   // Check if active contract OR certificate is gamma or above
   const isManagerOrAbove = (): boolean =>

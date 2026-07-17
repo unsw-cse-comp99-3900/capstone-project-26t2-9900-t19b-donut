@@ -354,6 +354,7 @@ export const EmployeeBidsPage: React.FC = () => {
                 lifecycleStatus: s.lifecycle_status,
                 bidTime: format(parseISO(b.created_at), 'yyyy-MM-dd HH:mm'),
                 notes: b.notes,
+                rejectionReason: b.allocation_reason ?? null,
                 groupType: s.group_type,
                 subGroupColor: getDeptColor(s.group_type, s.departments?.name || '')
             };
@@ -370,7 +371,7 @@ export const EmployeeBidsPage: React.FC = () => {
     // Each open shift enriched with current-iteration participation status + history
     // ========================================================================
     const bidOpportunities: ShiftOpportunity[] = React.useMemo(() => {
-        return shiftsTableSort.sortedData.map(shift => {
+        const openOpportunities = shiftsTableSort.sortedData.map(shift => {
             const currentBid = myBids.find(b =>
                 String(b.shiftId) === String(shift.id) &&
                 b.status !== 'withdrawn'
@@ -380,6 +381,43 @@ export const EmployeeBidsPage: React.FC = () => {
 
             return { ...shift, participationStatus, currentBid };
         });
+
+        // My Bids is also an application-history surface. A rejected bid must
+        // remain visible even when its shift is absent from the current open
+        // shift query (for example because scope/eligibility filters changed).
+        const visibleShiftIds = new Set(openOpportunities.map(opp => String(opp.id)));
+        const rejectedHistory: ShiftOpportunity[] = myBids
+            .filter(bid => bid.status === 'rejected' && !visibleShiftIds.has(String(bid.shiftId)))
+            .map(bid => ({
+                id: bid.shiftId,
+                role: bid.role,
+                organization: bid.organization,
+                department: bid.department,
+                subDepartment: bid.subDepartment,
+                group: bid.group,
+                subGroupName: bid.subGroupName,
+                subGroup: bid.subGroup,
+                date: bid.date,
+                weekday: bid.weekday,
+                startTime: bid.startTime,
+                endTime: bid.endTime,
+                startAt: bid.startAt,
+                endAt: bid.endAt,
+                tzIdentifier: bid.tzIdentifier,
+                paidBreak: bid.paidBreak,
+                unpaidBreak: bid.unpaidBreak,
+                netLength: bid.netLength,
+                remunerationLevel: bid.remunerationLevel,
+                assignedTo: null,
+                isEligible: false,
+                groupType: bid.groupType,
+                lifecycleStatus: bid.lifecycleStatus,
+                subGroupColor: bid.subGroupColor,
+                participationStatus: 'rejected',
+                currentBid: bid,
+            }));
+
+        return [...openOpportunities, ...rejectedHistory];
     }, [shiftsTableSort.sortedData, myBids, user?.id]);
 
     // ========================================================================
@@ -414,7 +452,7 @@ export const EmployeeBidsPage: React.FC = () => {
             const isExpired = now >= biddingCloses.getTime();
 
             // Ineligible check: if not eligible and showIneligible is false, filter out
-            if (!opp.isEligible && !showIneligible) {
+            if (!opp.isEligible && opp.participationStatus !== 'rejected' && !showIneligible) {
                 return false;
             }
 
@@ -1103,7 +1141,14 @@ export const EmployeeBidsPage: React.FC = () => {
                                                         <span className="text-xs text-emerald-400 flex items-center gap-1 font-bold"><CheckCircle size={12} /> Selected</span>
                                                     )}
                                                     {participationStatus === 'rejected' && (
-                                                        <span className="text-xs text-slate-400 flex items-center gap-1 font-medium"><Ban size={12} /> Not Selected</span>
+                                                        <div className="text-xs text-rose-400 flex flex-col gap-1 font-medium">
+                                                            <span className="flex items-center gap-1"><Ban size={12} /> Withdrawn by Management</span>
+                                                            {currentBid?.rejectionReason && (
+                                                                <span className="max-w-[240px] text-[10px] text-muted-foreground whitespace-normal">
+                                                                    Reason: {currentBid.rejectionReason}
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     )}
                                                     {participationStatus === 'expired' && (
                                                         <span className="text-xs text-slate-400 flex items-center gap-1 font-medium"><Ban size={12} /> Expired</span>

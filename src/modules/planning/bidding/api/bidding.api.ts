@@ -231,6 +231,25 @@ export const biddingApi = {
     },
 
     /**
+     * Reject a pending bid after an admin review. The database RPC performs the
+     * rejection, notification and shift reopening atomically.
+     */
+    async rejectBidAsManager(bidId: string, reason: string): Promise<void> {
+        const trimmedReason = reason.trim();
+        if (!trimmedReason) throw new Error('A rejection reason is required.');
+
+        const { data, error } = await (supabase as any).rpc('admin_reject_shift_bid', {
+            p_bid_id: bidId,
+            p_reason: trimmedReason,
+        });
+
+        if (error) throw error;
+        if (data?.success === false) {
+            throw new Error(data.error || 'Failed to reject bid.');
+        }
+    },
+
+    /**
      * Update bid status (MANAGER ACTION)
      * When status = 'selected'/'accepted': assigns the winning employee to the shift (S5/S6 → S4)
      * and logs A21 (manager selects) + A22 (system finalizes).
