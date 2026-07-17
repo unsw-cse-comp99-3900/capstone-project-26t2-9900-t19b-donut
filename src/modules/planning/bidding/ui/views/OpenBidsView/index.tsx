@@ -51,6 +51,9 @@ import { getAvailabilitySlots } from '@/modules/availability/api/availability.ap
 import { CompliancePanel } from '@/modules/compliance/ui/CompliancePanel';
 import { classifyBuckets, getBucketSummary } from '@/modules/compliance/ui/bucket-map';
 import type { UseCompliancePanelReturn, PanelStatus, PanelResult } from '@/modules/compliance/ui/useCompliancePanel';
+import { useAuth } from '@/platform/auth/useAuth';
+import { biddingApi } from '@/modules/planning/bidding/api/bidding.api';
+import { RejectBidDialog } from '@/modules/planning/bidding/ui/components/RejectBidDialog';
 
 // =============================================================================
 // GROUP COLOR SYSTEM — venue-inherited theming
@@ -645,6 +648,7 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
   endDate,
 }) => {
   const { toast } = useToast();
+  const { isManagerOrAbove } = useAuth();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
 
@@ -667,6 +671,8 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
   const [selectedBid, setSelectedBid] = useState<EmployeeBid | null>(null);
   const [isAssigning, setIsAssigning] = useState(false);
   const [isAutoAssigning, setIsAutoAssigning] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
 
   // ── Mobile State ───────────────────────────────────────────────────────────
   const [mobileStep, setMobileStep] = useState<'roles' | 'bidders'>('roles');
@@ -789,6 +795,35 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
       setIsAssigning(false);
     }
   }, [selectedBid, expandedV8ShiftId, bidsPanel, isAssigning, toast, queryClient, organizationId]);
+
+  const handleRejectBid = useCallback(async (reason: string) => {
+    if (!selectedBid || !expandedV8ShiftId || isRejecting) return;
+
+    setIsRejecting(true);
+    try {
+      await biddingApi.rejectBidAsManager(selectedBid.id, reason);
+      toast({
+        title: 'Bid Withdrawn',
+        description: `${selectedBid.employeeName} has been notified and the shift remains open.`,
+      });
+      setIsRejectDialogOpen(false);
+      setSelectedBid(null);
+      setDrawerBidId(null);
+      bidsPanel.reset();
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: shiftKeys.managerBidShiftsRoot }),
+        queryClient.invalidateQueries({ queryKey: shiftKeys.bids(expandedV8ShiftId) }),
+      ]);
+    } catch (err: any) {
+      toast({
+        title: 'Unable to Withdraw Bid',
+        description: err.message || 'Failed to reject the bid.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsRejecting(false);
+    }
+  }, [selectedBid, expandedV8ShiftId, isRejecting, toast, bidsPanel, queryClient]);
 
 
   const handleAutoAssign = useCallback(async () => {
@@ -1347,6 +1382,7 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
                       <Loader2 className="h-4 w-4 animate-spin mr-2" /> Analyzing…
                     </Button>
                   ) : (
+                    <div className="space-y-2">
                     <motion.div whileTap={{ scale: hardBlocked ? 1 : 0.98 }}>
                       <Button
                         onClick={handleAssign}
@@ -1370,6 +1406,18 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
                           : 'Assign Role'}
                       </Button>
                     </motion.div>
+                    {hardBlocked && isManagerOrAbove() && selectedBid?.status === 'pending' && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        disabled={isRejecting}
+                        onClick={() => setIsRejectDialogOpen(true)}
+                        className="w-full min-h-[44px] rounded-xl text-[11px] font-semibold uppercase tracking-wider"
+                      >
+                        Reject &amp; withdraw bid
+                      </Button>
+                    )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -1620,6 +1668,7 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
                     <Loader2 className="h-4 w-4 animate-spin mr-2" /> Compliance logic running…
                   </Button>
                 ) : (
+                  <div className="space-y-2">
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1647,6 +1696,18 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
                         : 'Finalize Assignment'}
                     </Button>
                   </motion.div>
+                  {hardBlocked && isManagerOrAbove() && selectedBid.status === 'pending' && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      disabled={isRejecting}
+                      onClick={() => setIsRejectDialogOpen(true)}
+                      className="w-full h-11 rounded-xl text-[11px] font-semibold uppercase tracking-wider"
+                    >
+                      Reject &amp; withdraw bid
+                    </Button>
+                  )}
+                  </div>
                 )}
               </AnimatePresence>
             </div>
@@ -1657,6 +1718,13 @@ export const OpenBidsView: React.FC<OpenBidsViewProps> = ({
 
       )} {/* end isMobile ternary */}
 
+      <RejectBidDialog
+        open={isRejectDialogOpen}
+        employeeName={selectedBid?.employeeName ?? 'Employee'}
+        isSubmitting={isRejecting}
+        onOpenChange={setIsRejectDialogOpen}
+        onConfirm={handleRejectBid}
+      />
     </div>
   </TooltipProvider>
 );

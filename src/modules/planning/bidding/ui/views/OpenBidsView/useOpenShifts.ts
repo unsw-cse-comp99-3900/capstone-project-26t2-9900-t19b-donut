@@ -74,7 +74,9 @@ export function useManagerBidShifts(filters: ManagerBidFilters): UseManagerBidSh
         }
 
         // Bid count from the fetched array of IDs
-        const bidCount = Array.isArray(s.shift_bids) ? s.shift_bids.length : 0;
+        const bidCount = Array.isArray(s.shift_bids)
+          ? s.shift_bids.filter((bid: { status?: string }) => bid.status === 'pending').length
+          : 0;
 
         const assignedProfile = s.assigned_profiles;
         const assignedName = assignedProfile

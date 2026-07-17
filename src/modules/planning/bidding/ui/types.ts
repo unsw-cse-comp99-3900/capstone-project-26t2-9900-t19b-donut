@@ -60,6 +60,7 @@ export interface BidData {
     status: 'pending' | 'accepted' | 'rejected' | 'withdrawn' | 'selected';
     bidTime: string;
     notes: string | null;
+    rejectionReason?: string | null;
     groupType?: string | null;
     stateId?: string;
     lifecycleStatus?: string;

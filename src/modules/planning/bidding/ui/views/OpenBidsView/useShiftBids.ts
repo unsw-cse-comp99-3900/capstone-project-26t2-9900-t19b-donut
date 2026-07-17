@@ -30,6 +30,7 @@ export function useShiftBids(shiftId: string | null): UseShiftBidsReturn {
           )
         `)
         .eq('shift_id', shiftId)
+        .in('status', ['pending', 'accepted'])
         .order('created_at', { ascending: false });
 
       if (error) {

@@ -120,8 +120,15 @@ export const BidOpportunityDrawer: React.FC<Props> = ({
                                     </div>
                                 )}
                                 {participationStatus === 'rejected' && (
-                                    <div className="w-full flex items-center justify-center gap-2 py-4 px-4 rounded-2xl bg-muted/30 border border-border/30 text-muted-foreground text-sm font-black uppercase tracking-wider">
-                                        <Ban className="h-5 w-5 shrink-0" /> Not Selected
+                                    <div className="w-full flex flex-col items-center justify-center gap-1 py-4 px-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
+                                        <span className="flex items-center gap-2 font-black uppercase tracking-wider">
+                                            <Ban className="h-5 w-5 shrink-0" /> Withdrawn by Management
+                                        </span>
+                                        {currentBid?.rejectionReason && (
+                                            <span className="text-xs text-center normal-case font-medium text-rose-300/70">
+                                                Reason: {currentBid.rejectionReason}
+                                            </span>
+                                        )}
                                     </div>
                                 )}
                             </div>
