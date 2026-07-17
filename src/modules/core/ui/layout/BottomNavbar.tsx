@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Settings,
   TrendingUp,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -93,7 +94,7 @@ const BottomNavbar: React.FC = () => {
   }, [location.pathname]);
 
   // UNREAD COUNTS INTEGRATION
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { groups: broadcastGroups } = useEmployeeBroadcastGroups();
   const { unreadCount: notificationsUnread } = useBroadcastNotifications();
 
@@ -241,6 +242,16 @@ const BottomNavbar: React.FC = () => {
                     </NavLink>
                   );
                 })}
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-2xl text-destructive hover:bg-destructive/10 transition-all duration-300"
+                >
+                  <LogOut className="h-6 w-6" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-center leading-tight mt-1">
+                    Log out
+                  </span>
+                </button>
               </div>
             </div>
           </motion.div>
