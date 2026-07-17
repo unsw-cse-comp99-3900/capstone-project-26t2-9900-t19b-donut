@@ -7,6 +7,7 @@ import { User, AccessLevel, Role, UserContract, AccessCertificate, PermissionObj
 import { authService } from './auth.service';
 import { hasAccess as checkAccess } from './access.policy';
 import { clearOfflineQueryCache } from '@/platform/offline/offlineQueryPersistence';
+import { setSentryUser } from '@/platform/observability/sentry';
 
 // Re-export types for backward compatibility with existing imports
 export type { User, AccessLevel, Role };
@@ -123,6 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
           if (mounted && profile) {
             setUser(profile);
+            setSentryUser({ id: profile.id, email: profile.email });
           }
         }
       } catch (e: any) {
@@ -140,6 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT' && mounted) {
         setUser(null);
+        setSentryUser(null);
         setPermissionObject(null);
         setIsLoading(false);
       }
@@ -186,6 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         setUser(profile);
+        setSentryUser({ id: profile.id, email: profile.email });
       }
     } finally {
       setIsLoading(false);
@@ -199,6 +203,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
     await clearOfflineQueryCache();
     setUser(null);
+    setSentryUser(null);
     setActiveContractId(null);
     setActiveCertificateId(null);
     setPermissionObject(null);
