@@ -204,19 +204,19 @@ const MonthView: React.FC<MonthViewProps> = ({
 
         {/* Bottom Drawer for Shifts */}
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <DrawerContent className="max-h-[85vh] backdrop-blur-3xl bg-white/60 dark:bg-zinc-950/95 border-t border-white/10 rounded-t-[32px]">
+          <DrawerContent className="max-h-[85vh] rounded-t-[32px] border-t border-slate-200 bg-white text-slate-950 shadow-[0_-18px_60px_rgba(15,23,42,0.28)] dark:border-white/10 dark:bg-[#111827] dark:text-white">
             <div className="sr-only">
               <DrawerDescription>View all shifts for {format(selectedDay, 'PPPP')}</DrawerDescription>
             </div>
 
             {/* Premium Integrated Header */}
-            <div className="px-6 pt-8 pb-4">
-              <div className="flex items-end justify-between border-b border-foreground/[0.03] pb-4">
+            <div className="px-6 pt-7 pb-4">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-4 dark:border-white/10">
                 <div>
-                  <h2 className="text-[20px] font-black tracking-tight leading-none uppercase font-mono">
+                  <DrawerTitle className="text-[20px] font-black tracking-tight leading-none uppercase font-mono text-slate-950 dark:text-white">
                     {format(selectedDay, 'EEEE, d MMMM')}
-                  </h2>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mt-2">
+                  </DrawerTitle>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-300 mt-2">
                     {agendaShifts.length} {agendaShifts.length === 1 ? 'Shift' : 'Shifts'} Scheduled
                   </p>
                 </div>
@@ -228,7 +228,7 @@ const MonthView: React.FC<MonthViewProps> = ({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-0 py-0 scrollbar-none">
+            <div className="flex-1 overflow-y-auto px-3 pb-3 scrollbar-none">
               <AnimatePresence mode="popLayout">
                 {agendaShifts.length > 0 ? (
                   <div className="flex flex-col">
@@ -237,7 +237,7 @@ const MonthView: React.FC<MonthViewProps> = ({
                         key={shiftData.shift.id}
                         {...listItemSpring}
                         className={cn(
-                          "border-b border-foreground/[0.03] last:border-b-0",
+                          "mb-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm last:mb-0 dark:border-white/10 dark:bg-white/[0.06]",
                           idx === 0 && "pt-2",
                           "pb-2"
                         )}

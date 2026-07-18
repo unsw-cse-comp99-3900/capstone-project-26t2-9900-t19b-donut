@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { useAuth } from '@/platform/auth/useAuth';
 import MyRosterCalendar from '@/modules/rosters/ui/my-roster/MyRosterCalendar';
 import { MyOffersModal } from '@/modules/rosters/ui/my-roster/MyOffersModal';
@@ -142,6 +143,14 @@ const MyRosterNavigator: React.FC<{
 const MyRosterPage: React.FC = () => {
   const { user } = useAuth();
   const { view, setView, selectedDate, setSelectedDate } = useRosterView();
+
+  React.useLayoutEffect(() => {
+    if (Capacitor.getPlatform() !== 'ios') return;
+
+    setView('month');
+    setSelectedDate(startOfMonth(new Date()));
+  }, [setSelectedDate, setView]);
+
   useOrgSelection(); // keeps context subscription without unused destructure
   const { scope, setScope, isGammaLocked } = useScopeFilter('personal');
 

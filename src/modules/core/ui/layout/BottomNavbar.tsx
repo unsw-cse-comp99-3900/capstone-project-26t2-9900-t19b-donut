@@ -94,7 +94,7 @@ const BottomNavbar: React.FC = () => {
   }, [location.pathname]);
 
   // UNREAD COUNTS INTEGRATION
-  const { user } = useAuth();
+  const { user, hasPermission } = useAuth();
   const { groups: broadcastGroups } = useEmployeeBroadcastGroups();
   const { unreadCount: notificationsUnread } = useBroadcastNotifications();
 
@@ -121,6 +121,9 @@ const BottomNavbar: React.FC = () => {
 
   const moreItems = [
     { label: 'Profile',    Icon: User,            path: '/profile' },
+    ...(hasPermission('rosters')
+      ? [{ label: 'Rosters', Icon: CalendarDays, path: '/rosters' }]
+      : []),
     { label: 'Manager Bids',  Icon: Gavel,          path: '/management/bids' },
     { label: 'Manager Swaps', Icon: ArrowLeftRight,  path: '/management/swaps' },
     { label: 'Timesheets', Icon: ClipboardList,   path: '/timesheet' },
