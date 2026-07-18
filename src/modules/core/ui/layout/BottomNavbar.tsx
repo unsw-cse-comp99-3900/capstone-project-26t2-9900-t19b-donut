@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Settings,
   TrendingUp,
+  User,
 } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -119,6 +120,7 @@ const BottomNavbar: React.FC = () => {
   ];
 
   const moreItems = [
+    { label: 'Profile',    Icon: User,            path: '/profile' },
     { label: 'Manager Bids',  Icon: Gavel,          path: '/management/bids' },
     { label: 'Manager Swaps', Icon: ArrowLeftRight,  path: '/management/swaps' },
     { label: 'Timesheets', Icon: ClipboardList,   path: '/timesheet' },
