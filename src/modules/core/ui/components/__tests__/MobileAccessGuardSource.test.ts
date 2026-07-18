@@ -11,4 +11,8 @@ describe('MobileAccessGuard source', () => {
     expect(source).toContain("pathname.startsWith('/shifts/')");
     expect(source).toContain('DesktopOnlyScreen');
   });
+
+  it('allows the roster shift editor on mobile', () => {
+    expect(source).toContain("pathname.startsWith('/rosters/shift/')");
+  });
 });
