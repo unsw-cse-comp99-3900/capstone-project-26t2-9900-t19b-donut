@@ -11,6 +11,7 @@ import { OfflineRouteGuard } from '@/platform/offline/OfflineRouteGuard';
    ======================= */
 import Index from '@/modules/core/pages/Index';
 import LoginPage from '@/modules/auth/pages/LoginPage';
+import BiometricUnlockPage from '@/modules/auth/pages/BiometricUnlockPage';
 
 /* =======================
    LAZY LOADED PAGES
@@ -81,7 +82,15 @@ const NO_PADDING_ROUTES = new Set(['/rosters', '/rosters/shift/new', '/settings'
    AppSidebar no longer remounts on every route change.
    ======================= */
 const AuthLayout: React.FC = () => {
-    const { user, isAuthenticated, isLoading, hasActiveContracts } = useAuth();
+    const {
+        user,
+        isAuthenticated,
+        isLoading,
+        hasActiveContracts,
+        isBiometricLockRequired,
+        unlockWithBiometrics,
+        logout,
+    } = useAuth();
     const location = useLocation();
     const noPadding = NO_PADDING_ROUTES.has(location.pathname);
 
@@ -98,6 +107,15 @@ const AuthLayout: React.FC = () => {
 
     if (!isAuthenticated || !user) {
         return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    if (isBiometricLockRequired) {
+        return (
+            <BiometricUnlockPage
+                onUnlock={unlockWithBiometrics}
+                onUsePassword={logout}
+            />
+        );
     }
 
     if (!hasActiveContracts) {
