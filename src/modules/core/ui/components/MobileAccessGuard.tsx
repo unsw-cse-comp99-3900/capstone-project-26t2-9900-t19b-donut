@@ -20,6 +20,7 @@ import { Monitor, Wifi, ArrowRight, Layout, BarChart3, Users, Settings } from 'l
 export const ALLOWED_MOBILE_ROUTES = new Set([
   '/profile',
   '/my-roster',
+  '/rosters',
   '/my-attendance',
   '/my-availabilities',
   '/my-bids',
