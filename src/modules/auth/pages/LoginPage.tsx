@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { useAuth } from '@/platform/auth/useAuth';
+import { canUseFaceId } from '@/platform/native/biometrics';
 import { ArrowLeft, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
@@ -17,14 +18,22 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { login, isAuthenticated, isLoading, error: authError } = useAuth();
+  const {
+    login,
+    isAuthenticated,
+    isLoading,
+    error: authError,
+    isBiometricLockRequired,
+    isBiometricLockEnabled,
+    enableBiometricLock,
+  } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
+    if (isAuthenticated && !isLoading && !isBiometricLockRequired) {
       const from = (location.state as any)?.from?.pathname || '/my-roster';
       navigate(from, { replace: true });
     }
-  }, [isAuthenticated, isLoading, navigate, location]);
+  }, [isAuthenticated, isLoading, isBiometricLockRequired, navigate, location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +48,27 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(email.trim(), password);
+
+      if (!isBiometricLockEnabled) {
+        const availability = await canUseFaceId().catch(() => ({ available: false, faceId: false }));
+
+        if (availability.faceId) {
+          try {
+            const enabled = await enableBiometricLock();
+            if (enabled) {
+              toast({
+                title: 'Face ID enabled',
+                description: 'This device will require Face ID before opening your saved session.',
+              });
+            }
+          } catch {
+            toast({
+              title: 'Face ID not enabled',
+              description: 'You can still continue with your normal saved session on this device.',
+            });
+          }
+        }
+      }
 
       toast({
         title: 'Welcome back!',
