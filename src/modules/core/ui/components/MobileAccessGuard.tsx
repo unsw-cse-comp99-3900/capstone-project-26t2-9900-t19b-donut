@@ -112,7 +112,8 @@ const MobileAccessGuard: React.FC = () => {
 
   const isAllowed = ALLOWED_MOBILE_ROUTES.has(pathname)
     || pathname.startsWith('/insights/')
-    || pathname.startsWith('/shifts/');
+    || pathname.startsWith('/shifts/')
+    || pathname.startsWith('/settings/');
 
   if (isMobile && !isAllowed) {
     return <DesktopOnlyScreen />;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/platform/auth/useAuth';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
@@ -16,6 +17,7 @@ import {
   Hourglass,
   CheckCircle2,
   TrendingUp,
+  LogOut,
 } from 'lucide-react';
 import { Badge } from '@/modules/core/ui/primitives/badge';
 import { useToast } from '@/modules/core/hooks/use-toast';
@@ -46,9 +48,10 @@ const calcShiftCompletion = (completed: number, total: number) => {
 };
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { toast } = useToast();
   const { isDark } = useTheme();
+  const navigate = useNavigate();
 
   // Basic user stats
   const userStats = {
@@ -71,6 +74,7 @@ const ProfilePage: React.FC = () => {
   };
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -82,6 +86,16 @@ const ProfilePage: React.FC = () => {
       description: 'Your profile has been updated successfully.',
     });
     setIsEditing(false);
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   // Compute shift completion percentage for optional progress bar
@@ -114,30 +128,30 @@ const ProfilePage: React.FC = () => {
 
           {/* Row 3: Function Bar */}
           <div className={cn(
-            "flex flex-row items-center gap-2 w-full transition-all p-1.5 rounded-2xl border overflow-hidden",
+            "w-full transition-all p-1.5 rounded-2xl border overflow-hidden",
             isDark 
                 ? "bg-[#111827]/60 backdrop-blur-md border-white/5 shadow-inner shadow-black/20" 
                 : "bg-slate-100/50 border-slate-200/50"
           )}>
-            <div className="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto scrollbar-none py-0.5">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-2 py-0.5 md:flex md:items-center md:gap-2 md:flex-1 md:min-w-0 md:overflow-x-auto md:scrollbar-none">
               {/* Quick Info Chip */}
               <div className={cn(
-                "h-10 lg:h-11 px-4 rounded-xl flex items-center gap-2 flex-shrink-0",
+                "h-10 lg:h-11 px-4 rounded-xl flex items-center gap-2 min-w-0 md:flex-shrink-0",
                 isDark ? "bg-[#111827]/60" : "bg-white shadow-sm border border-slate-200/50"
               )}>
                 <Mail className="h-4 w-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="truncate text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                   {user?.email}
                 </span>
               </div>
 
-              <div className="h-6 w-px bg-border/20 flex-shrink-0 mx-1" />
+              <div className="hidden h-6 w-px bg-border/20 flex-shrink-0 mx-1 md:block" />
 
               {/* Edit Profile Button */}
               <Button
                 onClick={() => setIsEditing(!isEditing)}
                 className={cn(
-                  "flex-shrink-0 gap-2 h-10 lg:h-11 px-6 rounded-xl font-black uppercase text-[10px] tracking-wider transition-all shadow-sm",
+                  "gap-2 h-10 lg:h-11 px-4 lg:px-6 rounded-xl font-black uppercase text-[10px] tracking-wider transition-all shadow-sm md:flex-shrink-0",
                   isDark 
                     ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20" 
                     : "bg-indigo-50 text-indigo-700 border border-indigo-100 hover:bg-indigo-100"
@@ -146,7 +160,7 @@ const ProfilePage: React.FC = () => {
                 {isEditing ? 'Cancel' : 'Edit Profile'}
               </Button>
 
-              <div className="h-6 w-px bg-border/20 flex-shrink-0 mx-1" />
+              <div className="hidden h-6 w-px bg-border/20 flex-shrink-0 mx-1 md:block" />
 
               {/* Refresh Button */}
               <Button
@@ -161,6 +175,22 @@ const ProfilePage: React.FC = () => {
                 )}
               >
                 <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="mt-2 md:mt-3">
+              <Button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className={cn(
+                  "w-full gap-2 h-10 lg:h-11 rounded-xl font-black uppercase text-[10px] tracking-wider transition-all shadow-sm md:w-auto md:px-6",
+                  isDark
+                    ? "bg-red-500/10 text-red-300 border border-red-500/20 hover:bg-red-500/20"
+                    : "bg-red-50 text-red-700 border border-red-100 hover:bg-red-100"
+                )}
+              >
+                {isLoggingOut ? <RefreshCw className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+                Log Out
               </Button>
             </div>
           </div>
