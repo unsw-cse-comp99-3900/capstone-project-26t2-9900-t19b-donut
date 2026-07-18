@@ -87,9 +87,20 @@ export function useRosterViewPrefetch({
     const { data } = useQuery({
         queryKey: rosterViewBffKey(orgId, startDate, endDate, deptIds, subDeptIds, employeePageSize),
         queryFn: async (): Promise<RosterViewPayload> => {
+            // Explicitly forward the current JWT. Web browsers usually receive
+            // this automatically from supabase-js; native WebViews can invoke
+            // the function before the functions client has picked up the
+            // restored auth session, resulting in an RLS-valid but empty view.
+            const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+            const accessToken = sessionData.session?.access_token;
+            if (sessionError || !accessToken) {
+                throw sessionError ?? new Error('No authenticated session for roster view');
+            }
+
             const { data: payload, error } = await supabase.functions.invoke<RosterViewPayload>(
                 'get-roster-view',
                 {
+                    headers: { Authorization: `Bearer ${accessToken}` },
                     body: {
                         organization_id:  orgId,
                         department_ids:   deptIds,
@@ -124,34 +135,48 @@ export function useRosterViewPrefetch({
     useEffect(() => {
         if (!data || !orgId || !startDate || !endDate) return;
 
-        // Shift list — same key as useShiftsByDateRange
-        queryClient.setQueryData<Shift[]>(
-            shiftKeys.byDateRange(orgId, startDate, endDate, shiftFilters),
-            data.shifts,
-        );
+        // Never let a partial/empty BFF response poison the individual query
+        // caches. This is especially important on a native cold start: the
+        // direct Supabase queries may already have returned valid rows by the
+        // time the Edge Function responds. Empty datasets are intentionally
+        // left unseeded so the normal hooks remain the source of truth.
+        if (data.shifts.length > 0) {
+            queryClient.setQueryData<Shift[]>(
+                shiftKeys.byDateRange(orgId, startDate, endDate, shiftFilters),
+                data.shifts,
+            );
+        }
 
         // Reference data — same keys as useEmployees / useRoles / etc.
         const primaryDeptId   = deptIds[0];
         const primarySubDeptId = subDeptIds[0];
 
-        queryClient.setQueryData(
-            shiftKeys.lookups.employees(orgId, primaryDeptId, primarySubDeptId, undefined, undefined, employeePageSize),
-            data.employees,
-        );
+        if (data.employees.length > 0) {
+            queryClient.setQueryData(
+                shiftKeys.lookups.employees(orgId, primaryDeptId, primarySubDeptId, undefined, undefined, employeePageSize),
+                data.employees,
+            );
+        }
 
-        queryClient.setQueryData(
-            shiftKeys.lookups.roles(orgId, primaryDeptId, primarySubDeptId),
-            data.roles,
-        );
+        if (data.roles.length > 0) {
+            queryClient.setQueryData(
+                shiftKeys.lookups.roles(orgId, primaryDeptId, primarySubDeptId),
+                data.roles,
+            );
+        }
 
-        queryClient.setQueryData(
-            shiftKeys.lookups.remunerationLevels(),
-            data.remuneration_levels,
-        );
+        if (data.remuneration_levels.length > 0) {
+            queryClient.setQueryData(
+                shiftKeys.lookups.remunerationLevels(),
+                data.remuneration_levels,
+            );
+        }
 
-        queryClient.setQueryData(
-            shiftKeys.lookups.events(orgId),
-            data.events,
-        );
+        if (data.events.length > 0) {
+            queryClient.setQueryData(
+                shiftKeys.lookups.events(orgId),
+                data.events,
+            );
+        }
     }, [data, orgId, startDate, endDate, deptIds, subDeptIds, shiftFilters, employeePageSize, queryClient]);
 }

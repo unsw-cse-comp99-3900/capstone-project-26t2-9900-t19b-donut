@@ -33,9 +33,28 @@ interface UseScopeFilterReturn {
 /**
  * Compute default "select all" from a scope tree.
  */
-function defaultSelectionFromTree(tree: ScopeTree | null | undefined): ScopeSelection {
+function defaultSelectionFromTree(
+    tree: ScopeTree | null | undefined,
+    mode: ScopeMode,
+): ScopeSelection {
     if (!tree?.organizations?.length) {
         return { org_ids: [], dept_ids: [], subdept_ids: [] };
+    }
+
+    // Managerial filters are single-select by default. Keeping every
+    // department/sub-department while only rendering the first organization
+    // creates an invalid mixed scope on a fresh native session and can reduce
+    // both employee and shift queries to zero rows.
+    if (mode === 'managerial') {
+        const organization = tree.organizations[0];
+        const department = organization.departments[0];
+        const subdepartment = department?.subdepartments[0];
+
+        return {
+            org_ids: [organization.id],
+            dept_ids: department ? [department.id] : [],
+            subdept_ids: subdepartment ? [subdepartment.id] : [],
+        };
     }
 
     return {
@@ -143,15 +162,22 @@ export function useScopeFilter(
     }, [permissionObject, mode, context?.user?.highestAccessLevel]);
 
     // Compute default selection
-    const defaultScope = useMemo(() => defaultSelectionFromTree(scopeTree), [scopeTree]);
+    const defaultScope = useMemo(() => defaultSelectionFromTree(scopeTree, mode), [scopeTree, mode]);
 
     // Sync scope when defaults change (e.g. permissions loaded)
-    // ONLY initialize if no global scope is already set (or if specific re-init is needed)
+    // Also repair the legacy multi-select managerial value that older builds
+    // may have saved in sessionStorage.
     useEffect(() => {
-        if (!currentGlobalScope && defaultScope.org_ids.length > 0) {
+        const hasInvalidManagerialMultiplicity = mode === 'managerial' && !!currentGlobalScope && (
+            currentGlobalScope.org_ids.length !== 1 ||
+            currentGlobalScope.dept_ids.length > 1 ||
+            currentGlobalScope.subdept_ids.length > 1
+        );
+
+        if ((!currentGlobalScope || hasInvalidManagerialMultiplicity) && defaultScope.org_ids.length > 0) {
             setGlobalScope(defaultScope);
         }
-    }, [defaultScope, currentGlobalScope, setGlobalScope]);
+    }, [defaultScope, currentGlobalScope, mode, setGlobalScope]);
 
     // Is gamma locked? Only relevant for managerial mode
     const isGammaLocked = useMemo(() => {

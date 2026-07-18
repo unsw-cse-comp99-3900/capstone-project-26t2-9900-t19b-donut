@@ -16,6 +16,7 @@ import {
   ViewType,
 } from '@/modules/rosters/ui/components/RosterFunctionBar';
 import PeopleModeGrid, { EmployeeShift } from '@/modules/rosters/ui/modes/PeopleModeGrid';
+import { MobilePeopleRosterBoard } from '@/modules/rosters/ui/modes/MobilePeopleRosterBoard';
 import type { PeopleModeEmployee, PeopleModeShift } from '@/modules/rosters/ui/modes/people-mode.types';
 import UnfilledShiftsPanel, {
   UnfilledShift,
@@ -86,6 +87,7 @@ import {
 import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
 import { LayoutGrid, Search } from 'lucide-react';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { useIsMobile } from '@/modules/core/hooks/use-mobile';
 import type { ToolbarPreflightData } from '@/modules/rosters/ui/components/BulkActionsToolbar';
 import { shiftsCommands } from '@/modules/rosters/api/shifts.commands';
 import { executeAssignShift } from '@/modules/rosters/domain/commands/assignShift.command';
@@ -120,6 +122,7 @@ const NewRostersPage: React.FC = () => {
   const { hasPermission } = useAuth();
   const { scope, setScope, isGammaLocked } = useScopeFilter('managerial');
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const { showUnfilledPanel, setShowUnfilledPanel, isDnDModeActive } = useRosterStore(
     useShallow((s) => ({
@@ -372,7 +375,7 @@ const NewRostersPage: React.FC = () => {
   }, [employeeSearchInput]);
 
   // Employees lookup
-  const { data: employees = [] } = useEmployees(
+  const { data: queriedEmployees = [] } = useEmployees(
     selectedOrganizationId || undefined,
     selectedDepartmentIds[0] || undefined,
     selectedSubDepartmentIds[0] || undefined,
@@ -380,6 +383,48 @@ const NewRostersPage: React.FC = () => {
     employeeSearchTerm || undefined,
     EMPLOYEE_PAGE_SIZE,
   );
+
+  // Some native/RLS combinations allow managers to read shifts (including
+  // their assigned profile relation) but not the broad profiles lookup used
+  // by useEmployees. People mode still needs employee rows to place those
+  // already-loaded shifts. Reconstruct a minimal, deduplicated employee list
+  // from assigned shifts when the lookup is empty.
+  const employees = useMemo(() => {
+    if (queriedEmployees.length > 0) return queriedEmployees;
+
+    const fromAssignedShifts = new Map<string, (typeof queriedEmployees)[number]>();
+    shifts.forEach((shift: Shift) => {
+      const employeeId = shift.assigned_employee_id;
+      if (!employeeId) return;
+
+      const profile = shift.assigned_profiles;
+      const existing = fromAssignedShifts.get(employeeId);
+      const roleIds = new Set(existing?.contracted_role_ids || []);
+      if (shift.role_id) roleIds.add(shift.role_id);
+
+      const existingFirstName = existing?.first_name === 'Assigned'
+        ? ''
+        : existing?.first_name || '';
+      const existingLastName = existing?.last_name?.startsWith('Employee ')
+        ? ''
+        : existing?.last_name || '';
+
+      fromAssignedShifts.set(employeeId, {
+        id: employeeId,
+        first_name: profile?.first_name || existingFirstName || 'Employee',
+        last_name: profile?.last_name || existingLastName,
+        department_name: shift.departments?.name || existing?.department_name,
+        sub_department_name: shift.sub_departments?.name || existing?.sub_department_name,
+        contract_type: existing?.contract_type || null,
+        contracted_role_ids: Array.from(roleIds),
+        contracted_weekly_hours: existing?.contracted_weekly_hours ?? 38,
+      });
+    });
+
+    return Array.from(fromAssignedShifts.values()).sort((a, b) =>
+      `${a.last_name} ${a.first_name}`.localeCompare(`${b.last_name} ${b.first_name}`)
+    );
+  }, [queriedEmployees, shifts]);
   const employeesTruncated = employees.length >= EMPLOYEE_PAGE_SIZE;
 
   // Escape key exits bulk selection mode
@@ -967,11 +1012,11 @@ const NewRostersPage: React.FC = () => {
   // ==================== RENDER ====================
   return (
     <div 
-      className="h-full flex flex-col overflow-hidden p-4 lg:p-6 space-y-4"
+      className="h-full w-full min-w-0 flex flex-col overflow-hidden px-3 py-4 lg:p-6 space-y-4"
     >
       {/* ── Unified Header ────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30">
-        <div className="rounded-[32px] p-4 lg:p-6 transition-all border bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
+      <div className="sticky top-0 z-30 w-full min-w-0">
+        <div className="w-full min-w-0 overflow-hidden rounded-[28px] lg:rounded-[32px] p-4 lg:p-6 transition-all border bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
           {/* Row 1: Identity & Clock + Row 2: Scope Filter */}
           <PersonalPageHeader
             title="Roster Planner"
@@ -1097,6 +1142,14 @@ const NewRostersPage: React.FC = () => {
                   )}
                 </div>
               </div>
+              {isMobile ? (
+                <MobilePeopleRosterBoard
+                  employees={employees}
+                  shifts={shifts}
+                  dates={dates}
+                  onViewShift={handleEditShift}
+                />
+              ) : (
               <PeopleModeGrid
                 employees={employeesWithShifts}
               onAssignShift={handleDndAssign}
@@ -1131,6 +1184,7 @@ const NewRostersPage: React.FC = () => {
               onUnpublishShift={handleUnpublishShift}
 
               />
+              )}
             </>
           )}
 

@@ -49,6 +49,7 @@ export const MobileShiftCard: React.FC<MobileShiftCardProps> = ({ shiftData, onC
       <SharedShiftCard
         variant="timecard"
         isFlat={true} // Flatten to match the detail drawer look
+        className="opacity-100 grayscale-0"
         organization={shift.organizations?.name || ''}
 
         department={groupName}

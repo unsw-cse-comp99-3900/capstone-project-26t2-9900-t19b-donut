@@ -77,6 +77,10 @@ const NOOP_ASSIGN: (shift: UnfilledShift, employeeId: string, dateKey: string) =
 // used for the initial total-size calculation.
 const VIRT_ROW_HEIGHT = 220;
 const VIRT_OVERSCAN = 5;
+// Small lists render normally. Besides avoiding needless virtualization work,
+// this prevents an iOS WKWebView first-layout race where the scroll viewport
+// is measured as 0px and react-virtual consequently returns no visible rows.
+const VIRT_MIN_EMPLOYEE_COUNT = 50;
 
 // Shared CSS-grid column template. Header and every (virtualized,
 // absolutely-positioned) row reference the SAME track sizes, so columns can
@@ -391,6 +395,10 @@ export const PeopleModeGrid: React.FC<PeopleModeGridProps> = ({
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
   const totalSize = rowVirtualizer.getTotalSize();
+  const shouldVirtualize = employees.length >= VIRT_MIN_EMPLOYEE_COUNT;
+  const rowsToRender = shouldVirtualize
+    ? virtualItems.map((item) => ({ index: item.index, start: item.start }))
+    : employees.map((_, index) => ({ index, start: 0 }));
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -467,19 +475,22 @@ export const PeopleModeGrid: React.FC<PeopleModeGridProps> = ({
                 {/* `height` + `position: relative` give the virtualizer the
                     full scroll-bounding box; rows are absolutely positioned
                     by `translateY` so only the visible window mounts. */}
-                <div style={{ height: totalSize, position: 'relative' }}>
-                  {virtualItems.map((vi) => {
-                    const employee = employees[vi.index];
+                <div style={{
+                  height: shouldVirtualize ? totalSize : 'auto',
+                  position: shouldVirtualize ? 'relative' : 'static',
+                }}>
+                  {rowsToRender.map((row) => {
+                    const employee = employees[row.index];
                     if (!employee) return null;
                     return (
                       <EmployeeRow
                         key={employee.id}
-                        ref={rowVirtualizer.measureElement}
-                        data-index={vi.index}
+                        ref={shouldVirtualize ? rowVirtualizer.measureElement : undefined}
+                        data-index={row.index}
                         gridTemplateColumns={peopleGridCols(dates.length)}
                         employee={employee}
-                        empIdx={vi.index}
-                        isLastRow={vi.index === employees.length - 1}
+                        empIdx={row.index}
+                        isLastRow={row.index === employees.length - 1}
                         dates={dates}
                         canEdit={canEdit}
                         isBulkMode={isBulkMode}
@@ -497,13 +508,13 @@ export const PeopleModeGrid: React.FC<PeopleModeGridProps> = ({
                         onUnpublishShift={onUnpublishShift}
                         onAssign={stableOnAssign}
                         onMoveShift={onMoveShift}
-                        style={{
+                        style={shouldVirtualize ? {
                           position: 'absolute',
                           top: 0,
                           left: 0,
                           width: '100%',
-                          transform: `translateY(${vi.start}px)`,
-                        }}
+                          transform: `translateY(${row.start}px)`,
+                        } : undefined}
                       />
                     );
                   })}
