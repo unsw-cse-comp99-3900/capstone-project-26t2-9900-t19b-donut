@@ -226,8 +226,10 @@ const AppRouter: React.FC = () => {
                             <Route path="/users" element={<UsersPage />} />
                         </Route>
 
-                        <Route path="/settings" element={<SettingsPage />} />
-                        <Route path="/settings/:section" element={<SettingsPage />} />
+                        <Route element={<FeatureGate feature="profile" />}>
+                            <Route path="/settings" element={<SettingsPage />} />
+                            <Route path="/settings/:section" element={<SettingsPage />} />
+                        </Route>
 
                         {/* ── Utility ── */}
                         <Route path="/search" element={<SearchPage />} />
