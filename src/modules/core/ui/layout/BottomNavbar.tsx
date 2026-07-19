@@ -94,7 +94,7 @@ const BottomNavbar: React.FC = () => {
   }, [location.pathname]);
 
   // UNREAD COUNTS INTEGRATION
-  const { user, logout } = useAuth();
+  const { logout, hasPermission } = useAuth();
   const { groups: broadcastGroups } = useEmployeeBroadcastGroups();
   const { unreadCount: notificationsUnread } = useBroadcastNotifications();
 
@@ -120,18 +120,17 @@ const BottomNavbar: React.FC = () => {
   ];
 
   const moreItems = [
-    { label: 'Manager Bids',  Icon: Gavel,          path: '/management/bids' },
-    { label: 'Manager Swaps', Icon: ArrowLeftRight,  path: '/management/swaps' },
-    { label: 'Timesheets', Icon: ClipboardList,   path: '/timesheet' },
-    { label: 'Templates',  Icon: LayoutTemplate,  path: '/templates' },
-    { label: 'Broadcast',  Icon: Megaphone,       path: '/broadcast' },
-    { label: 'Insights',   Icon: BarChart3,       path: '/insights' },
-    { label: 'Grid',       Icon: Grid3x3,         path: '/grid' },
-    { label: 'Users',      Icon: Users,           path: '/users' },
-
-    { label: 'Settings',   Icon: Settings,        path: '/settings' },
-    { label: 'Perform',    Icon: TrendingUp,      path: '/performance' },
-  ];
+    { label: 'Manager Bids',  Icon: Gavel,          path: '/management/bids', feature: 'management' },
+    { label: 'Manager Swaps', Icon: ArrowLeftRight, path: '/management/swaps', feature: 'management' },
+    { label: 'Timesheets',    Icon: ClipboardList,  path: '/timesheet', feature: 'timesheet-view' },
+    { label: 'Templates',     Icon: LayoutTemplate, path: '/templates', feature: 'templates' },
+    { label: 'Broadcast',     Icon: Megaphone,      path: '/broadcast', feature: 'broadcast' },
+    { label: 'Insights',      Icon: BarChart3,      path: '/insights', feature: 'insights' },
+    { label: 'Grid',          Icon: Grid3x3,        path: '/grid', feature: 'insights' },
+    { label: 'Users',         Icon: Users,          path: '/users', feature: 'users' },
+    { label: 'Settings',      Icon: Settings,       path: '/settings', feature: 'profile' },
+    { label: 'Perform',       Icon: TrendingUp,     path: '/performance', feature: 'management' },
+  ].filter((item) => hasPermission(item.feature));
 
   const isMoreRouteActive = moreItems.some((item) => location.pathname.startsWith(item.path));
 
@@ -214,7 +213,7 @@ const BottomNavbar: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/10 dark:to-white/0 pointer-events-none" />
             <div className="relative p-5">
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-4 ml-1">
-                Management & Tools
+                {moreItems.length > 0 ? 'Management & Tools' : 'Account'}
               </h3>
               <div className="grid grid-cols-3 gap-2">
                 {moreItems.map(({ label, Icon, path }) => {
