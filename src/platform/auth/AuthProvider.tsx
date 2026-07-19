@@ -8,6 +8,8 @@ import { authService } from './auth.service';
 import { hasAccess as checkAccess } from './access.policy';
 import { clearOfflineQueryCache } from '@/platform/offline/offlineQueryPersistence';
 import { setSentryUser } from '@/platform/observability/sentry';
+import { clearBiometricEnabled, isBiometricEnabled, setBiometricEnabled } from '@/platform/native/biometricPreferences';
+import { canUseFaceId, verifyFaceId } from '@/platform/native/biometrics';
 
 // Re-export types for backward compatibility with existing imports
 export type { User, AccessLevel, Role };
@@ -56,6 +58,13 @@ interface AuthContextType {
   permissionObject: PermissionObject | null;
   /** Whether permissions are still loading */
   isPermissionsLoading: boolean;
+  /** True when a persisted session exists but still needs a biometric unlock */
+  isBiometricLockRequired: boolean;
+  /** Whether the user has enabled biometric app unlock on this device */
+  isBiometricLockEnabled: boolean;
+  enableBiometricLock: () => Promise<boolean>;
+  disableBiometricLock: () => void;
+  unlockWithBiometrics: () => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -72,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState<string | null>(null);
   const [permissionObject, setPermissionObject] = useState<PermissionObject | null>(null);
   const [isPermissionsLoading, setIsPermissionsLoading] = useState(false);
+  const [isBiometricLockRequired, setIsBiometricLockRequired] = useState(false);
 
   // Profile fetch delegate
   const fetchProfile = async (userId: string): Promise<User | null> => {
@@ -125,6 +135,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           if (mounted && profile) {
             setUser(profile);
             setSentryUser({ id: profile.id, email: profile.email });
+            if (isBiometricEnabled()) {
+              const availability = await canUseFaceId().catch(() => ({ available: false, faceId: false }));
+              if (mounted && availability.faceId) {
+                setIsBiometricLockRequired(true);
+              }
+            }
           }
         }
       } catch (e: any) {
@@ -144,6 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(null);
         setSentryUser(null);
         setPermissionObject(null);
+        setIsBiometricLockRequired(false);
         setIsLoading(false);
       }
     });
@@ -190,6 +207,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
         setUser(profile);
         setSentryUser({ id: profile.id, email: profile.email });
+        setIsBiometricLockRequired(false);
       }
     } finally {
       setIsLoading(false);
@@ -207,6 +225,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setActiveContractId(null);
     setActiveCertificateId(null);
     setPermissionObject(null);
+    setIsBiometricLockRequired(false);
+  };
+
+  const enableBiometricLock = async (): Promise<boolean> => {
+    const availability = await canUseFaceId();
+    if (!availability.faceId) return false;
+
+    await verifyFaceId();
+    setBiometricEnabled(true);
+    setIsBiometricLockRequired(false);
+    return true;
+  };
+
+  const disableBiometricLock = () => {
+    clearBiometricEnabled();
+    setIsBiometricLockRequired(false);
+  };
+
+  const unlockWithBiometrics = async (): Promise<boolean> => {
+    await verifyFaceId();
+    setIsBiometricLockRequired(false);
+    return true;
   };
 
   // Auto-select first active contract if none selected
@@ -311,6 +351,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         accessScope,
         permissionObject,
         isPermissionsLoading,
+        isBiometricLockRequired,
+        isBiometricLockEnabled: isBiometricEnabled(),
+        enableBiometricLock,
+        disableBiometricLock,
+        unlockWithBiometrics,
       }}
     >
       {children}

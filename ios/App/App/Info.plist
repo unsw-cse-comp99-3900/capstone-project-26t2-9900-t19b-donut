@@ -18,6 +18,8 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to securely unlock your Shiftopia session.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
