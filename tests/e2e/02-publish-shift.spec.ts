@@ -2,6 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Publish Shift Flow', () => {
   test.beforeEach(async ({ page }) => {
+    // Freeze time to 8:00 AM so that our 09:00-17:00 shift is always in the future.
+    // This fixes the "Shift cannot start in the past" validation error.
+    await page.clock.setFixedTime(new Date('2026-07-19T08:00:00+10:00'));
+    
     // Login as a manager before each test in this block
     await page.goto('/login');
     const email = process.env.MANAGER_EMAIL || 'manager@test.com';
