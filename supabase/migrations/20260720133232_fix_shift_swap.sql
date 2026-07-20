@@ -39,6 +39,9 @@ GRANT EXECUTE
 ON FUNCTION public.can_view_related_swap_shift(uuid, uuid)
 TO authenticated, service_role;
 
+ALTER FUNCTION public.can_view_related_swap_shift(uuid, uuid)
+OWNER TO postgres;
+
 
 DROP POLICY IF EXISTS "swaps_select_all"
 ON public.shift_swaps;
