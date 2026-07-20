@@ -15,7 +15,7 @@ test.describe('Employee Bid Flow', () => {
 
   test('Employee can view available shifts and submit a bid', async ({ page }) => {
     // Navigate to employee bids or available shifts
-    await page.getByRole('link', { name: 'My Bids Shift bid requests' }).click();
+    await page.goto('/my-bids');
     
     // Find an available shift to bid on and click "Bid Now"
     // Using first() to handle cases where there are multiple available bids

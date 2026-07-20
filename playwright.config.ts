@@ -69,5 +69,18 @@ export default defineConfig({
       name: 'Microsoft Edge',
       use: { ...devices['Desktop Edge'], channel: 'msedge' },
     },
+    /* Test against iOS testing matrix viewports */
+    {
+      name: 'Mobile Safari (iPhone 13)',
+      use: { ...devices['iPhone 13'] },
+    },
+    {
+      name: 'Mobile Safari Landscape (iPhone 13)',
+      use: { ...devices['iPhone 13 landscape'] },
+    },
+    {
+      name: 'Tablet Safari (iPad Pro 11)',
+      use: { ...devices['iPad Pro 11'] },
+    },
   ],
 });
