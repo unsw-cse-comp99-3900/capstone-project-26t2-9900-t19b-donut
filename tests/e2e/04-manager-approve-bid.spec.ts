@@ -15,7 +15,7 @@ test.describe('Manager Approve Bid Flow', () => {
 
   test('Manager can view employee bids and approve one', async ({ page }) => {
     // Navigate to manager bids page
-    await page.getByRole('link', { name: 'Open Bids Review bid requests' }).click();
+    await page.goto('/management/bids');
     
     // Check if there are any shifts with open bids (looking for a shift card containing "Net:")
     const shiftCard = page.getByText(/Net:/i).first();

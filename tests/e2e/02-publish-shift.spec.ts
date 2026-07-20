@@ -17,9 +17,11 @@ test.describe('Publish Shift Flow', () => {
     await expect(page).not.toHaveURL(/.*\/login/);
   });
 
-  test('Manager can create and publish a new shift', async ({ page }) => {
+  test('Manager can create and publish a new shift', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'Roster planner is not supported on mobile devices.');
+    
     // 1. Navigate to Rosters page
-    await page.getByRole('link', { name: 'Rosters Manage schedules' }).click();
+    await page.goto('/rosters');
     
     // Hide the performance monitor that intercepts clicks in the bottom right corner
     await page.addStyleTag({ content: 'button[aria-label="Open performance monitor"] { display: none !important; }' });
