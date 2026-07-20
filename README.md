@@ -255,6 +255,7 @@ See the [Release Checklist](docs/release-checklist.md) and
 | [DDD Module Standards](docs/ddd-module-standards.md) | Domain-module conventions |
 | [Autoscheduler Guide](docs/autoscheduler.md) | OR-Tools optimizer design and usage |
 | [Operational Runbook](docs/operational-runbook.md) | Production troubleshooting and operations |
+| [Disaster Recovery Runbook](docs/disaster-recovery.md) | Backup, restoration, rollback, and credential recovery procedures |
 | [Release Checklist](docs/release-checklist.md) | Pre-release and rollback checks |
 | [Hardening Report](docs/HARDENING_2026-04-29.md) | Security and performance hardening |
 
