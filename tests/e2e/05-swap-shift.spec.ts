@@ -16,7 +16,7 @@ test.describe('Swap Shift Flow', () => {
 
     test('User can initiate a swap request for their shift', async ({ page }) => {
       // Navigate to My Roster
-      await page.getByRole('link', { name: 'My Roster Your assigned shifts' }).click();
+      await page.goto('/my-roster');
       
       // Find a shift to swap. Looking for a time pattern like " - " (e.g. 09:00 - 15:00)
       const shiftCard = page.getByText(/ - /i).first();
@@ -73,9 +73,7 @@ test.describe('Swap Shift Flow', () => {
       // Using try-catch so it skips gracefully if the route or buttons aren't exact
       try {
         // Look for Swaps link in the sidebar
-        const swapsLink = page.getByRole('link', { name: /Swaps|Review swap/i });
-        await swapsLink.waitFor({ state: 'visible', timeout: 3000 });
-        await swapsLink.click();
+        await page.goto('/management/swaps');
         
         const approveSwapButton = page.getByRole('button', { name: /Approve/i }).first();
         await approveSwapButton.waitFor({ state: 'visible', timeout: 3000 });

@@ -15,6 +15,7 @@ import { useAuth } from '@/platform/auth/useAuth';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { cn } from '@/modules/core/lib/utils';
 import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { UserManagementFunctionBar } from '../ui/components/UserManagementFunctionBar';
 
 interface Profile {
@@ -101,25 +102,16 @@ const UsersPage: React.FC = () => {
                         ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
-                    {!selectedUserId && !isLoading && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex flex-col items-center justify-center py-24 text-center space-y-4"
-                        >
-                            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center shadow-inner">
-                                <User className="w-10 h-10 text-primary/40" />
-                            </div>
-                            <div className="space-y-1">
-                                <h3 className="text-xl font-black uppercase tracking-widest text-foreground/80">No Employee Selected</h3>
-                                <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-                                    Select an employee from the dropdown above to view their profile, compliance, and performance metrics.
-                                </p>
-                            </div>
-                        </motion.div>
-                    )}
+                    <PageState
+                        isLoading={isLoading}
+                        isEmpty={!selectedUserId}
+                        emptyTitle="No Employee Selected"
+                        emptyDesc="Select an employee from the dropdown above to view their profile, compliance, and performance metrics."
+                    >
+                        {/* We use conditional rendering below instead of else to let PageState render the wrapper correctly */}
+                    </PageState>
 
-                    {selectedUserId && (
+                    {selectedUserId && !isLoading && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}

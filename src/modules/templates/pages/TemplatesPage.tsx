@@ -24,6 +24,7 @@ import {
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { TemplateFunctionBar } from '../ui/components/TemplateFunctionBar';
 import { cn } from '@/modules/core/lib/utils';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
@@ -295,21 +296,19 @@ const TemplatesPage: React.FC = () => {
             ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
             : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
         )}>
-          {error && !isLoading && templates.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full w-full">
-              <AlertTriangle className="h-10 w-10 text-red-500 mb-4" />
-              <p>{error}</p>
-              <Button onClick={() => fetchTemplates({
-                organizationId,
-                departmentId: departmentId || undefined,
-                subDepartmentId: subDepartmentId || undefined,
-              })} className="mt-4">Retry</Button>
-            </div>
-          ) : (isLoading || isScopeLoading) && templates.length === 0 ? (
-            <div className="flex items-center justify-center h-full w-full">
-              <Loader2 className="h-8 w-8 animate-spin" />
-            </div>
-          ) : (
+          <PageState 
+            isLoading={isLoading || isScopeLoading}
+            isError={!!error}
+            errorMsg={error || undefined}
+            onRetry={() => fetchTemplates({
+              organizationId,
+              departmentId: departmentId || undefined,
+              subDepartmentId: subDepartmentId || undefined,
+            })}
+            isEmpty={templates.length === 0}
+            emptyTitle="No Templates Found"
+            emptyDesc="There are no templates matching your current filters. Create a new one to get started."
+          >
             <>
               {/* Mobile sidebar drawer */}
               <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
@@ -359,7 +358,7 @@ const TemplatesPage: React.FC = () => {
                 )}
               </div>
             </>
-          )}
+          </PageState>
         </div>
       </div>
 
