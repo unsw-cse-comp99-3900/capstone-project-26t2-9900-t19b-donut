@@ -13,6 +13,7 @@ import type {
   RolesProjection 
 } from '../domain/projections/types';
 import { ProjectionWorkerPool } from '../domain/projections/worker/projection.worker.pool';
+import { runProjectionPipeline } from '../domain/projections/pipeline/runProjectionPipeline';
 import { 
   shiftsToDTO, 
   employeesToDTO, 
@@ -22,7 +23,11 @@ import {
   eventsToDTO, 
   rosterStructuresToDTO 
 } from '../domain/projections/worker/mappers';
-import type { ProjectionResult as WorkerResult, ProjectedShiftResult } from '../domain/projections/worker/protocol';
+import type {
+  ProjectionRequest,
+  ProjectionResult as WorkerResult,
+  ProjectedShiftResult,
+} from '../domain/projections/worker/protocol';
 
 export function useRosterProjections(input: ProjectionInput): ProjectionResult {
   const activeMode = useRosterStore(s => s.activeMode);
@@ -109,8 +114,12 @@ export function useRosterProjections(input: ProjectionInput): ProjectionResult {
     if (activeMode === 'events') eventDTOs = eventsToDTO(events);
     if (activeMode === 'group') rosterStructureDTOs = rosterStructuresToDTO(rosterStructures);
 
-    // 2. Setup callback
-    pool.onResult = (result: WorkerResult) => {
+    // Keep totals accurate while the worker is running. If worker startup
+    // fails, the footer no longer remains stuck on the previous empty result.
+    setWorkerStats(syncStats);
+
+    // 2. Result applicator shared by the worker and synchronous fallback.
+    const applyProjectionResult = (result: WorkerResult) => {
       // Worker results trigger a cascade of state updates that reconcile the
       // entire grid (~1.4k cells in a week view). Mark as a transition so
       // React can interrupt this work to handle user input — the previous
@@ -203,6 +212,7 @@ export function useRosterProjections(input: ProjectionInput): ProjectionResult {
       });
       }); // end startTransition
     };
+    pool.onResult = applyProjectionResult;
 
     // 4. Dispatch — pin nowIso to minute granularity so identical inputs
     //    produce identical requests until the next minute boundary
@@ -211,7 +221,7 @@ export function useRosterProjections(input: ProjectionInput): ProjectionResult {
       nowMinuteRef.current = { iso: new Date().toISOString(), minute: currentMinute };
     }
 
-    pool.requestProjection({
+    const projectionRequest: Omit<ProjectionRequest, 'requestId'> = {
       mode: activeMode,
       shifts: shiftDTOs,
       employees: employeeDTOs,
@@ -222,9 +232,36 @@ export function useRosterProjections(input: ProjectionInput): ProjectionResult {
       filters: filterDTOs,
       nowIso: nowMinuteRef.current.iso,
       rangeDays,
-    });
+    };
 
-  }, [shifts, employees, roles, levels, events, rosterStructures, advancedFilters, activeMode, rangeDays, pool]);
+    let requestedId = -1;
+    let fallbackApplied = false;
+    pool.onError = (error) => {
+      if (error.requestId !== requestedId || fallbackApplied) return;
+      fallbackApplied = true;
+      console.warn(
+        '[useRosterProjections] Worker unavailable; using synchronous projection:',
+        error.message,
+      );
+
+      try {
+        const fallback = runProjectionPipeline({
+          ...projectionRequest,
+          requestId: error.requestId,
+        });
+        if (fallback) applyProjectionResult(fallback);
+      } catch (fallbackError) {
+        console.error('[useRosterProjections] Synchronous projection failed:', fallbackError);
+        setWorkerStats(syncStats);
+      }
+    };
+    requestedId = pool.requestProjection(projectionRequest);
+
+    return () => {
+      pool.onResult = null;
+      pool.onError = null;
+    };
+  }, [shifts, employees, roles, levels, events, rosterStructures, advancedFilters, activeMode, rangeDays, pool, syncStats]);
 
   // Clean up pool on unmount
   useEffect(() => {

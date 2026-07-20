@@ -40,6 +40,7 @@ import type {
   WorkerInboundMessage,
   WorkerOutboundMessage,
 } from './protocol';
+import ProjectionWorker from './projection.worker?worker';
 import { computeUtilizationPct, isOverContractedHours, periodContractedHours, computePeakFatigue } from '../utils/workload';
 import { UNASSIGNED_BUCKET_ID } from '../constants';
 
@@ -413,15 +414,19 @@ export class ProjectionWorkerPool {
   private ensureWorkers(): Worker[] {
     if (this.workers.length === 0) {
       for (let i = 0; i < this.poolSize; i++) {
-        const worker = new Worker(
-          // @ts-ignore: Vite worker syntax
-          new URL('./projection.worker.ts', import.meta.url),
-          { type: 'module' },
-        );
+        const worker = new ProjectionWorker();
         worker.onmessage = (event: MessageEvent<WorkerOutboundMessage>) =>
           this.handleWorkerMessage(event, i);
-        worker.onerror = (e) =>
+        worker.onerror = (e) => {
           console.error(`[ProjectionWorkerPool] Worker ${i} error:`, e);
+          const requestId = this.lastSentRequestId;
+          if (requestId < 0) return;
+          this.pendingPartials.delete(requestId);
+          this.onError?.({
+            requestId,
+            message: e.message || `Projection worker ${i} failed to load`,
+          });
+        };
         this.workers.push(worker);
       }
     }
