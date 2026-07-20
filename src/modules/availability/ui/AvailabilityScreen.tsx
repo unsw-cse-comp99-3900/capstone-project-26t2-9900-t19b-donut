@@ -33,6 +33,7 @@ import {
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { cn } from '@/modules/core/lib/utils';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { CalendarDays } from 'lucide-react';
 
 import { useAssignedShiftsForAvailability } from '../state/useAssignedShiftsForAvailability';
@@ -81,6 +82,7 @@ export function AvailabilityScreen({
   const [activeTab, setActiveTab] = useState<TabType>('calendar');
   const [bottomTab, setBottomTab] = useState<'logs' | 'configure'>('logs');
   const { isDark } = useTheme();
+  const { accessibleView } = useAccessibility();
 
   const { toast } = useToast();
 
@@ -345,38 +347,44 @@ export function AvailabilityScreen({
       >
         <div className="flex bg-muted/60 p-1.5 rounded-[16px] max-w-sm mx-auto">
           <button
+            aria-pressed={activeTab === 'calendar'}
             onClick={() => setActiveTab('calendar')}
             className={cn(
               'flex flex-1 items-center justify-center py-2.5 rounded-xl transition-all duration-300',
+              accessibleView && 'min-h-14 px-2',
               activeTab === 'calendar'
                 ? 'bg-background shadow-md text-foreground scale-[1.02]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <span className="text-[12px] font-black uppercase tracking-widest font-heading">Calendar</span>
+            <span className={cn('text-[12px] font-black uppercase tracking-widest font-heading', accessibleView && 'text-base normal-case tracking-normal')}>Calendar</span>
           </button>
           <button
+            aria-pressed={activeTab === 'logs'}
             onClick={() => setActiveTab('logs')}
             className={cn(
               'flex flex-1 items-center justify-center py-2.5 rounded-xl transition-all duration-300',
+              accessibleView && 'min-h-14 px-2',
               activeTab === 'logs' 
                 ? 'bg-background shadow-md text-foreground scale-[1.02]' 
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <span className="text-[12px] font-black uppercase tracking-widest font-heading">Rules</span>
+            <span className={cn('text-[12px] font-black uppercase tracking-widest font-heading', accessibleView && 'text-base normal-case tracking-normal')}>Rules</span>
           </button>
           <button
+            aria-pressed={activeTab === 'configure'}
             onClick={() => setActiveTab('configure')}
             className={cn(
               'flex flex-1 items-center justify-center py-2.5 rounded-xl transition-all duration-300',
+              accessibleView && 'min-h-14 px-2',
               activeTab === 'configure'
                 ? 'bg-background shadow-md text-foreground scale-[1.02]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <span className="text-[12px] font-black uppercase tracking-widest font-heading">
-              Config{editState.mode && <span className="text-primary ml-1">*</span>}
+            <span className={cn('text-[12px] font-black uppercase tracking-widest font-heading', accessibleView && 'text-base normal-case tracking-normal')}>
+              {accessibleView ? 'Set availability' : 'Config'}{editState.mode && <span className="text-primary ml-1">*</span>}
             </span>
           </button>
         </div>

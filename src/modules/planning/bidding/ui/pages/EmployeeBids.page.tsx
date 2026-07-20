@@ -35,6 +35,7 @@ import { groupOpportunities, type BidGroupBy } from '../utils/bid-grouping';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { Popover, PopoverTrigger, PopoverContent } from '@/modules/core/ui/primitives/popover';
 import {
     Command,
@@ -74,7 +75,17 @@ export const EmployeeBidsPage: React.FC = () => {
     const { toast } = useToast();
     const queryClient = useQueryClient();
     const { isDark } = useTheme();
+    const { accessibleView } = useAccessibility();
     const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
+
+    React.useEffect(() => {
+        if (accessibleView) {
+            setViewMode('card');
+            setGroupBy('date');
+            setIsBulkModeActive(false);
+            setSelectedV8ShiftIds([]);
+        }
+    }, [accessibleView]);
     const [startDate, setStartDate] = useState<Date>(() => {
         const saved = localStorage.getItem('bids_filter_start_date');
         if (saved) {
@@ -635,7 +646,7 @@ export const EmployeeBidsPage: React.FC = () => {
     };
 
     return (
-        <div className="h-full flex flex-col overflow-hidden bg-background">
+        <div className={cn('h-full flex flex-col overflow-hidden bg-background', accessibleView && 'accessible-page accessible-bids')}>
             {/* ── GOLD STANDARD HEADER (Rows 1 · 2 · 3) ── */}
             <GoldStandardHeader
                 title="My Bids"
@@ -909,7 +920,7 @@ export const EmployeeBidsPage: React.FC = () => {
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={`${startDate.toISOString()}-${endDate.toISOString()}`}
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"
+                            className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4', accessibleView && 'accessible-card-grid')}
                             variants={pageVariants}
                             initial="hidden"
                             animate="show"

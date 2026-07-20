@@ -13,6 +13,7 @@ import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHea
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { cn } from '@/modules/core/lib/utils';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 
 type Breakpoint = 'mobile' | 'tablet' | 'desktop';
 
@@ -48,6 +49,7 @@ export const AvailabilityPage: React.FC = () => {
   const breakpoint = useBreakpoint();
   const { scope, setScope, isGammaLocked } = useScopeFilter('personal');
   const { isDark } = useTheme();
+  const { accessibleView } = useAccessibility();
   const { toast } = useToast();
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -71,7 +73,7 @@ export const AvailabilityPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-background">
+    <div className={cn('h-full flex flex-col overflow-hidden bg-background', accessibleView && 'accessible-page accessible-availability')}>
       {/* ── GOLD STANDARD HEADER (Title · Scope · Function Bar) ── */}
       <GoldStandardHeader
         title="My Availabilities"
@@ -88,6 +90,7 @@ export const AvailabilityPage: React.FC = () => {
               {/* Month Navigation */}
               <div className="flex items-center gap-1.5 flex-shrink-0">
                 <Button
+                  aria-label="Previous month"
                   variant="ghost"
                   size="icon"
                   onClick={handlePrevMonth}
@@ -109,6 +112,7 @@ export const AvailabilityPage: React.FC = () => {
                 </div>
 
                 <Button
+                  aria-label="Next month"
                   variant="ghost"
                   size="icon"
                   onClick={handleNextMonth}
@@ -125,6 +129,7 @@ export const AvailabilityPage: React.FC = () => {
 
               {/* Add Availability Button */}
               <Button
+                aria-label="Add availability"
                 onClick={handleAddAvailability}
                 className={cn(
                   "flex-shrink-0 gap-2 h-9 lg:h-11 px-3 lg:px-6 rounded-xl font-black uppercase text-[9px] lg:text-[10px] tracking-wider transition-all shadow-sm",
@@ -142,6 +147,7 @@ export const AvailabilityPage: React.FC = () => {
 
               {/* Refresh Button */}
               <Button
+                aria-label="Refresh availability"
                 variant="ghost"
                 size="icon"
                 onClick={handleRefresh}
@@ -190,6 +196,7 @@ export const AvailabilityPage: React.FC = () => {
             className="fixed bottom-[calc(max(0.375rem,calc(env(safe-area-inset-bottom,0px)-1.25rem))+84px)] right-5 z-40 md:hidden"
           >
             <Button
+              aria-label="Add availability"
               onClick={handleAddAvailability}
               size="icon"
               className="h-14 w-14 rounded-full shadow-2xl bg-primary text-primary-foreground hover:scale-105 active:scale-95 transition-all duration-300"

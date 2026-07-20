@@ -32,6 +32,7 @@ import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
 import { cn } from '@/modules/core/lib/utils';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { pageVariants, itemVariants, listItemSpring } from '@/modules/core/ui/motion/presets';
 import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
@@ -139,9 +140,10 @@ const MyNotificationsPage: React.FC = () => {
   };
 
   const { isDark } = useTheme();
+  const { accessibleView } = useAccessibility();
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-background">
+    <div className={cn('h-full flex flex-col overflow-hidden bg-background', accessibleView && 'accessible-page accessible-notifications')}>
       <GoldStandardHeader
         title="My Notifications"
         Icon={Bell}
@@ -281,8 +283,18 @@ const MyNotificationsPage: React.FC = () => {
                             key={n.id}
                             {...listItemSpring}
                             onClick={() => handleNotificationClick(n)}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`${isUnread ? 'Unread. ' : ''}${meta.label}. ${n.title}. ${n.message || ''}`}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                handleNotificationClick(n);
+                              }
+                            }}
                             className={cn(
-                              "group relative flex items-start gap-5 p-5 rounded-2xl cursor-pointer transition-all duration-300 border",
+                              "group relative flex items-start gap-5 p-5 rounded-2xl cursor-pointer transition-all duration-300 border focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40",
+                              accessibleView && 'min-h-[140px] gap-3 p-4',
                               isUnread
                                 ? (isDark ? "bg-primary/10 border-primary/20 shadow-lg shadow-primary/5" : "bg-primary/5 border-primary/20 shadow-md shadow-primary/5")
                                 : (isDark ? "bg-white/[0.02] border-white/5 hover:bg-white/[0.05]" : "bg-white border-slate-100 hover:border-slate-200 shadow-sm")
@@ -339,9 +351,10 @@ const MyNotificationsPage: React.FC = () => {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                            <div className={cn('flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all', accessibleView && 'opacity-100 flex-col')}>
                               {!isOffline && isUnread && (
                                 <Button
+                                  aria-label={`Mark ${n.title} as read`}
                                   size="icon"
                                   variant="ghost"
                                   className="h-9 w-9 rounded-xl hover:bg-primary/20 text-primary"
@@ -352,6 +365,7 @@ const MyNotificationsPage: React.FC = () => {
                               )}
                               {!isOffline && (
                                 <Button
+                                  aria-label={`Dismiss ${n.title}`}
                                   size="icon"
                                   variant="ghost"
                                   className="h-9 w-9 rounded-xl hover:bg-rose-500/20 text-rose-500"

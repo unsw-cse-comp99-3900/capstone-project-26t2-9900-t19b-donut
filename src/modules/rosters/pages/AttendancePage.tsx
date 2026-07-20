@@ -53,6 +53,7 @@ import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHea
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { UnifiedModuleFunctionBar } from '@/modules/core/ui/components/UnifiedModuleFunctionBar';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { TimesheetRow as TimesheetRowComponent } from '@/modules/timesheets/ui/components/TimesheetRow';
 import { TimesheetTable } from '@/modules/timesheets/ui/components/TimesheetTable';
 
@@ -502,8 +503,13 @@ const AttendancePage: React.FC = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const { isDark } = useTheme();
+  const { accessibleView } = useAccessibility();
   const { orgBranding } = useSettings();
   const useGroupColoring = (orgBranding as any)?.enable_group_coloring || false;
+
+  useEffect(() => {
+    if (accessibleView) setViewMode('card');
+  }, [accessibleView]);
 
   const rangeStart = format(startDate, 'yyyy-MM-dd');
   const rangeEnd   = format(endDate,   'yyyy-MM-dd');
@@ -649,7 +655,7 @@ const AttendancePage: React.FC = () => {
 
 
   return (
-    <div className="h-full flex flex-col overflow-hidden p-4 lg:p-6 space-y-4">
+    <div className={cn('h-full flex flex-col overflow-hidden p-4 lg:p-6 space-y-4', accessibleView && 'accessible-page accessible-attendance')}>
       {/* ── Unified Header ────────────────────────────────────────────── */}
       <div className="sticky top-0 z-30">
         <div className={cn(
@@ -774,7 +780,7 @@ const AttendancePage: React.FC = () => {
                           <div className="flex-1 h-px bg-border" />
                           <div className="text-[10px] text-muted-foreground/60 font-mono">{shifts.length} shift{shifts.length > 1 ? 's' : ''}</div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mb-4">
+                        <div className={cn('grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mb-4', accessibleView && 'accessible-card-grid')}>
                           {shifts.map(s => <AttendanceCard key={s.id} shift={s} now={now} useGroupColoring={useGroupColoring} />)}
                         </div>
                       </div>

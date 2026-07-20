@@ -14,6 +14,7 @@ import { Toaster } from '@/modules/core/ui/primitives/toaster';
 import { Toaster as Sonner } from '@/modules/core/ui/primitives/sonner';
 import { setupOfflineQueryPersistence } from '@/platform/offline/offlineQueryPersistence';
 import { LocaleProvider } from './LocaleProvider';
+import { AccessibilityProvider } from '@/modules/core/contexts/AccessibilityContext';
 
 /**
  * Smart retry: skip immediately on 4xx client errors (auth failures, validation,
@@ -59,6 +60,7 @@ const ProviderWrapper: React.FC<ProviderWrapperProps> = ({ children }) => {
             <OrgSelectionProvider>
               <LocaleProvider>
                 <ThemeProvider>
+                  <AccessibilityProvider>
                   <SearchProvider>
                     <SidebarProvider defaultOpen={true}>
                       <div className="h-full w-full overflow-hidden">
@@ -72,6 +74,7 @@ const ProviderWrapper: React.FC<ProviderWrapperProps> = ({ children }) => {
                       </div>
                     </SidebarProvider>
                   </SearchProvider>
+                  </AccessibilityProvider>
                 </ThemeProvider>
               </LocaleProvider>
             </OrgSelectionProvider>

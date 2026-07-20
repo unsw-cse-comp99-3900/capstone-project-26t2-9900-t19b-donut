@@ -23,6 +23,57 @@ body,
   padding: 0;
 }
 
+/* Accessible View keeps motion and interaction predictable while retaining
+   the user's native iOS reduced-motion preference as the stronger setting. */
+html[data-accessible-view='true'] {
+  font-size: 17px;
+}
+
+html[data-accessible-view='true'] *,
+html[data-accessible-view='true'] *::before,
+html[data-accessible-view='true'] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html[data-accessible-view='true'] .accessible-page button,
+html[data-accessible-view='true'] .accessible-page [role='button'],
+html[data-accessible-view='true'] .accessible-page input,
+html[data-accessible-view='true'] .accessible-page select {
+  min-height: 44px;
+}
+
+html[data-accessible-view='true'] .accessible-page .text-\[8px\],
+html[data-accessible-view='true'] .accessible-page .text-\[9px\],
+html[data-accessible-view='true'] .accessible-page .text-\[10px\],
+html[data-accessible-view='true'] .accessible-page .text-\[11px\],
+html[data-accessible-view='true'] .accessible-page .text-xs {
+  font-size: 0.875rem;
+  line-height: 1.3rem;
+  letter-spacing: normal;
+}
+
+html[data-accessible-view='true'] .accessible-page .accessible-card-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html[data-accessible-view='true'] .accessible-page .opacity-40,
+html[data-accessible-view='true'] .accessible-page .opacity-50,
+html[data-accessible-view='true'] .accessible-page .opacity-60 {
+  opacity: 0.85;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
