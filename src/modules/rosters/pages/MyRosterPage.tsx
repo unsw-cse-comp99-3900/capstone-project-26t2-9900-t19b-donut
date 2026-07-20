@@ -17,6 +17,8 @@ import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { format, startOfWeek, startOfMonth } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar, RefreshCcw } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/modules/core/ui/primitives/popover';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
+import AccessibleRosterList from '@/modules/rosters/ui/my-roster/AccessibleRosterList';
 import { Calendar as CalendarPrimitive } from '@/modules/core/ui/primitives/calendar';
 import { 
   computeRange, 
@@ -33,7 +35,8 @@ const MyRosterNavigator: React.FC<{
     onViewChange: (v: ViewType) => void;
     selectedDate: Date;
     onDateChange: (d: Date) => void;
-}> = ({ view, onViewChange, selectedDate, onDateChange }) => {
+    accessibleView?: boolean;
+}> = ({ view, onViewChange, selectedDate, onDateChange, accessibleView = false }) => {
     const { isDark } = useTheme();
     const [isPickerOpen, setIsPickerOpen] = useState(false);
 
@@ -81,6 +84,7 @@ const MyRosterNavigator: React.FC<{
             {/* View Toggle */}
             <div className={cn(
                 "flex items-center gap-1 p-1 rounded-xl",
+                accessibleView && 'hidden',
                 isDark ? "bg-[#111827]/60" : "bg-slate-100"
             )}>
                 {VIEW_OPTIONS.map((opt) => (
@@ -102,13 +106,13 @@ const MyRosterNavigator: React.FC<{
 
             {/* Navigation Controls */}
             <div className="flex items-center gap-1 sm:gap-1.5">
-                <button onClick={handlePrev} className={cn(buttonBaseCls, "px-2 lg:px-2")}>
+                <button aria-label={`Previous ${view}`} onClick={handlePrev} className={cn(buttonBaseCls, "px-2 lg:px-2", accessibleView && 'min-h-12 min-w-12 justify-center')}>
                     <ChevronLeft className="w-4 h-4" />
                 </button>
 
                 <Popover open={isPickerOpen} onOpenChange={setIsPickerOpen}>
                     <PopoverTrigger asChild>
-                        <button className={cn(buttonBaseCls, "min-w-[64px] sm:min-w-[70px] justify-center")}>
+                        <button aria-label={`Choose date, currently ${label}`} className={cn(buttonBaseCls, "min-w-[64px] sm:min-w-[70px] justify-center", accessibleView && 'min-h-12 flex-1 text-sm')}>
                             <Calendar className="w-3.5 h-3.5 opacity-50" />
                             <span className="tracking-tight sm:hidden">{mobileLabel}</span>
                             <span className="hidden tracking-tight sm:inline">{label}</span>
@@ -124,7 +128,7 @@ const MyRosterNavigator: React.FC<{
                     </PopoverContent>
                 </Popover>
 
-                <button onClick={handleNext} className={cn(buttonBaseCls, "px-2 lg:px-2")}>
+                <button aria-label={`Next ${view}`} onClick={handleNext} className={cn(buttonBaseCls, "px-2 lg:px-2", accessibleView && 'min-h-12 min-w-12 justify-center')}>
                     <ChevronRight className="w-4 h-4" />
                 </button>
             </div>
@@ -132,7 +136,7 @@ const MyRosterNavigator: React.FC<{
             <div className="hidden sm:block h-6 w-px bg-border/10 mx-1" />
 
             {/* Today Button */}
-            <button onClick={handleToday} className={cn(buttonBaseCls, "uppercase tracking-wider")}>
+            <button aria-label="Go to today" onClick={handleToday} className={cn(buttonBaseCls, "uppercase tracking-wider", accessibleView && 'min-h-12 text-xs')}>
                 <RefreshCcw className="w-3.5 h-3.5 opacity-50" />
                 <span>Today</span>
             </button>
@@ -143,6 +147,7 @@ const MyRosterNavigator: React.FC<{
 const MyRosterPage: React.FC = () => {
   const { user } = useAuth();
   const { view, setView, selectedDate, setSelectedDate } = useRosterView();
+  const { accessibleView } = useAccessibility();
 
   React.useLayoutEffect(() => {
     if (Capacitor.getPlatform() !== 'ios') return;
@@ -204,6 +209,7 @@ const MyRosterPage: React.FC = () => {
                 onViewChange={setView}
                 selectedDate={selectedDate}
                 onDateChange={setSelectedDate}
+                accessibleView={accessibleView}
               />
 
               <div className="h-6 w-px bg-border/20 flex-shrink-0 mx-1" />
@@ -278,6 +284,9 @@ const MyRosterPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
+                accessibleView ? (
+                  <AccessibleRosterList shifts={shifts || []} isOffline={isOffline} />
+                ) : (
                 <MyRosterCalendar
                   view={view}
                   onViewChange={setView}
@@ -290,6 +299,7 @@ const MyRosterPage: React.FC = () => {
                   onOffersClick={() => setShowOffersModal(true)}
                   isOffline={isOffline}
                 />
+                )
               )}
             </div>
           </div>
@@ -306,6 +316,7 @@ const MyRosterPage: React.FC = () => {
           className="md:hidden fixed bottom-[calc(max(0.375rem,calc(env(safe-area-inset-bottom,0px)-1.25rem))+84px)] right-5 z-40"
         >
           <button
+            aria-label={pendingOfferCount > 0 ? `Open offers, ${pendingOfferCount} pending` : 'Open offers'}
             onClick={(e) => {
               e.currentTarget.blur();
               setShowOffersModal(true);

@@ -23,16 +23,19 @@ import {
   TrendingUp,
   LogOut,
   User,
+  Accessibility,
 } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEmployeeBroadcastGroups, useBroadcastNotifications } from '@/modules/broadcasts/state/useBroadcasts';
 import { useAuth } from '@/platform/auth/useAuth';
+import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 
 const BottomNavbar: React.FC = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const [isBottomDrawerActive, setIsBottomDrawerActive] = useState(false);
   const location = useLocation();
+  const { accessibleView, toggleAccessibleView } = useAccessibility();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const mobileDockBottom = 'max(0.375rem, calc(env(safe-area-inset-bottom, 0px) - 1.25rem))';
 
@@ -215,6 +218,40 @@ const BottomNavbar: React.FC = () => {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/10 dark:to-white/0 pointer-events-none" />
             <div className="relative p-5">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={accessibleView}
+                aria-label="Accessible view"
+                onClick={toggleAccessibleView}
+                className={cn(
+                  'mb-4 flex min-h-14 w-full items-center gap-3 rounded-2xl border px-4 text-left transition-colors',
+                  accessibleView
+                    ? 'border-primary bg-primary/15 text-foreground'
+                    : 'border-border bg-background/70 text-foreground',
+                )}
+              >
+                <Accessibility className="h-6 w-6 shrink-0 text-primary" aria-hidden="true" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold">Accessible View</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {accessibleView ? 'Simplified layout is on' : 'Larger text and simpler pages'}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    'relative h-7 w-12 shrink-0 rounded-full border transition-colors',
+                    accessibleView ? 'border-primary bg-primary' : 'border-border bg-muted',
+                  )}
+                >
+                  <span className={cn(
+                    'absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform',
+                    accessibleView ? 'translate-x-6' : 'translate-x-1',
+                  )} />
+                </span>
+              </button>
+
               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-4 ml-1">
                 {moreItems.length > 0 ? 'Management & Tools' : 'Account'}
               </h3>
@@ -284,6 +321,9 @@ const BottomNavbar: React.FC = () => {
 
         {/* MORE TOGGLE (Pinned Right - Fixed Width) */}
         <button
+          type="button"
+          aria-label={moreOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={moreOpen}
           onClick={() => setMoreOpen(!moreOpen)}
           className={cn(
             "relative flex items-center justify-center h-full w-[48px] rounded-full transition-all duration-300 flex-shrink-0 z-10",
