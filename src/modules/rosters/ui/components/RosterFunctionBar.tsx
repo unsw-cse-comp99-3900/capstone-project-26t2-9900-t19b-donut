@@ -335,7 +335,7 @@ export const RosterFunctionBar: React.FC<RosterFunctionBarProps> = ({
 
   return (
     <div className={cn(
-      "w-full h-16 flex-shrink-0 z-50 px-4 flex items-center relative transition-all",
+      "w-full min-w-0 h-auto min-h-16 flex-shrink-0 z-50 px-0 lg:px-4 py-1 lg:py-0 flex items-center relative transition-all",
       !transparent 
         ? "bg-white/90 dark:bg-slate-950/40 backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 shadow-sm dark:shadow-2xl" 
         : "bg-transparent border-none shadow-none"
@@ -343,10 +343,10 @@ export const RosterFunctionBar: React.FC<RosterFunctionBarProps> = ({
       {/* Subtle top highlight for premium feel */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      <div className="w-full flex items-center justify-between gap-2">
+      <div className="w-full min-w-0 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 lg:gap-2">
 
         {/* Left Section: Context & Modes */}
-        <div className="flex-shrink-0 flex items-center justify-start">
+        <div className="w-full lg:w-auto flex-shrink-0 flex items-center justify-start overflow-x-auto scrollbar-none">
           <div className="flex items-center bg-slate-100/50 dark:bg-black/20 border border-slate-200 dark:border-white/5 rounded-xl p-1 h-10 shadow-sm">
             <ToggleGroup
               type="single"
@@ -376,7 +376,7 @@ export const RosterFunctionBar: React.FC<RosterFunctionBarProps> = ({
         </div>
 
         {/* Center Section: Navigation & View */}
-        <div className="flex-shrink-0 flex items-center justify-center">
+        <div className="w-full lg:w-auto flex-shrink-0 flex items-center justify-start lg:justify-center overflow-x-auto scrollbar-none pb-0.5 lg:pb-0">
           <UnifiedRosterNavigator
             variant="full"
             date={selectedDate}
@@ -389,7 +389,7 @@ export const RosterFunctionBar: React.FC<RosterFunctionBarProps> = ({
         </div>
 
         {/* Right Section: Actions */}
-        <div className="flex-shrink-0 flex items-center justify-end">
+        <div className="w-full lg:w-auto flex-shrink-0 flex items-center justify-start lg:justify-end overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-1 bg-white/50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-1.5 h-10 shadow-sm dark:shadow-none">
 
             {/* ── Data group: Refresh + Filter ───────────────────────── */}

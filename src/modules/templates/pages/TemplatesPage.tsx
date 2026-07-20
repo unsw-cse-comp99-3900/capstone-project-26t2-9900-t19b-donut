@@ -1,16 +1,13 @@
 // src/pages/TemplatesPage.tsx
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { useAuth } from '@/platform/auth/useAuth';
 import { useTemplates } from '../state/useTemplates';
-import { TemplateConflict } from '../model/templates.types';
 
 // Components
 import TemplatesSidebar from '../ui/components/TemplatesSidebar';
 import TemplateEditor from '../ui/components/TemplateEditor';
 import CreateTemplateDialog from '../ui/dialogs/CreateTemplateDialog';
+import { FileText, Plus } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
-import { Sheet, SheetContent } from '@/modules/core/ui/primitives/sheet';
-import { Loader2, AlertTriangle, FileText, Menu } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,8 +61,6 @@ const TemplatesPage: React.FC = () => {
   } = useTemplates();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-
   const [unsavedChangesDialog, setUnsavedChangesDialog] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
@@ -254,9 +249,9 @@ const TemplatesPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden px-4 md:px-8 pb-24 md:pb-0 space-y-4">
+    <div className="h-full flex flex-col overflow-hidden px-0 md:px-8 pb-24 md:pb-0 gap-2 md:gap-4">
       {/* ── Unified Header ────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30 pt-4 pb-4 lg:pb-6">
+      <div className="hidden md:block sticky top-0 z-30 pt-4 pb-4 lg:pb-6">
         <div className={cn(
           "rounded-[32px] p-4 lg:p-6 transition-all border",
           isDark 
@@ -288,10 +283,21 @@ const TemplatesPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile keeps only the primary creation action. */}
+      <div className="md:hidden shrink-0 flex justify-end px-4 pt-3">
+        <Button
+          onClick={() => setCreateDialogOpen(true)}
+          className="h-10 rounded-xl px-4 font-bold shadow-sm"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          New Template
+        </Button>
+      </div>
+
       {/* ── Main Content Area ─────────────────────────── */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className={cn(
-          "h-full rounded-[32px] overflow-hidden transition-all border flex flex-col md:flex-row",
+          "h-full overflow-hidden transition-all flex flex-col md:flex-row md:rounded-[32px] md:border",
           isDark 
             ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
             : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
@@ -310,25 +316,12 @@ const TemplatesPage: React.FC = () => {
             emptyDesc="There are no templates matching your current filters. Create a new one to get started."
           >
             <>
-              {/* Mobile sidebar drawer */}
-              <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
-                <SheetContent side="left" className="p-0 w-[320px]">
-                  <TemplatesSidebar {...sidebarProps} onSelectTemplate={(id) => { handleSelectTemplate(id); setMobileSidebarOpen(false); }} />
-                </SheetContent>
-              </Sheet>
-
               {/* Desktop sidebar — always visible */}
               <div className="hidden md:flex border-r border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-black/10">
                 <TemplatesSidebar {...sidebarProps} />
               </div>
 
               <div className="flex-1 overflow-hidden flex flex-col">
-                {/* Mobile hamburger to open sidebar */}
-                <div className="md:hidden flex items-center px-4 pt-3">
-                  <Button variant="ghost" size="icon" className="h-11 w-11" onClick={() => setMobileSidebarOpen(true)}>
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </div>
                 {localTemplate ? (
                   <TemplateEditor
                     template={localTemplate}
@@ -348,13 +341,21 @@ const TemplatesPage: React.FC = () => {
                     onDiscardChanges={discardChanges}
                   />
                 ) : (
-                  <div className="flex flex-col flex-1 items-center justify-center h-full text-muted-foreground bg-muted/5">
-                    <FileText className="h-16 w-16 mb-4 opacity-50" />
-                    <p className="text-lg font-medium">Select a template to view details</p>
-                    <p className="text-sm opacity-60">
-                      Or create a new one from the functional bar
-                    </p>
-                  </div>
+                  <>
+                    {/* On mobile, the template list is the primary panel. */}
+                    <div className="md:hidden flex-1 min-h-0">
+                      <TemplatesSidebar {...sidebarProps} className="w-full" />
+                    </div>
+
+                    {/* Desktop keeps the persistent sidebar/detail layout. */}
+                    <div className="hidden md:flex flex-col flex-1 items-center justify-center h-full text-muted-foreground bg-muted/5">
+                      <FileText className="h-16 w-16 mb-4 opacity-50" />
+                      <p className="text-lg font-medium">Select a template to view details</p>
+                      <p className="text-sm opacity-60">
+                        Or create a new one from the functional bar
+                      </p>
+                    </div>
+                  </>
                 )}
               </div>
             </>

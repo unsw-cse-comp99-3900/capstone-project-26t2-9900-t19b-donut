@@ -222,12 +222,26 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                     </DialogDescription>
                 </VisuallyHidden>
 
-                <div className="flex flex-col md:flex-row flex-1 h-full min-h-0 overflow-auto md:overflow-hidden">
+                <div className="flex flex-col md:flex-row flex-1 h-full min-h-0 overflow-hidden">
+
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onOpenChange(false)}
+                        className="md:hidden absolute right-3 top-3 z-30 h-9 w-9 rounded-full bg-background/90 shadow-sm"
+                        aria-label="Close apply template dialog"
+                    >
+                        <X className="h-4 w-4" />
+                    </Button>
 
                     {/* LEFT PANE: LIBRARY */}
-                    <div className="w-full md:w-[280px] border-r border-border flex flex-col bg-muted/30">
-                        <div className="p-10 pb-8">
-                            <div className="flex items-center gap-4 mb-10">
+                    <div className={cn(
+                        "w-full md:w-[280px] border-r border-border flex-col bg-muted/30 min-h-0",
+                        selectedTemplate ? "hidden md:flex" : "flex"
+                    )}>
+                        <div className="p-5 pt-6 md:p-10 md:pb-8">
+                            <div className="flex items-center gap-4 mb-6 md:mb-10">
                                 <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
                                     <Layers className="h-5 w-5 text-primary" />
                                 </div>
@@ -305,7 +319,10 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                     </div>
 
                     {/* MIDDLE PANE: EDITOR */}
-                    <div className="flex-1 flex flex-col bg-background relative overflow-hidden">
+                    <div className={cn(
+                        "flex-1 flex-col bg-background relative overflow-hidden min-h-0",
+                        selectedTemplate ? "flex" : "hidden md:flex"
+                    )}>
 
                         {/* Static background flare */}
                         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full pointer-events-none opacity-50" />
@@ -319,18 +336,27 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.98, y: -10 }}
                                     transition={{ duration: 0.3, ease: "easeOut" }}
-                                    className="flex-1 flex flex-col p-10 relative z-10"
+                                    className="flex-1 flex flex-col overflow-y-auto p-4 pt-14 md:p-10 relative z-10"
                                 >
                                     <div className="max-w-[480px] mx-auto w-full flex flex-col h-full">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() => setSelectedId(null)}
+                                            className="md:hidden self-start -ml-2 mb-3 h-9 rounded-xl px-3 text-xs font-bold"
+                                        >
+                                            <ChevronRight className="mr-1 h-4 w-4 rotate-180" />
+                                            Back to Library
+                                        </Button>
                                         {/* Selection Header */}
-                                        <div className="mb-12 text-center">
-                                            <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-inner">
+                                        <div className="mb-5 md:mb-12 text-center">
+                                            <div className="inline-flex items-center gap-2 mb-3 md:mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-inner">
                                                 <Sparkles className="h-3 w-3 text-primary" />
                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
                                                     Injection Sequence
                                                 </span>
                                             </div>
-                                            <h2 className="text-3xl font-black text-foreground tracking-tighter leading-none mb-4">
+                                            <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter leading-none mb-2 md:mb-4">
                                                 {selectedTemplate.name}
                                             </h2>
                                             <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-[400px] mx-auto opacity-70">
@@ -338,25 +364,25 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                                             </p>
                                         </div>
 
-                                        <div className="flex-1 flex flex-col justify-center gap-10">
+                                        <div className="flex-1 flex flex-col justify-center gap-4 md:gap-10">
                                             {/* Date Config */}
-                                            <div className="space-y-6 bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                                            <div className="space-y-4 md:space-y-6 bg-muted/20 border border-border p-4 md:p-8 rounded-3xl md:rounded-[2.5rem] shadow-sm md:shadow-2xl relative overflow-hidden group">
                                                 {/* Card inner flare */}
                                                 <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 blur-3xl rounded-full" />
 
                                                 <div className="flex items-center gap-2.5 opacity-60">
                                                     <Clock className="h-4 w-4 text-blue-400" />
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-200">Execution Range</span>
+                                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">Execution Range</span>
                                                 </div>
 
-                                                <div className="grid grid-cols-2 gap-8 relative z-10">
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 relative z-10">
                                                     <div className="space-y-3">
                                                         <Label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Start Point</Label>
                                                         <Input
                                                             type="date"
                                                             value={startDate}
                                                             onChange={(e) => setStartDate(e.target.value)}
-                                                            className="bg-black/60 border-white/5 text-white focus:ring-blue-500/40 rounded-2xl font-mono text-sm h-12 shadow-inner px-4"
+                                                            className="bg-background border-border text-foreground focus:ring-primary/40 rounded-xl md:rounded-2xl font-mono text-sm h-11 md:h-12 shadow-inner px-4"
                                                         />
                                                     </div>
                                                     <div className="space-y-3">
@@ -365,7 +391,7 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                                                             type="date"
                                                             value={endDate}
                                                             onChange={(e) => setEndDate(e.target.value)}
-                                                            className="bg-black/60 border-white/5 text-white focus:ring-blue-500/40 rounded-2xl font-mono text-sm h-12 shadow-inner px-4"
+                                                            className="bg-background border-border text-foreground focus:ring-primary/40 rounded-xl md:rounded-2xl font-mono text-sm h-11 md:h-12 shadow-inner px-4"
                                                         />
                                                     </div>
                                                 </div>
@@ -410,11 +436,11 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                                             </div>
 
                                             {/* Action Button */}
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-2 md:gap-4 pb-[max(0.25rem,env(safe-area-inset-bottom))]">
                                                 <Button
                                                     variant="ghost"
                                                     onClick={() => onOpenChange(false)}
-                                                    className="h-16 px-8 rounded-[1.5rem] font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                                                    className="h-12 md:h-16 px-4 md:px-8 rounded-xl md:rounded-[1.5rem] font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
                                                 >
                                                     Cancel
                                                 </Button>
@@ -422,7 +448,7 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                                                     onClick={handleApply}
                                                     disabled={!selectedId || applyTemplate.isPending || !isRangeValid || !isFullyActivated}
                                                     className={cn(
-                                                        "flex-1 h-16 rounded-[1.5rem] font-black text-md uppercase tracking-[0.2em] transition-all relative overflow-hidden active:scale-[0.97]",
+                                                        "flex-1 h-12 md:h-16 rounded-xl md:rounded-[1.5rem] font-black text-xs md:text-md uppercase tracking-[0.1em] md:tracking-[0.2em] transition-all relative overflow-hidden active:scale-[0.97]",
                                                         !selectedId || !isFullyActivated
                                                             ? "bg-muted text-muted-foreground cursor-not-allowed border-border"
                                                             : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 border-b-4 border-primary/20"
@@ -474,7 +500,7 @@ export const ApplyTemplateDialog: React.FC<ApplyTemplateDialogProps> = ({
                     </div>
 
                     {/* RIGHT PANE: HISTORY */}
-                    <div className="w-full md:w-[300px] border-l border-border flex flex-col bg-muted/30">
+                    <div className="hidden md:flex w-full md:w-[300px] border-l border-border flex-col bg-muted/30">
                         <div className="p-10 pb-8">
                             <div className="flex items-center justify-between mb-10">
                                 <div className="flex items-center gap-4">

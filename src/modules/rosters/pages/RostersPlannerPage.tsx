@@ -16,6 +16,7 @@ import {
   ViewType,
 } from '@/modules/rosters/ui/components/RosterFunctionBar';
 import PeopleModeGrid, { EmployeeShift } from '@/modules/rosters/ui/modes/PeopleModeGrid';
+import { MobilePeopleRosterBoard } from '@/modules/rosters/ui/modes/MobilePeopleRosterBoard';
 import type { PeopleModeEmployee, PeopleModeShift } from '@/modules/rosters/ui/modes/people-mode.types';
 import UnfilledShiftsPanel, {
   UnfilledShift,
@@ -86,6 +87,7 @@ import {
 import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
 import { LayoutGrid, Search } from 'lucide-react';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { useIsMobile } from '@/modules/core/hooks/use-mobile';
 import type { ToolbarPreflightData } from '@/modules/rosters/ui/components/BulkActionsToolbar';
 import { shiftsCommands } from '@/modules/rosters/api/shifts.commands';
 import { executeAssignShift } from '@/modules/rosters/domain/commands/assignShift.command';
@@ -120,6 +122,7 @@ const NewRostersPage: React.FC = () => {
   const { hasPermission } = useAuth();
   const { scope, setScope, isGammaLocked } = useScopeFilter('managerial');
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const { showUnfilledPanel, setShowUnfilledPanel, isDnDModeActive } = useRosterStore(
     useShallow((s) => ({
@@ -372,7 +375,7 @@ const NewRostersPage: React.FC = () => {
   }, [employeeSearchInput]);
 
   // Employees lookup
-  const { data: employees = [] } = useEmployees(
+  const { data: queriedEmployees = [] } = useEmployees(
     selectedOrganizationId || undefined,
     selectedDepartmentIds[0] || undefined,
     selectedSubDepartmentIds[0] || undefined,
@@ -380,6 +383,48 @@ const NewRostersPage: React.FC = () => {
     employeeSearchTerm || undefined,
     EMPLOYEE_PAGE_SIZE,
   );
+
+  // Some native/RLS combinations allow managers to read shifts (including
+  // their assigned profile relation) but not the broad profiles lookup used
+  // by useEmployees. People mode still needs employee rows to place those
+  // already-loaded shifts. Reconstruct a minimal, deduplicated employee list
+  // from assigned shifts when the lookup is empty.
+  const employees = useMemo(() => {
+    if (queriedEmployees.length > 0) return queriedEmployees;
+
+    const fromAssignedShifts = new Map<string, (typeof queriedEmployees)[number]>();
+    shifts.forEach((shift: Shift) => {
+      const employeeId = shift.assigned_employee_id;
+      if (!employeeId) return;
+
+      const profile = shift.assigned_profiles;
+      const existing = fromAssignedShifts.get(employeeId);
+      const roleIds = new Set(existing?.contracted_role_ids || []);
+      if (shift.role_id) roleIds.add(shift.role_id);
+
+      const existingFirstName = existing?.first_name === 'Assigned'
+        ? ''
+        : existing?.first_name || '';
+      const existingLastName = existing?.last_name?.startsWith('Employee ')
+        ? ''
+        : existing?.last_name || '';
+
+      fromAssignedShifts.set(employeeId, {
+        id: employeeId,
+        first_name: profile?.first_name || existingFirstName || 'Employee',
+        last_name: profile?.last_name || existingLastName,
+        department_name: shift.departments?.name || existing?.department_name,
+        sub_department_name: shift.sub_departments?.name || existing?.sub_department_name,
+        contract_type: existing?.contract_type || null,
+        contracted_role_ids: Array.from(roleIds),
+        contracted_weekly_hours: existing?.contracted_weekly_hours ?? 38,
+      });
+    });
+
+    return Array.from(fromAssignedShifts.values()).sort((a, b) =>
+      `${a.last_name} ${a.first_name}`.localeCompare(`${b.last_name} ${b.first_name}`)
+    );
+  }, [queriedEmployees, shifts]);
   const employeesTruncated = employees.length >= EMPLOYEE_PAGE_SIZE;
 
   // Escape key exits bulk selection mode
@@ -967,11 +1012,11 @@ const NewRostersPage: React.FC = () => {
   // ==================== RENDER ====================
   return (
     <div 
-      className="h-full flex flex-col overflow-hidden p-4 lg:p-6 space-y-4"
+      className="h-full w-full min-w-0 flex flex-col overflow-hidden px-3 py-4 lg:p-6 space-y-4"
     >
       {/* ── Unified Header ────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30">
-        <div className="rounded-[32px] p-4 lg:p-6 transition-all border bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
+      <div className="sticky top-0 z-30 w-full min-w-0">
+        <div className="w-full min-w-0 overflow-hidden rounded-[28px] lg:rounded-[32px] p-4 lg:p-6 transition-all border bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
           {/* Row 1: Identity & Clock + Row 2: Scope Filter */}
           <PersonalPageHeader
             title="Roster Planner"
@@ -1053,7 +1098,7 @@ const NewRostersPage: React.FC = () => {
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="h-full rounded-[32px] overflow-hidden transition-all border flex flex-col bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
           <DndProvider backend={HTML5Backend}>
-            <div className="flex-1 min-h-0 overflow-hidden flex relative">
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col md:flex-row relative">
         {/* Loading Overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -1068,7 +1113,9 @@ const NewRostersPage: React.FC = () => {
         <div
           className={cn(
             'min-h-0 overflow-hidden transition-all duration-300 ease-in-out relative',
-            showUnfilledPanel ? 'flex-1' : 'w-full'
+            showUnfilledPanel
+              ? 'h-[58%] w-full flex-none md:h-auto md:w-auto md:flex-1'
+              : 'h-full w-full'
           )}
         >
           {activeMode === 'people' && (
@@ -1097,6 +1144,17 @@ const NewRostersPage: React.FC = () => {
                   )}
                 </div>
               </div>
+              {isMobile ? (
+                <MobilePeopleRosterBoard
+                  employees={employees}
+                  shifts={shifts}
+                  dates={dates}
+                  isBulkMode={bulkModeActive}
+                  selectedShiftIds={selectedV8ShiftIdsArray}
+                  onToggleShiftSelection={handleToggleShiftSelection}
+                  onViewShift={handleEditShift}
+                />
+              ) : (
               <PeopleModeGrid
                 employees={employeesWithShifts}
               onAssignShift={handleDndAssign}
@@ -1131,6 +1189,7 @@ const NewRostersPage: React.FC = () => {
               onUnpublishShift={handleUnpublishShift}
 
               />
+              )}
             </>
           )}
 
@@ -1208,18 +1267,21 @@ const NewRostersPage: React.FC = () => {
               onDrillDown={(date, groupType, subGroupName) => setDrillDownState({ isOpen: true, date, groupType, subGroupName })}
             />
           )}
+
         </div>
 
         {/* Unfilled Shifts Panel */}
         <div
           className={cn(
-            'min-h-0 overflow-hidden border-l border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/10 backdrop-blur-md transition-all duration-300 ease-in-out',
-            showUnfilledPanel ? 'w-80' : 'w-0 border-l-0'
+            'min-h-0 overflow-hidden bg-slate-50 dark:bg-black/10 backdrop-blur-md transition-all duration-300 ease-in-out',
+            showUnfilledPanel
+              ? 'h-[42%] w-full border-t border-slate-200 dark:border-white/5 md:h-full md:w-80 md:border-l md:border-t-0'
+              : 'h-0 w-full border-0 md:h-full md:w-0'
           )}
         >
           <div
             className={cn(
-              'w-80 h-full overflow-auto transition-opacity duration-300',
+              'w-full md:w-80 h-full overflow-auto transition-opacity duration-300',
               showUnfilledPanel ? 'opacity-100' : 'opacity-0'
             )}
           >

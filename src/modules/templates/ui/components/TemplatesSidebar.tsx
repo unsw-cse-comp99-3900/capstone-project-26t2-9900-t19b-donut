@@ -61,6 +61,7 @@ interface Template {
 type StatusFilter = 'published' | 'draft' | 'archived';
 
 interface TemplatesSidebarProps {
+  className?: string;
   templates: Template[];
   selectedTemplateId: string | null;
   onSelectTemplate: (id: string) => void;
@@ -87,6 +88,7 @@ function safeDate(input?: string | null): Date | null {
    COMPONENT
    ============================================================ */
 export const TemplatesSidebar: React.FC<TemplatesSidebarProps> = ({
+  className,
   templates,
   selectedTemplateId,
   onSelectTemplate,
@@ -150,7 +152,7 @@ export const TemplatesSidebar: React.FC<TemplatesSidebarProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-transparent w-[320px]">
+    <div className={cn('flex flex-col h-full bg-transparent w-[320px]', className)}>
       {/* Template List */}
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-2">

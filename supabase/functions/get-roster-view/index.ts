@@ -154,34 +154,32 @@ async function fetchEmployees(
   deptIds: string[],
   subDeptIds: string[],
 ) {
-  // Mirror EligibilityService's "employees in scope" cut. Detailed eligibility
-  // (role match, qualifications) is computed in the individual hook when needed.
-  let q = supa
-    .from('profiles')
-    .select(`
-      id,
-      first_name,
-      last_name,
-      department:departments(name),
-      sub_department:sub_departments(name)
-    `)
+  // Department ownership lives on user_contracts, not profiles. Querying
+  // profiles.department_id (or a profiles -> departments relationship) makes
+  // PostgREST reject the whole BFF request, which also hides valid shifts.
+  let contractsQuery = supa
+    .from('user_contracts')
+    .select('user_id')
     .eq('organization_id', orgId)
-    .eq('is_active', true)
+    .in('status', ['Active', 'active']);
+
+  if (deptIds.length) contractsQuery = contractsQuery.in('department_id', deptIds);
+  if (subDeptIds.length) contractsQuery = contractsQuery.in('sub_department_id', subDeptIds);
+
+  const { data: contracts, error: contractsError } = await contractsQuery;
+  if (contractsError) throw new Error(`employee contracts: ${contractsError.message}`);
+
+  const userIds = [...new Set((contracts ?? []).map((row: any) => row.user_id).filter(Boolean))];
+  if (userIds.length === 0) return [];
+
+  const { data: profiles, error: profilesError } = await supa
+    .from('profiles')
+    .select('id, first_name, last_name')
+    .in('id', userIds)
     .order('first_name');
+  if (profilesError) throw new Error(`employees: ${profilesError.message}`);
 
-  if (deptIds.length) q = q.in('department_id', deptIds);
-  if (subDeptIds.length) q = q.in('sub_department_id', subDeptIds);
-
-  const { data, error } = await q;
-  if (error) throw new Error(`employees: ${error.message}`);
-
-  return (data ?? []).map((row: any) => ({
-    id: row.id,
-    first_name: row.first_name,
-    last_name: row.last_name,
-    department_name: row.department?.name ?? undefined,
-    sub_department_name: row.sub_department?.name ?? undefined,
-  }));
+  return profiles ?? [];
 }
 
 async function fetchRoles(

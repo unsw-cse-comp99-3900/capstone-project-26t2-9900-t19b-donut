@@ -64,10 +64,10 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
     const isArchived = template.status === 'archived';
 
     return (
-        <div className="w-full bg-[#f8f9fa] dark:bg-black/20 p-4 space-y-3">
+        <div className="w-full bg-[#f8f9fa] dark:bg-black/20 p-2 sm:p-4 space-y-2 sm:space-y-3">
             {/* 1. TOP NAVIGATION BAR */}
-            <div className="flex items-center justify-between px-2">
-                <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between gap-2 px-1 sm:px-2">
+                <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                     <Button
                         variant="ghost"
                         size="sm"
@@ -78,14 +78,14 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         <span className="text-sm">Back</span>
                     </Button>
 
-                    <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                    <div className="hidden sm:block h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
 
-                    <span className="text-slate-800 dark:text-slate-200 text-sm font-bold tracking-tight">
+                    <span className="hidden sm:inline text-slate-800 dark:text-slate-200 text-sm font-bold tracking-tight">
                         Template Editor
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2">
                     <Badge variant="outline" className="text-[10px] font-bold text-slate-400 border-slate-200 dark:border-slate-800 tracking-widest px-2 py-0.5 uppercase bg-white dark:bg-slate-900/50">
                         ENVIRONMENT: PRODUCTION
                     </Badge>
@@ -93,11 +93,11 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
             </div>
 
             {/* 2. MAIN HEADER CARD */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 flex items-center justify-between">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-3 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 overflow-hidden">
                 {/* Left Side: Info */}
                 <div className="space-y-1.5 text-left">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
+                    <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                        <h1 className="min-w-0 truncate text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
                             {template.name}
                         </h1>
                         {hasUnsavedChanges && (
@@ -108,7 +108,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         <span className={cn(
                             "px-1.5 py-0.5 rounded-sm",
                             isPublished && "text-emerald-500 bg-emerald-500/5",
@@ -124,7 +124,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         
                         <div className="h-3 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1" />
                         
-                        <div className="flex items-center gap-1.5 lowercase normal-case">
+                        <div className="hidden sm:flex items-center gap-1.5 lowercase normal-case">
                             <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                             <span className="capitalize text-slate-500 font-medium">Saved {lastSavedAgo} ago</span>
                         </div>
@@ -144,7 +144,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                 </div>
 
                 {/* Right Side: Actions */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
                     {/* Icon Action Group */}
                     <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-xl border border-slate-100 dark:border-slate-800">
                         <TooltipProvider>
@@ -195,7 +195,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         <Button
                             onClick={() => onUpdateStatus('published')}
                             disabled={isSaving || hasUnsavedChanges}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 gap-2"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-10 sm:h-11 px-4 sm:px-6 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 gap-2"
                         >
                             {isSaving ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -208,7 +208,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         <Button
                             onClick={() => onUpdateStatus('draft')}
                             disabled={isSaving}
-                            className="bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-slate-500/10 transition-all active:scale-95 gap-2"
+                            className="bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold h-10 sm:h-11 px-4 sm:px-6 rounded-xl shadow-lg shadow-slate-500/10 transition-all active:scale-95 gap-2"
                         >
                             <Lock className="h-4 w-4" />
                             Unlock
@@ -217,7 +217,7 @@ export const TemplateHeader: React.FC<TemplateHeaderProps> = ({
                         <Button
                             onClick={() => onUpdateStatus('draft')}
                             disabled={isSaving}
-                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold h-11 px-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all active:scale-95 gap-2"
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold h-10 sm:h-11 px-4 sm:px-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all active:scale-95 gap-2"
                         >
                             <RotateCw className="h-4 w-4" />
                             Restore

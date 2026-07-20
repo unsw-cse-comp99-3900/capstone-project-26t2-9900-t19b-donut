@@ -122,6 +122,7 @@ const BottomNavbar: React.FC = () => {
 
   const moreItems = [
     { label: 'Profile',       Icon: User,            path: '/profile', feature: 'profile' },
+    { label: 'Rosters',       Icon: CalendarDays,    path: '/rosters', feature: 'rosters' },
     { label: 'Manager Bids',  Icon: Gavel,          path: '/management/bids', feature: 'management' },
     { label: 'Manager Swaps', Icon: ArrowLeftRight, path: '/management/swaps', feature: 'management' },
     { label: 'Timesheets',    Icon: ClipboardList,  path: '/timesheet', feature: 'timesheet-view' },
