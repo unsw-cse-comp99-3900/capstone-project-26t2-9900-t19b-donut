@@ -70,6 +70,16 @@ jobs:
           VITE_SENTRY_RELEASE: ${{ github.sha }}
         run: npm run build
 
+      - name: Build web Docker image
+        run: |
+          docker build \
+            --file Dockerfile.web \
+            --tag shiftopia-web:${{ github.sha }} \
+            --build-arg VITE_SUPABASE_URL=https://example.supabase.co \
+            --build-arg VITE_SUPABASE_ANON_KEY=ci-public-anon-key \
+            --build-arg VITE_SENTRY_RELEASE=${{ github.sha }} \
+            .
+
   deploy:
     name: Deploy (Vercel)
     needs: verify

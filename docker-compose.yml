@@ -65,15 +65,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:?Set VITE_SUPABASE_URL in .env}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:?Set VITE_SUPABASE_ANON_KEY in .env}
+        VITE_OPTIMIZER_URL: ${VITE_OPTIMIZER_URL:-http://localhost:5005}
+        VITE_ML_URL: ${VITE_ML_URL:-http://localhost:8000}
+        VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
+        VITE_SENTRY_ENVIRONMENT: ${VITE_SENTRY_ENVIRONMENT:-production}
+        VITE_SENTRY_RELEASE: ${VITE_SENTRY_RELEASE:-docker-local}
     container_name: superman-web
     ports:
       - '8080:80'
-    environment:
-      - VITE_OPTIMIZER_URL=http://localhost:5005
-      - VITE_ML_URL=http://localhost:8000
+    restart: unless-stopped
     depends_on:
       optimizer:
         condition: service_healthy
       ml:
         condition: service_healthy
-
