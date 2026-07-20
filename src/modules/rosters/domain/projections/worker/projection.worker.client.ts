@@ -22,6 +22,7 @@ import type {
   WorkerInboundMessage,
   WorkerOutboundMessage,
 } from './protocol';
+import ProjectionWorker from './projection.worker?worker';
 
 // ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -50,13 +51,15 @@ export class ProjectionWorkerClient {
 
   private ensureWorker(): Worker {
     if (!this.worker) {
-      this.worker = new Worker(
-        new URL('./projection.worker.ts', import.meta.url),
-        { type: 'module' },
-      );
+      this.worker = new ProjectionWorker();
       this.worker.onmessage = this.handleMessage;
       this.worker.onerror = (e) => {
         console.error('[ProjectionWorkerClient] Worker error:', e);
+        if (this.lastSentRequestId < 0) return;
+        this.onError?.({
+          requestId: this.lastSentRequestId,
+          message: e.message || 'Projection worker failed to load',
+        });
       };
     }
     return this.worker;
