@@ -15,6 +15,9 @@ interface MobilePeopleRosterBoardProps {
   employees: MobileRosterEmployee[];
   shifts: Shift[];
   dates: Date[];
+  isBulkMode?: boolean;
+  selectedShiftIds?: string[];
+  onToggleShiftSelection?: (shiftId: string) => void;
   onViewShift?: (shift: Shift) => void;
 }
 
@@ -30,8 +33,12 @@ export const MobilePeopleRosterBoard: React.FC<MobilePeopleRosterBoardProps> = (
   employees,
   shifts,
   dates,
+  isBulkMode = false,
+  selectedShiftIds = [],
+  onToggleShiftSelection,
   onViewShift,
 }) => {
+  const selectedShiftIdSet = useMemo(() => new Set(selectedShiftIds), [selectedShiftIds]);
   const visibleDates = useMemo(
     () => new Set(dates.map((date) => format(date, 'yyyy-MM-dd'))),
     [dates],
@@ -85,8 +92,19 @@ export const MobilePeopleRosterBoard: React.FC<MobilePeopleRosterBoardProps> = (
                       <button
                         key={shift.id}
                         type="button"
-                        onClick={() => onViewShift?.(shift)}
-                        className="flex w-full items-center gap-3 rounded-xl border border-border bg-background px-3 py-3 text-left active:scale-[0.99]"
+                        aria-pressed={isBulkMode ? selectedShiftIdSet.has(shift.id) : undefined}
+                        onClick={() => {
+                          if (isBulkMode) {
+                            onToggleShiftSelection?.(shift.id);
+                            return;
+                          }
+                          onViewShift?.(shift);
+                        }}
+                        className={`flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left active:scale-[0.99] ${
+                          isBulkMode && selectedShiftIdSet.has(shift.id)
+                            ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
+                            : 'border-border bg-background'
+                        }`}
                       >
                         <div className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
                           <span className="text-[9px] font-black uppercase">{format(new Date(`${shift.shift_date}T12:00:00`), 'EEE')}</span>
@@ -121,4 +139,3 @@ export const MobilePeopleRosterBoard: React.FC<MobilePeopleRosterBoardProps> = (
     </div>
   );
 };
-

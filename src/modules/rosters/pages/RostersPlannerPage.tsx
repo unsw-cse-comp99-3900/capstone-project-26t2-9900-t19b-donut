@@ -1098,7 +1098,7 @@ const NewRostersPage: React.FC = () => {
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="h-full rounded-[32px] overflow-hidden transition-all border flex flex-col bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
           <DndProvider backend={HTML5Backend}>
-            <div className="flex-1 min-h-0 overflow-hidden flex relative">
+            <div className="flex-1 min-h-0 overflow-hidden flex flex-col md:flex-row relative">
         {/* Loading Overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -1113,7 +1113,9 @@ const NewRostersPage: React.FC = () => {
         <div
           className={cn(
             'min-h-0 overflow-hidden transition-all duration-300 ease-in-out relative',
-            showUnfilledPanel ? 'flex-1' : 'w-full'
+            showUnfilledPanel
+              ? 'h-[58%] w-full flex-none md:h-auto md:w-auto md:flex-1'
+              : 'h-full w-full'
           )}
         >
           {activeMode === 'people' && (
@@ -1147,6 +1149,9 @@ const NewRostersPage: React.FC = () => {
                   employees={employees}
                   shifts={shifts}
                   dates={dates}
+                  isBulkMode={bulkModeActive}
+                  selectedShiftIds={selectedV8ShiftIdsArray}
+                  onToggleShiftSelection={handleToggleShiftSelection}
                   onViewShift={handleEditShift}
                 />
               ) : (
@@ -1262,18 +1267,21 @@ const NewRostersPage: React.FC = () => {
               onDrillDown={(date, groupType, subGroupName) => setDrillDownState({ isOpen: true, date, groupType, subGroupName })}
             />
           )}
+
         </div>
 
         {/* Unfilled Shifts Panel */}
         <div
           className={cn(
-            'min-h-0 overflow-hidden border-l border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-black/10 backdrop-blur-md transition-all duration-300 ease-in-out',
-            showUnfilledPanel ? 'w-80' : 'w-0 border-l-0'
+            'min-h-0 overflow-hidden bg-slate-50 dark:bg-black/10 backdrop-blur-md transition-all duration-300 ease-in-out',
+            showUnfilledPanel
+              ? 'h-[42%] w-full border-t border-slate-200 dark:border-white/5 md:h-full md:w-80 md:border-l md:border-t-0'
+              : 'h-0 w-full border-0 md:h-full md:w-0'
           )}
         >
           <div
             className={cn(
-              'w-80 h-full overflow-auto transition-opacity duration-300',
+              'w-full md:w-80 h-full overflow-auto transition-opacity duration-300',
               showUnfilledPanel ? 'opacity-100' : 'opacity-0'
             )}
           >

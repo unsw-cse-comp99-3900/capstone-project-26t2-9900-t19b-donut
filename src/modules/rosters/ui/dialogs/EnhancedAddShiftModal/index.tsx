@@ -94,7 +94,7 @@ export const EnhancedAddShiftModal: React.FC<EnhancedAddShiftModalProps> = (prop
             <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
                 <DialogContent
                     className={cn(
-                        "w-[calc(100vw-1rem)] sm:max-w-[900px] h-[85vh] sm:h-[700px] max-h-[85vh] p-0 gap-0 overflow-hidden flex flex-col focus-visible:ring-0 focus:outline-none transition-all duration-300 rounded-xl sm:rounded-2xl shadow-2xl border",
+                        "z-[150] w-[calc(100vw-1rem)] sm:max-w-[900px] h-[calc(100dvh-2rem)] sm:h-[700px] max-h-[calc(100dvh-2rem)] sm:max-h-[85vh] p-0 gap-0 overflow-hidden flex flex-col focus-visible:ring-0 focus:outline-none transition-all duration-300 rounded-3xl sm:rounded-2xl shadow-2xl border",
                         isReadOnly
                             ? "bg-[#0a0a0c] border-slate-800/50 shadow-none"
                             : isPublished
@@ -161,7 +161,7 @@ export const EnhancedAddShiftModal: React.FC<EnhancedAddShiftModalProps> = (prop
 
                             {/* ── FOOTER ── */}
                             <div className={cn(
-                                "flex-shrink-0 px-5 py-3 border-t backdrop-blur-xl flex items-center justify-between gap-3 z-20",
+                                "flex-shrink-0 px-3 sm:px-5 py-3 border-t backdrop-blur-xl flex items-center justify-between gap-2 sm:gap-3 z-20 pb-[max(0.75rem,env(safe-area-inset-bottom))]",
                                 isReadOnly
                                     ? "border-slate-800/40 bg-slate-950/40"
                                     : isPublished
@@ -174,7 +174,7 @@ export const EnhancedAddShiftModal: React.FC<EnhancedAddShiftModalProps> = (prop
                                     type="button"
                                     variant="ghost"
                                     onClick={handleCancel}
-                                    className="h-9 px-4 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/30 font-bold transition-all flex items-center gap-1.5 text-xs"
+                                    className="h-9 px-3 sm:px-4 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/30 font-bold transition-all flex items-center gap-1.5 text-xs"
                                 >
                                     <X className="h-3.5 w-3.5" />
                                     Cancel
@@ -197,7 +197,7 @@ export const EnhancedAddShiftModal: React.FC<EnhancedAddShiftModalProps> = (prop
                                         type="submit"
                                         disabled={!canSave || isLoading}
                                         className={cn(
-                                            "h-9 px-6 rounded-lg font-black uppercase tracking-[0.12em] text-xs transition-all flex items-center gap-1.5 shadow-lg",
+                                            "h-9 px-4 sm:px-6 rounded-xl font-black uppercase tracking-[0.08em] sm:tracking-[0.12em] text-[10px] sm:text-xs transition-all flex items-center gap-1.5 shadow-lg",
                                             canSave
                                                 ? isPublished
                                                     ? "bg-purple-600 hover:bg-purple-500 text-white shadow-purple-500/20 border border-purple-400/20"

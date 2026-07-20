@@ -2123,8 +2123,8 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
       <div className="flex flex-col h-full transition-colors bg-background relative overflow-hidden">
         {/* DnD Mode Indicator */}
         {isDnDModeActive && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-500">
-            <Badge className="px-6 py-2 bg-emerald-500/90 text-white backdrop-blur-md border border-emerald-400/50 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-2 text-sm font-medium rounded-full">
+          <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-500">
+            <Badge className="px-3 sm:px-6 py-1.5 sm:py-2 bg-emerald-500/90 text-white backdrop-blur-md border border-emerald-400/50 shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-sm font-medium rounded-full whitespace-nowrap">
               <Zap className="h-4 w-4 animate-pulse" />
               DnD Mode Active
             </Badge>
@@ -2140,7 +2140,7 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
               </div>
             )}
 
-            <div className="p-4 space-y-6">
+            <div className="p-2 sm:p-4 space-y-3 sm:space-y-6">
               {visualGroups.map((group) => {
                 const glassStyle = group.type === 'unassigned'
                   ? UNASSIGNED_GLASS_STYLE
@@ -2184,9 +2184,9 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
                     }}
                   >
                     {/* Group Header with Collapse Toggle + Stats */}
-                    <div className={cn('px-5 py-3', glassStyle.header)}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
+                    <div className={cn('px-3 sm:px-5 py-3', glassStyle.header)}>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                           {/* Collapse Toggle Button */}
                           <button
                             onClick={() => handleToggleGroupCollapse(group.id)}
@@ -2200,8 +2200,8 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
                             )}
                           </button>
                           <div className="w-3 h-3 rounded-full bg-white/80 shadow-lg" />
-                          <div>
-                            <h3 className={cn('text-lg font-bold tracking-wide leading-tight', glassStyle.headerText)}>
+                          <div className="min-w-0">
+                            <h3 className={cn('truncate text-sm sm:text-lg font-bold tracking-wide leading-tight', glassStyle.headerText)}>
                               {group.name}
                             </h3>
                             {/* Data Ops label row */}
@@ -2216,14 +2216,14 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex shrink-0 items-center gap-1 sm:gap-3">
                           {/* Inline Group Stats */}
                           <GroupStatsSummary
                             shifts={externalShifts.filter(s => s.group_type === group.type)}
                             compact
-                            className="text-white/70"
+                            className="hidden sm:flex text-white/70"
                           />
-                          <Badge className="bg-white/20 border-white/30 text-white backdrop-blur-sm font-mono tabular-nums">
+                          <Badge className="hidden sm:inline-flex bg-white/20 border-white/30 text-white backdrop-blur-sm font-mono tabular-nums">
                             {totalShifts} shift{totalShifts !== 1 ? 's' : ''}
                           </Badge>
                           {/* Add Subgroup Button (Header) — only for canonical groups, not 'unassigned' */}
@@ -2234,7 +2234,7 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
                                 handleAddSubGroup(group);
                               }}
                               className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all border shadow-sm",
+                                "flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-md text-xs font-semibold transition-all border shadow-sm",
                                 glassStyle.accent === 'emerald'
                                   ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/30"
                                   : glassStyle.accent === 'blue'
@@ -2245,7 +2245,7 @@ export const GroupModeView: React.FC<GroupModeViewProps> = ({
                               )}
                             >
                               <Plus className="h-3.5 w-3.5" />
-                              Add Subgroup
+                              <span className="hidden sm:inline">Add Subgroup</span>
                             </button>
                           )}
                         </div>

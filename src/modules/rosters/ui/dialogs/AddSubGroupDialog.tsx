@@ -91,7 +91,7 @@ export const AddSubGroupDialog: React.FC<AddSubGroupDialogProps> = ({
           {trigger}
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px] bg-gray-900/95 backdrop-blur-xl border-gray-800">
+      <DialogContent className="w-[calc(100vw-2rem)] rounded-3xl border-border bg-background text-foreground shadow-2xl sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Subgroup</DialogTitle>
           <DialogDescription>
@@ -100,7 +100,7 @@ export const AddSubGroupDialog: React.FC<AddSubGroupDialogProps> = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5 py-3">
             <FormField
               control={form.control}
               name="name"
@@ -109,7 +109,7 @@ export const AddSubGroupDialog: React.FC<AddSubGroupDialogProps> = ({
                   <FormLabel>Subgroup Name</FormLabel>
                   <FormControl>
                     <Input
-                      className="bg-white/5 border-white/10"
+                      className="h-11 rounded-xl border-border bg-muted/40 text-foreground placeholder:text-muted-foreground focus-visible:ring-primary/40"
                       placeholder="e.g., Morning Shift, Evening Team"
                       {...field}
                       disabled={isSubmitting}
@@ -120,11 +120,11 @@ export const AddSubGroupDialog: React.FC<AddSubGroupDialogProps> = ({
               )}
             />
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen?.(false)} disabled={isSubmitting}>
+            <DialogFooter className="gap-2 sm:gap-2">
+              <Button className="rounded-xl" type="button" variant="outline" onClick={() => setOpen?.(false)} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button className="rounded-xl" type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Subgroup
               </Button>

@@ -86,6 +86,8 @@ type ActionState =
       preview: ActionPreview;
       /** IDs returned by async validation — passed directly to execution (skips re-check). */
       validatedIds?: string[];
+      /** Per-shift reasons for items excluded during publish validation. */
+      blockedDetails?: Array<{ id: string; reason: string }>;
     }
   | { type: 'processing'; action: ConfirmAction }
   | {
@@ -223,6 +225,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             warned: 0,
           },
           validatedIds: validation.eligible,
+          blockedDetails: [...validation.complianceFailed, ...validation.skipped],
         });
       } catch {
         toast({ title: 'Validation failed', description: 'Could not run compliance checks.', variant: 'destructive' });
@@ -377,9 +380,9 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                         && (action === 'publish' || action === 'unpublish');
 
     return (
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 duration-300">
+      <div className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] left-3 right-3 z-[160] animate-in slide-in-from-bottom-5 duration-300 md:bottom-6 md:left-1/2 md:right-auto md:-translate-x-1/2">
         <div className={cn(
-          'backdrop-blur-xl border shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-2xl px-6 py-4 flex flex-col gap-3 min-w-[320px] max-w-[520px]',
+          'backdrop-blur-xl border shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-2xl px-4 py-3 flex flex-col gap-3 w-full md:w-auto md:px-6 md:py-4 md:min-w-[320px] md:max-w-[520px]',
           isAllFailed
             ? 'bg-destructive/10 border-destructive/30'
             : isPartial
@@ -450,16 +453,16 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
 
   return (
     <>
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5 duration-300">
-        <div className="bg-background/95 dark:bg-popover/90 backdrop-blur-xl border border-border shadow-[0_8px_32px_rgba(0,0,0,0.15)] rounded-full px-6 py-3 flex items-center gap-4">
-          <div className="flex items-center gap-4">
+      <div className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] left-3 right-3 z-[160] animate-in slide-in-from-bottom-5 duration-300 md:bottom-6 md:left-1/2 md:right-auto md:-translate-x-1/2">
+        <div className="w-full overflow-x-auto rounded-2xl border border-border bg-background/95 px-3 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-xl scrollbar-none dark:bg-popover/90 md:w-auto md:overflow-visible md:rounded-full md:px-6 md:py-3">
+          <div className="flex min-w-max items-center gap-2 md:gap-4">
 
             {/* Selection badge */}
-            <div className="flex flex-col items-start min-w-[120px]">
+            <div className="flex min-w-[76px] flex-col items-start md:min-w-[120px]">
               <Badge variant="glass" className="px-3 py-1.5 text-sm font-medium bg-primary/20 text-primary dark:text-white border-primary/20 shadow-glow whitespace-nowrap flex-shrink-0">
                 {isAllSelected ? `All ${selectedCount}` : selectedCount} Selected
               </Badge>
-              <div className="flex gap-2 mt-1 px-1">
+              <div className="hidden gap-2 mt-1 px-1 md:flex">
                 {/* Scope indicator */}
                 {totalVisibleCount !== undefined && !isAllSelected && (
                   <span className="text-[10px] text-muted-foreground/70 whitespace-nowrap">of {totalVisibleCount} in view</span>
@@ -704,9 +707,19 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                       ✓ Compliance checked — {preview!.eligible} shift{preview!.eligible !== 1 ? 's' : ''} ready to publish.
                     </p>
                     {preview!.blocked > 0 && (
-                      <p className="text-destructive text-xs">
-                        {preview!.blocked} shift{preview!.blocked !== 1 ? 's' : ''} failed compliance or were already published — excluded.
-                      </p>
+                      <div className="space-y-1.5 text-destructive text-xs">
+                        <p>
+                          {preview!.blocked} shift{preview!.blocked !== 1 ? 's' : ''} excluded:
+                        </p>
+                        <ul className="max-h-32 space-y-1 overflow-y-auto rounded-lg bg-destructive/5 p-2">
+                          {actionState.type === 'confirming' && actionState.blockedDetails?.map((detail, index) => (
+                            <li key={`${detail.id}-${index}`} className="break-words">
+                              <span className="font-mono text-[10px]">{detail.id.slice(0, 8)}</span>
+                              {' — '}{detail.reason || 'Compliance engine unavailable or returned no reason'}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </>
                 ) : (
@@ -731,7 +744,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             <AlertDialogAction
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
               onClick={(e) => { e.preventDefault(); handlePublish(); }}
-              disabled={isPublishing}
+              disabled={isPublishing || (preview?.eligible ?? 0) === 0}
             >
               {isPublishing ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Publishing…</>
