@@ -398,39 +398,39 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <div className="space-y-8 max-w-2xl">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label className="text-white/60">First name</Label>
+          <Label className="text-slate-600 dark:text-white/60">First name</Label>
           <Input 
             value={formData.firstName} 
             onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-            className="bg-white/5 border-white/10 text-white" 
+            className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"
           />
         </div>
         <div className="space-y-2">
-          <Label className="text-white/60">Last name</Label>
+          <Label className="text-slate-600 dark:text-white/60">Last name</Label>
           <Input 
             value={formData.lastName} 
             onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-            className="bg-white/5 border-white/10 text-white" 
+            className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"
           />
         </div>
       </div>
       <div className="space-y-2">
-        <Label className="text-white/60">Email address</Label>
+        <Label className="text-slate-600 dark:text-white/60">Email address</Label>
         <Input 
           value={formData.email} 
           disabled
-          className="bg-white/5 border-white/10 text-white/40 cursor-not-allowed" 
+          className="bg-slate-50 border-slate-200 text-slate-500 dark:bg-white/5 dark:border-white/10 dark:text-white/40 cursor-not-allowed"
         />
-        <p className="text-xs text-blue-200/40">Email cannot be changed directly for security reasons.</p>
+        <p className="text-xs text-slate-500 dark:text-blue-200/40">Email cannot be changed directly for security reasons.</p>
       </div>
       <div className="space-y-2">
-        <Label className="text-white/60">Phone number</Label>
+        <Label className="text-slate-600 dark:text-white/60">Phone number</Label>
         <Input 
           value={formData.phone} 
           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-          className="bg-white/5 border-white/10 text-white" 
+          className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"
         />
       </div>
       <div className="pt-4 flex justify-end">
@@ -473,30 +473,30 @@ const SecuritySettings: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200 dark:bg-white/5 dark:border-white/10 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-white font-medium">Password</h4>
-            <p className="text-sm text-blue-200/60 mt-1">Change your account password regularly for better security.</p>
+            <h4 className="text-slate-900 dark:text-white font-medium">Password</h4>
+            <p className="text-sm text-slate-500 dark:text-blue-200/60 mt-1">Change your account password regularly for better security.</p>
           </div>
           <Button 
             variant="outline" 
             onClick={handleResetPassword}
             disabled={isLoading}
-            className="border-white/10 text-white hover:bg-white/5"
+            className="border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:text-white dark:hover:bg-white/5"
           >
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Request Password Reset"}
           </Button>
         </div>
       </div>
 
-      <div className="p-6 rounded-2xl bg-white/5 border border-white/10 opacity-50 cursor-not-allowed">
-        <div className="flex items-center justify-between">
+      <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 dark:bg-white/5 dark:border-white/10 opacity-60 cursor-not-allowed">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-white font-medium">Two-factor Authentication</h4>
-            <p className="text-sm text-blue-200/60 mt-1">Add an extra layer of security to your account.</p>
+            <h4 className="text-slate-900 dark:text-white font-medium">Two-factor Authentication</h4>
+            <p className="text-sm text-slate-500 dark:text-blue-200/60 mt-1">Add an extra layer of security to your account.</p>
           </div>
-          <Button variant="ghost" disabled className="text-white/40">Coming Soon</Button>
+          <Button variant="ghost" disabled className="text-slate-500 dark:text-white/40">Coming Soon</Button>
         </div>
       </div>
     </div>
@@ -567,15 +567,15 @@ const SettingsPage: React.FC = () => {
             {['account', 'notifications', 'billing', 'integrations'].map(tab => (
               <TabsContent key={tab} value={tab}>
                 <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                  <div className="p-4 rounded-full bg-white/5 border border-white/10">
-                    {tab === 'notifications' ? <Bell className="h-8 w-8 text-white/40" /> : 
-                     tab === 'billing' ? <CreditCard className="h-8 w-8 text-white/40" /> : 
-                     tab === 'integrations' ? <Link className="h-8 w-8 text-white/40" /> :
-                     <User className="h-8 w-8 text-white/40" />}
+                  <div className="p-4 rounded-full bg-slate-100 border border-slate-200 dark:bg-white/5 dark:border-white/10">
+                    {tab === 'notifications' ? <Bell className="h-8 w-8 text-slate-400 dark:text-white/40" /> :
+                     tab === 'billing' ? <CreditCard className="h-8 w-8 text-slate-400 dark:text-white/40" /> :
+                     tab === 'integrations' ? <Link className="h-8 w-8 text-slate-400 dark:text-white/40" /> :
+                     <User className="h-8 w-8 text-slate-400 dark:text-white/40" />}
                   </div>
                   <div>
-                    <h3 className="text-lg font-medium text-white capitalize">{tab} Settings</h3>
-                    <p className="text-blue-200/60 max-w-sm mt-1">This section is currently under development.</p>
+                    <h3 className="text-lg font-medium text-slate-900 dark:text-white capitalize">{tab} Settings</h3>
+                    <p className="text-slate-500 dark:text-blue-200/60 max-w-sm mt-1">This section is currently under development.</p>
                   </div>
                 </div>
               </TabsContent>
