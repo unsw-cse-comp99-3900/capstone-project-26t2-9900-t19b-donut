@@ -148,8 +148,16 @@ export function useShiftFormOrchestrator({
 
         const roster = rosters.find(r => r.id === (selectedRosterId || safeContext.rosterId));
 
-        let groupId = isValidUuid(safeContext.groupId) ? safeContext.groupId : null;
-        let subGroupId = isValidUuid(safeContext.subGroupId) ? safeContext.subGroupId : null;
+        let groupId = isValidUuid(safeContext.groupId)
+            ? safeContext.groupId
+            : (isValidUuid(existingShift?.shift_group_id) ? existingShift.shift_group_id : null);
+        let subGroupId = isValidUuid(safeContext.subGroupId)
+            ? safeContext.subGroupId
+            : (
+                isValidUuid(existingShift?.roster_subgroup_id)
+                    ? existingShift.roster_subgroup_id
+                    : (isValidUuid(existingShift?.shift_subgroup_id) ? existingShift.shift_subgroup_id : null)
+            );
 
         if (roster && (safeContext.groupName || safeContext.group_type) && !groupId) {
             const searchName = safeContext.groupName?.trim().toLowerCase();
@@ -199,6 +207,29 @@ export function useShiftFormOrchestrator({
             }
         }
 
+        // The dedicated roster-structure query is the authoritative fallback.
+        // Unlike the nested roster lookup, it is fetched directly from
+        // roster_groups and preserves both hierarchy UUIDs.
+        if (!groupId && watchGroup) {
+            const structureGroup = rosterStructure.find(slot =>
+                slot.groupType === watchGroup
+                || slot.groupName.trim().toLowerCase().replace(/\s+/g, '_') === watchGroup,
+            );
+            if (structureGroup) groupId = structureGroup.groupId;
+        }
+
+        if (!subGroupId && groupId && watchSubGroupName) {
+            const structureSubGroup = rosterStructure.find(slot =>
+                slot.groupId === groupId
+                && slot.subGroupId
+                && slot.subGroupName.trim().toLowerCase()
+                    === watchSubGroupName.trim().toLowerCase(),
+            );
+            if (structureSubGroup?.subGroupId) {
+                subGroupId = structureSubGroup.subGroupId;
+            }
+        }
+
         return {
             ...safeContext,
             organizationId: orgId,
@@ -210,7 +241,7 @@ export function useShiftFormOrchestrator({
             groupId: groupId || (isValidUuid(safeContext.groupId) ? safeContext.groupId : undefined),
             subGroupId: subGroupId || (isValidUuid(safeContext.subGroupId) ? safeContext.subGroupId : undefined),
         };
-    }, [scopeTree, rosters, selectedRosterId, safeContext, watchGroup, watchSubGroupName]);
+    }, [scopeTree, rosters, rosterStructure, selectedRosterId, safeContext, watchGroup, watchSubGroupName, existingShift]);
 
     // ── Hard validation ──────────────────────────────────────────────────────
     const { hardValidation, employeeExistingShifts, studentVisaEnforcement, isLoadingShifts } = useHardValidation({
@@ -784,6 +815,15 @@ export function useShiftFormOrchestrator({
             return;
         }
 
+        if (!isTemplateMode && !editMode && (!resolvedContext.groupId || !resolvedContext.subGroupId)) {
+            toast({
+                title: 'Missing Roster Hierarchy',
+                description: 'The selected group or subgroup is not linked to this roster. Please reselect both fields.',
+                variant: 'destructive',
+            });
+            return;
+        }
+
         if (!isTemplateMode && values.shift_date && !editMode) {
             if (isPastInTimezone(values.shift_date, watchTimezone)) {
                 toast({ title: 'Invalid Date', description: 'Cannot create shifts on past dates.', variant: 'destructive' });
@@ -862,6 +902,7 @@ export function useShiftFormOrchestrator({
                     group_type: (values.group_type || (resolvedContext.groupName?.toLowerCase().replace(/\s+/g, '_') || null)) as TemplateGroupType | null,
                     sub_group_name: values.sub_group_name || resolvedContext.subGroupName || null,
                     shift_group_id: resolvedContext.groupId || null,
+                    roster_subgroup_id: resolvedContext.subGroupId || null,
                     shift_subgroup_id: resolvedContext.subGroupId || null,
                     role_id: values.role_id || null,
                     remuneration_level_id: values.remuneration_level_id || null,

@@ -20,6 +20,7 @@ import type {
     Roster,
     ShiftContext
 } from '../types';
+import type { RosterSlot } from '@/modules/rosters/api/shifts.queries';
 
 const EMPTY_ARRAY: any[] = [];
 const EMPTY_OBJECT: any = {};
@@ -44,7 +45,7 @@ interface UseShiftFormDataReturn {
     licenses: License[];
     events: Event[];
     rosters: Roster[];
-    rosterStructure: { groupType: string; subGroupName: string }[];
+    rosterStructure: RosterSlot[];
     activeSubGroups: Record<string, string[]>;
     isLoadingData: boolean;
 }

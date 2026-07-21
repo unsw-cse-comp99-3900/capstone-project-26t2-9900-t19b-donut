@@ -20,7 +20,13 @@ export interface ProfileSummary {
     sub_department_name?: string;
 }
 export interface TemplateSummary { id: string; name: string; description: string | null; department_id: string; sub_department_id: string | null; status: string; organization_id: string; applied_count: number | null }
-export interface RosterSlot { groupType: string; subGroupName: string }
+export interface RosterSlot {
+    groupId: string;
+    groupType: string;
+    groupName: string;
+    subGroupId: string | null;
+    subGroupName: string;
+}
 
 // ── Shared select fragment for shift rows ─────────────────────────────────────
 
@@ -900,6 +906,7 @@ export const shiftsQueries = {
                 .select(`
                 id,
                 name,
+                external_id,
                 subGroups: roster_subgroups(
                     id,
                     name
@@ -916,14 +923,32 @@ export const shiftsQueries = {
             if (!data) return [];
 
             const flattened: RosterSlot[] = [];
-            (data as { name: string; subGroups: { name: string }[] }[]).forEach(group => {
-                const normalizedGroup = group.name.toLowerCase().replace(/\s+/g, '_');
+            (data as {
+                id: string;
+                name: string;
+                external_id: string | null;
+                subGroups: { id: string; name: string }[];
+            }[]).forEach(group => {
+                const normalizedGroup = group.external_id
+                    || group.name.toLowerCase().replace(/\s+/g, '_');
                 if (group.subGroups && group.subGroups.length > 0) {
                     group.subGroups.forEach(sub => {
-                        flattened.push({ groupType: normalizedGroup, subGroupName: sub.name });
+                        flattened.push({
+                            groupId: group.id,
+                            groupType: normalizedGroup,
+                            groupName: group.name,
+                            subGroupId: sub.id,
+                            subGroupName: sub.name,
+                        });
                     });
                 } else {
-                    flattened.push({ groupType: normalizedGroup, subGroupName: '' });
+                    flattened.push({
+                        groupId: group.id,
+                        groupType: normalizedGroup,
+                        groupName: group.name,
+                        subGroupId: null,
+                        subGroupName: '',
+                    });
                 }
             });
 

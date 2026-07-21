@@ -138,7 +138,9 @@ export const shiftsCommands = {
             sub_group_name: shiftData.sub_group_name || null,
             display_order: shiftData.display_order || 0,
             shift_group_id: safeUuid(shiftData.shift_group_id),
-            shift_subgroup_id: safeUuid(shiftData.shift_subgroup_id),
+            roster_subgroup_id: safeUuid(
+                shiftData.roster_subgroup_id ?? shiftData.shift_subgroup_id,
+            ),
             role_id: safeUuid(shiftData.role_id),
             remuneration_level_id: safeUuid(shiftData.remuneration_level_id),
             paid_break_minutes: shiftData.paid_break_minutes || 0,
@@ -207,6 +209,12 @@ export const shiftsCommands = {
                 payload.shift_group_id = safeUuid(updates.shift_group_id);
             if (updates.shift_subgroup_id !== undefined) {
                 const safeSubgroupId = safeUuid(updates.shift_subgroup_id);
+                if (safeSubgroupId) {
+                    payload.roster_subgroup_id = safeSubgroupId;
+                }
+            }
+            if (updates.roster_subgroup_id !== undefined) {
+                const safeSubgroupId = safeUuid(updates.roster_subgroup_id);
                 if (safeSubgroupId) {
                     payload.roster_subgroup_id = safeSubgroupId;
                 }
