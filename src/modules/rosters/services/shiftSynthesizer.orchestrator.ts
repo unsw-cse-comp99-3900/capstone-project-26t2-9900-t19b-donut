@@ -197,7 +197,7 @@ function expandToCreatePayloads(
       timezone: params.timezone ?? 'Australia/Sydney',
       creation_source: 'synthesizer',
       synthesis_run_id: params.synthesisRunId ?? null,
-      shift_subgroup_id: rosterSubgroupId,
+      roster_subgroup_id: rosterSubgroupId,
       notes: shift.reasons?.[0],
       demand_source: shift.demand_source,
       target_employment_type: shift.target_employment_type,

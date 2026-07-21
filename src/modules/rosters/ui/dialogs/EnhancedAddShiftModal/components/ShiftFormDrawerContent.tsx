@@ -362,6 +362,7 @@ export const ShiftFormDrawerContent: React.FC<ShiftFormDrawerContentProps> = ({
     licenses,
     events,
     rosters,
+    rosterStructure,
     isLoadingShifts,
     resolvedContext,
     selectedRosterId,
@@ -423,8 +424,30 @@ export const ShiftFormDrawerContent: React.FC<ShiftFormDrawerContentProps> = ({
     /* ── Available Groups from Roster ── */
     const availableGroups = useMemo(() => {
         const roster = rosters.find(r => r.id === (selectedRosterId || resolvedContext.rosterId));
-        return roster?.groups || [];
-    }, [rosters, selectedRosterId, resolvedContext.rosterId]);
+        if (roster?.groups?.length) return roster.groups;
+
+        const groups = new Map<string, {
+            id: string;
+            name: string;
+            external_id: string;
+            subGroups: { id: string; name: string }[];
+        }>();
+
+        rosterStructure.forEach(slot => {
+            const group = groups.get(slot.groupId) || {
+                id: slot.groupId,
+                name: slot.groupName,
+                external_id: slot.groupType,
+                subGroups: [],
+            };
+            if (slot.subGroupId && !group.subGroups.some(sg => sg.id === slot.subGroupId)) {
+                group.subGroups.push({ id: slot.subGroupId, name: slot.subGroupName });
+            }
+            groups.set(slot.groupId, group);
+        });
+
+        return Array.from(groups.values());
+    }, [rosters, rosterStructure, selectedRosterId, resolvedContext.rosterId]);
 
     const activeGroup = useMemo(() => {
         if (!watchGroup) return null;

@@ -12,6 +12,8 @@ export interface CreateShiftData {
     sub_group_name?: string | null;
     display_order?: number;
     shift_group_id?: string | null;
+    roster_subgroup_id?: string | null;
+    /** @deprecated Use roster_subgroup_id for new create-shift callers. */
     shift_subgroup_id?: string | null;
     role_id?: string | null;
     remuneration_level_id?: string | null;
