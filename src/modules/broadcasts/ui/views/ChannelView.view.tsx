@@ -16,6 +16,7 @@ export interface ChannelViewProps {
   onSearch: (query: string) => void;
   searchQuery: string;
   compact?: boolean;
+  mobile?: boolean;
 }
 
 export const ChannelView: React.FC<ChannelViewProps> = ({
@@ -25,6 +26,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
   onSearch,
   searchQuery,
   compact,
+  mobile,
 }) => {
   const { broadcasts, isLoading, loadMore, hasMore, isLoadingMore, offlineState } =
     useEmployeeBroadcasts(channelId);
@@ -62,16 +64,28 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
   return (
     <>
       {/* Channel Header */}
-      <div className="bg-white/10 dark:bg-black/5 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 md:px-8 py-5 md:py-6 sticky top-0 z-20">
-        <div className="flex items-center justify-between gap-4 md:gap-6">
-          <div className="flex items-center gap-4 md:gap-5 min-w-0">
-            <div className="p-3 md:p-3.5 rounded-2xl md:rounded-[20px] bg-primary/20 text-primary dark:text-white shadow-xl shadow-primary/5">
-              <Hash className="h-6 w-6 md:h-7 md:w-7" />
+      <div className={cn(
+        'sticky top-0 z-20 border-b border-slate-200 bg-white/10 backdrop-blur-xl dark:border-white/5 dark:bg-black/5',
+        mobile ? 'px-3 py-3' : 'px-6 py-5 md:px-8 md:py-6'
+      )}>
+        <div className={cn(
+          'flex gap-4 md:gap-6',
+          mobile ? 'flex-col items-stretch gap-3' : 'items-center justify-between'
+        )}>
+          <div className="flex min-w-0 items-center gap-3 md:gap-5">
+            <div className={cn(
+              'shrink-0 bg-primary/20 text-primary shadow-xl shadow-primary/5 dark:text-white',
+              mobile ? 'rounded-xl p-2' : 'rounded-2xl p-3 md:rounded-[20px] md:p-3.5'
+            )}>
+              <Hash className={cn(mobile ? 'h-5 w-5' : 'h-6 w-6 md:h-7 md:w-7')} />
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center gap-2 md:gap-3">
-                <h2 className="font-black text-xl md:text-2xl text-slate-900 dark:text-white tracking-tighter truncate">
+                <h2 className={cn(
+                  'truncate font-black tracking-tighter text-slate-900 dark:text-white',
+                  mobile ? 'text-lg' : 'text-xl md:text-2xl'
+                )}>
                   {channelName}
                 </h2>
               </div>
@@ -82,7 +96,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
           </div>
 
           {/* Search */}
-          <div className="relative w-48 md:w-72 hidden sm:block">
+          <div className={cn('relative min-w-0', mobile ? 'block w-full' : 'hidden w-48 sm:block md:w-72')}>
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-white/30" />
             <Input
               placeholder="Search conversation..."
@@ -92,8 +106,10 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
             />
             {searchQuery && (
               <button
+                type="button"
+                aria-label="Clear broadcast search"
                 onClick={() => onSearch('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white transition-colors"
+                className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-200/60 hover:text-slate-700 dark:text-white/40 dark:hover:bg-white/10 dark:hover:text-white"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -110,7 +126,10 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
 
       {/* Messages */}
       <ScrollArea className="flex-1 bg-transparent">
-        <div className="p-4 md:p-6 lg:p-8 min-h-full">
+        <div className={cn(
+          'min-h-full p-4 md:p-6 lg:p-8',
+          mobile && 'px-3 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] pt-3'
+        )}>
           {sortedBroadcasts.length === 0 ? (
             searchQuery ? (
               <div className="text-center py-16 md:py-20">

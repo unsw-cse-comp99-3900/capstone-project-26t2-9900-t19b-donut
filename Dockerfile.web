@@ -3,7 +3,12 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+# npm can omit native platform packages when a lockfile was generated on
+# another OS (npm/cli#4828). Alpine needs these musl binaries at build time.
+RUN npm ci \
+    && npm install --no-save \
+        @rollup/rollup-linux-x64-musl@4.60.4 \
+        @swc/core-linux-x64-musl@1.15.8
 
 COPY . .
 
