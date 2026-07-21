@@ -4,6 +4,11 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
+# npm can omit platform-specific optional dependencies when package-lock.json
+# was generated on another OS. The Alpine builder needs the musl binaries.
+RUN npm install --no-save \
+    @rollup/rollup-linux-x64-musl@$(node -p "require('rollup/package.json').version") \
+    @swc/core-linux-x64-musl@$(node -p "require('@swc/core/package.json').version")
 
 COPY . .
 
