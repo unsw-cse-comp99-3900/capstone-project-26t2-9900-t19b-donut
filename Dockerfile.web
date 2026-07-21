@@ -3,7 +3,10 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+# npm can omit Rollup's platform package when a lockfile was generated on
+# another OS (npm/cli#4828). Alpine needs the musl binary at build time.
+RUN npm ci \
+    && npm install --no-save @rollup/rollup-linux-x64-musl@4.60.4
 
 COPY . .
 
