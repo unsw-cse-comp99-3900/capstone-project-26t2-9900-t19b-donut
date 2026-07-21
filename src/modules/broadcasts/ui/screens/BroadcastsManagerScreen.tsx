@@ -193,7 +193,7 @@ export function BroadcastsManagerScreen({
 
   if (selectedGroupId) {
     return (
-      <div className="fixed inset-0 md:left-[280px] z-30 bg-background">
+      <div className="fixed inset-x-0 bottom-0 top-[env(safe-area-inset-top,0px)] z-30 bg-background md:left-[280px] md:top-0">
         <ControlRoom
           groupId={selectedGroupId}
           onBack={() => setSelectedGroupId(null)}

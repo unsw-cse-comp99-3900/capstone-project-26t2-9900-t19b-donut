@@ -56,14 +56,14 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, compact }) =>
 
       <div className={cn('p-4 md:p-6 lg:p-8', compact && 'p-4')}>
         {/* Author & Meta */}
-        <div className="flex items-start justify-between mb-4 md:mb-6">
-          <div className="flex items-center gap-3 md:gap-4">
+        <div className="mb-4 flex min-w-0 items-start justify-between md:mb-6">
+          <div className="flex min-w-0 items-center gap-3 md:gap-4">
             <Avatar className={cn('border-2 border-slate-200 dark:border-white/10 shadow-lg', compact ? 'h-10 w-10' : 'h-10 w-10 md:h-12 md:w-12')}>
               <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-sm md:text-lg">
                 {message.author?.name?.split(' ').map((n) => n[0]).join('') || '?'}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={cn('font-bold text-slate-900 dark:text-white', compact ? 'text-base' : 'text-base md:text-lg')}>
                   {message.author?.name || 'Unknown'}
@@ -97,7 +97,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, compact }) =>
 
         {/* Subject */}
         {message.subject && (
-          <h4 className={cn('font-bold text-slate-900 dark:text-white mb-3 md:mb-4 tracking-tight', compact ? 'text-base' : 'text-lg md:text-xl')}>
+          <h4 className={cn('break-words font-bold text-slate-900 dark:text-white mb-3 md:mb-4 tracking-tight', compact ? 'text-base' : 'text-lg md:text-xl')}>
             {message.subject}
           </h4>
         )}
@@ -105,7 +105,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, compact }) =>
         {/* Content */}
         <div
           className={cn(
-            'text-slate-700 dark:text-blue-100/90 leading-relaxed mb-4 md:mb-6 prose dark:prose-invert max-w-none prose-p:text-slate-700 dark:prose-p:text-blue-100/90 prose-headings:text-slate-900 dark:prose-headings:text-white prose-strong:text-slate-900 dark:prose-strong:text-white prose-a:text-primary',
+            'min-w-0 break-words [overflow-wrap:anywhere] text-slate-700 dark:text-blue-100/90 leading-relaxed mb-4 md:mb-6 prose dark:prose-invert max-w-none prose-p:text-slate-700 dark:prose-p:text-blue-100/90 prose-headings:text-slate-900 dark:prose-headings:text-white prose-strong:text-slate-900 dark:prose-strong:text-white prose-a:text-primary prose-img:max-w-full prose-pre:max-w-full prose-pre:overflow-x-auto prose-table:block prose-table:max-w-full prose-table:overflow-x-auto',
             compact ? 'text-sm' : 'text-sm md:text-base'
           )}
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message.content) }}

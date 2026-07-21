@@ -117,7 +117,7 @@ export const BroadcastItem: React.FC<BroadcastItemProps> = ({
     return (
         <div
             className={cn(
-                'rounded-2xl border-2 transition-all duration-200',
+                'min-w-0 overflow-hidden rounded-2xl border-2 transition-all duration-200',
                 broadcast.isPinned
                     ? 'bg-amber-500/10 border-amber-500/30'
                     : 'bg-card/60 border-border/50',
@@ -133,9 +133,9 @@ export const BroadcastItem: React.FC<BroadcastItemProps> = ({
                 </div>
             )}
 
-            <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
+            <div className="p-4 md:p-5">
+                <div className="mb-3 flex min-w-0 items-start justify-between gap-2">
+                    <div className="flex min-w-0 items-center gap-3">
                         <Avatar className="h-10 w-10">
                             <AvatarFallback className="bg-primary/20 text-primary">
                                 {broadcast.author?.name
@@ -144,7 +144,7 @@ export const BroadcastItem: React.FC<BroadcastItemProps> = ({
                                     .join('') || '?'}
                             </AvatarFallback>
                         </Avatar>
-                        <div>
+                        <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                                 <span className="font-semibold text-foreground">
                                     {broadcast.author?.name || 'Unknown'}
@@ -200,13 +200,13 @@ export const BroadcastItem: React.FC<BroadcastItemProps> = ({
                 </div>
 
                 {broadcast.subject && (
-                    <h4 className="font-semibold text-foreground mb-2">
+                    <h4 className="mb-2 break-words font-semibold text-foreground">
                         {broadcast.subject}
                     </h4>
                 )}
 
                 <div
-                    className="text-foreground/80 text-sm leading-relaxed mb-4 prose prose-sm prose-invert max-w-none"
+                    className="mb-4 min-w-0 break-words text-sm leading-relaxed text-foreground/80 [overflow-wrap:anywhere] prose prose-sm prose-invert max-w-none prose-img:max-w-full prose-pre:max-w-full prose-pre:overflow-x-auto prose-table:block prose-table:max-w-full prose-table:overflow-x-auto"
                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(broadcast.content) }}
                 />
 
@@ -215,7 +215,7 @@ export const BroadcastItem: React.FC<BroadcastItemProps> = ({
                         {broadcast.attachments.map((att) => (
                             <div
                                 key={att.id}
-                                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/50 border border-border text-sm cursor-pointer hover:bg-muted transition-colors"
+                                className="flex min-w-0 max-w-full cursor-pointer items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm transition-colors hover:bg-muted"
                                 onClick={() => window.open(att.fileUrl, '_blank')}
                             >
                                 {FILE_ICONS[att.fileType] || FILE_ICONS.other}

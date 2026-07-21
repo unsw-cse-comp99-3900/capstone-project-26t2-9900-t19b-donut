@@ -38,8 +38,10 @@ export const MyBroadcastsPage: React.FC = () => {
       )}
 
       <div className={cn(
-        "flex-1 min-h-0 overflow-hidden mx-4 lg:mx-6 mb-4 lg:mb-6 rounded-[32px] border transition-all",
-        isInChannel && "mt-4 lg:mt-6",
+        "flex-1 min-h-0 overflow-hidden transition-all",
+        isInChannel
+          ? "mx-0 mb-0 rounded-none border-y md:mx-4 md:mb-4 md:mt-4 md:rounded-[32px] md:border lg:mx-6 lg:mb-6 lg:mt-6"
+          : "mx-4 mb-4 rounded-[32px] border lg:mx-6 lg:mb-6",
         isDark
           ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20"
           : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"

@@ -119,9 +119,9 @@ export const ComposeSection: React.FC<ComposeSectionProps> = ({
 
     return (
         <>
-            <div className="bg-card/50 rounded-2xl border border-border p-5">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+            <div className="min-w-0 rounded-t-3xl border border-border bg-card/50 p-4 sm:rounded-2xl sm:p-5">
+                <div className="mb-4 flex min-w-0 items-center justify-between gap-3 pr-8 sm:pr-0">
+                    <h3 className="flex min-w-0 items-center gap-2 font-semibold text-foreground">
                         <Edit3 className="h-5 w-5 text-primary" />
                         Compose Broadcast
                     </h3>
@@ -151,9 +151,9 @@ export const ComposeSection: React.FC<ComposeSectionProps> = ({
                     />
                 </div>
 
-                <div className="flex items-center gap-4 mb-4">
+                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                     <span className="text-sm text-muted-foreground">Priority:</span>
-                    <div className="flex gap-2">
+                    <div className="flex min-w-0 gap-2 overflow-x-auto pb-1">
                         {(['normal', 'high', 'urgent'] as BroadcastPriority[]).map((p) => (
                             <Button
                                 key={p}
@@ -161,6 +161,7 @@ export const ComposeSection: React.FC<ComposeSectionProps> = ({
                                 size="sm"
                                 onClick={() => setPriority(p)}
                                 className={cn(
+                                    'shrink-0',
                                     priority === p &&
                                     p === 'urgent' &&
                                     'bg-red-600 hover:bg-red-700',
@@ -230,8 +231,8 @@ export const ComposeSection: React.FC<ComposeSectionProps> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-xs text-muted-foreground sm:text-sm">
                         Visible to{' '}
                         <span className="text-foreground font-medium">
                             {totalRecipients}
@@ -241,7 +242,7 @@ export const ComposeSection: React.FC<ComposeSectionProps> = ({
                     <Button
                         onClick={() => setShowConfirmDialog(true)}
                         disabled={!canSend || isLoading}
-                        className="gap-2"
+                        className="h-11 w-full gap-2 sm:w-auto"
                     >
                         <Send className="h-4 w-4" />
                         Send Broadcast

@@ -415,13 +415,19 @@ export function MyBroadcastsScreen({
   return (
     <div className="flex flex-col h-full w-full bg-transparent overflow-hidden">
       {/* Mobile Header */}
-      <div className="flex-shrink-0 bg-card/90 backdrop-blur-xl border-b border-border px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={handleBack} className="text-muted-foreground hover:text-foreground">
+      <div className="flex-shrink-0 border-b border-border bg-card/90 px-3 py-2 backdrop-blur-xl">
+        <div className="flex min-w-0 items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBack}
+              aria-label="Back to broadcast groups"
+              className="h-11 w-11 shrink-0 text-muted-foreground hover:text-foreground"
+            >
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <div className="flex items-center gap-2">
+            <div className="flex min-w-0 items-center gap-2">
               <div
                 className={cn(
                   'p-1.5 rounded-lg bg-gradient-to-br border',
@@ -434,19 +440,19 @@ export function MyBroadcastsScreen({
                   })}
                 </div>
               </div>
-              <h2 className="font-bold text-base text-foreground truncate max-w-[150px]">{selectedGroup?.name}</h2>
+              <h2 className="min-w-0 truncate text-sm font-bold text-foreground sm:text-base">{selectedGroup?.name}</h2>
             </div>
           </div>
 
           {/* Channel Selector Sheet */}
           <Sheet open={channelSheetOpen} onOpenChange={setChannelSheetOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 border-border text-foreground">
-                <Hash className="h-4 w-4" />
-                <span className="truncate max-w-[80px]">{selectedChannel?.name || 'Select'}</span>
+              <Button variant="outline" size="sm" className="h-11 max-w-[42vw] shrink-0 gap-1.5 border-border px-3 text-foreground">
+                <Hash className="h-4 w-4 shrink-0" />
+                <span className="min-w-0 truncate">{selectedChannel?.name || 'Select'}</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-card border-border h-[60vh]">
+            <SheetContent side="bottom" className="h-[60vh] rounded-t-3xl border-border bg-card pb-[max(1rem,env(safe-area-inset-bottom))]">
               <SheetHeader>
                 <SheetTitle className="text-foreground">Select Channel</SheetTitle>
               </SheetHeader>
@@ -481,6 +487,7 @@ export function MyBroadcastsScreen({
             onSearch={setInternalSearchQuery}
             searchQuery={internalSearchQuery}
             compact
+            mobile
           />
         ) : (
           <EmptyChannels />
