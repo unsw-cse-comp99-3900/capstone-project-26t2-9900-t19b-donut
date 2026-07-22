@@ -17,4 +17,8 @@ describe('mobile navigation permissions', () => {
     expect(navbarSource).toContain("path: '/settings', feature: 'profile'");
     expect(routerSource).toContain('<Route element={<FeatureGate feature="profile" />}>');
   });
+
+  it('exposes labor demand to users with roster permission', () => {
+    expect(navbarSource).toContain("path: '/labor-demand', feature: 'rosters'");
+  });
 });
