@@ -39,9 +39,12 @@ interface Department { name: string; }
 interface SubDepartment { name: string; }
 interface Role { name: string; }
 interface Employee { first_name: string; last_name: string; }
-interface RemunerationLevel { level: number; }
-interface ShiftGroup { name: string; }
-interface ShiftSubgroup { name: string; }
+interface RemunerationLevel { level_number: number; }
+interface RosterGroup { name: string; }
+interface RosterSubgroup {
+    name: string;
+    roster_group: RosterGroup | null;
+}
 
 interface ShiftQueryResult {
     id: string;
@@ -53,24 +56,23 @@ interface ShiftQueryResult {
     role_id: string | null;
     assigned_employee_id: string | null;
     remuneration_level_id: string | null;
-    status: string;
+    lifecycle_status: string;
     is_draft: boolean;
     shift_group_id: string | null;
-    shift_subgroup_id: string | null;
-    length: number | null;
-    net_length: number | null;
-    paid_break_duration: number | null;
-    unpaid_break_duration: number | null;
-    created_at: string;
+    roster_subgroup_id: string;
+    scheduled_length_minutes: number | null;
+    net_length_minutes: number | null;
+    paid_break_minutes: number | null;
+    unpaid_break_minutes: number | null;
+    created_at: string | null;
     updated_at: string | null;
     // Joined tables
     departments: Department | null;
     sub_departments: SubDepartment | null;
     roles: Role | null;
-    employees: Employee | null;
+    assigned_profiles: Employee | null;
     remuneration_levels: RemunerationLevel | null;
-    shift_groups: ShiftGroup | null;
-    shift_subgroups: ShiftSubgroup | null;
+    roster_subgroup: RosterSubgroup | null;
 }
 
 /**
@@ -93,23 +95,22 @@ export async function getShiftDetails(
       role_id,
       assigned_employee_id,
       remuneration_level_id,
-      status,
+      lifecycle_status,
       is_draft,
       shift_group_id,
-      shift_subgroup_id,
-      length,
-      net_length,
-      paid_break_duration,
-      unpaid_break_duration,
+      roster_subgroup_id,
+      scheduled_length_minutes,
+      net_length_minutes,
+      paid_break_minutes,
+      unpaid_break_minutes,
       created_at,
       updated_at,
-      departments:department_id(name),
-      sub_departments:sub_department_id(name),
-      roles:role_id(name),
-      employees:assigned_employee_id(first_name, last_name),
-      remuneration_levels:remuneration_level_id(level),
-      shift_groups:shift_group_id(name),
-      shift_subgroups:shift_subgroup_id(name)
+      departments(name),
+      sub_departments(name),
+      roles(name),
+      assigned_profiles:profiles!assigned_employee_id(first_name, last_name),
+      remuneration_levels(level_number),
+      roster_subgroup:roster_subgroups(name, roster_group:roster_groups(name))
     `)
         .eq('id', shiftId)
         .single();
@@ -135,21 +136,21 @@ export async function getShiftDetails(
         roleId: data.role_id || undefined,
         roleName: data.roles?.name,
         assignedEmployeeId: data.assigned_employee_id || undefined,
-        assignedEmployeeName: data.employees
-            ? `${data.employees.first_name} ${data.employees.last_name}`
+        assignedEmployeeName: data.assigned_profiles
+            ? `${data.assigned_profiles.first_name} ${data.assigned_profiles.last_name}`
             : undefined,
         remunerationLevelId: data.remuneration_level_id || undefined,
-        remunerationLevel: data.remuneration_levels?.level,
-        status: data.status || 'draft',
+        remunerationLevel: data.remuneration_levels?.level_number,
+        status: data.lifecycle_status || 'Draft',
         isDraft: data.is_draft ?? true,
         shiftGroupId: data.shift_group_id || undefined,
-        shiftGroupName: data.shift_groups?.name,
-        shiftSubgroupId: data.shift_subgroup_id || undefined,
-        shiftSubgroupName: data.shift_subgroups?.name,
-        length: data.length || undefined,
-        netLength: data.net_length || undefined,
-        paidBreakDuration: data.paid_break_duration || undefined,
-        unpaidBreakDuration: data.unpaid_break_duration || undefined,
+        shiftGroupName: data.roster_subgroup?.roster_group?.name,
+        shiftSubgroupId: data.roster_subgroup_id || undefined,
+        shiftSubgroupName: data.roster_subgroup?.name,
+        length: data.scheduled_length_minutes ?? undefined,
+        netLength: data.net_length_minutes ?? undefined,
+        paidBreakDuration: data.paid_break_minutes ?? undefined,
+        unpaidBreakDuration: data.unpaid_break_minutes ?? undefined,
         createdAt: data.created_at || '',
         updatedAt: data.updated_at || undefined,
     };
