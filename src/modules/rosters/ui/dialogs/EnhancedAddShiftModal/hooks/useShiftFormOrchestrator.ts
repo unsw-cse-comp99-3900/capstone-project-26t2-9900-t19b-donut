@@ -37,6 +37,7 @@ import { useCompliancePanel } from '@/modules/compliance/ui/useCompliancePanel';
 import type { UseCompliancePanelReturn } from '@/modules/compliance/ui/useCompliancePanel';
 import { fetchV8EmployeeContext } from '@/modules/compliance/employee-context';
 import { getAvailabilityView } from '@/modules/availability/api/availability-view.api';
+import { logger } from '@/modules/core/lib/logger';
 
 const SYDNEY_TZ = 'Australia/Sydney';
 
@@ -816,6 +817,27 @@ export function useShiftFormOrchestrator({
         }
 
         if (!isTemplateMode && !editMode && (!resolvedContext.groupId || !resolvedContext.subGroupId)) {
+            const activeRoster = rosters.find(r => r.id === rosterId);
+            logger.error('Create shift blocked because roster hierarchy IDs could not be resolved', {
+                module: 'rosters',
+                operation: 'createShift.resolveRosterHierarchy',
+                rosterId,
+                selectedRosterId: selectedRosterId || null,
+                contextRosterId: resolvedContext.rosterId || null,
+                groupType: values.group_type || null,
+                subGroupName: values.sub_group_name || null,
+                resolvedGroupId: resolvedContext.groupId || null,
+                resolvedSubGroupId: resolvedContext.subGroupId || null,
+                nestedRosterGroupCount: activeRoster?.groups?.length ?? 0,
+                rosterStructureCount: rosterStructure.length,
+                rosterStructure: rosterStructure.map(slot => ({
+                    groupId: slot.groupId ?? null,
+                    groupType: slot.groupType ?? null,
+                    groupName: slot.groupName ?? null,
+                    subGroupId: slot.subGroupId ?? null,
+                    subGroupName: slot.subGroupName ?? null,
+                })),
+            });
             toast({
                 title: 'Missing Roster Hierarchy',
                 description: 'The selected group or subgroup is not linked to this roster. Please reselect both fields.',
