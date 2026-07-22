@@ -1488,7 +1488,7 @@ const LaborDemandForecastingPage: React.FC = () => {
     <PageLayout>
       <PageLayout.Header>
         <PersonalPageHeader
-          title="Labor Demand Forecasting"
+          title="Labor Demand"
           Icon={Activity}
           scope={scope}
           setScope={setScope}
@@ -1497,16 +1497,16 @@ const LaborDemandForecastingPage: React.FC = () => {
         />
 
         {/* ── Function Bar ────────────────────────────────────────────── */}
-        <div className="mt-4 lg:mt-6 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-3">
+        <div className="mt-4 lg:mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:gap-4">
+          <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:w-auto sm:gap-3">
             {/* Date Picker */}
-            <div className="flex items-center gap-2 bg-background/50 px-3 py-1.5 rounded-xl border border-border/60">
+            <div className="flex min-w-0 items-center gap-2 bg-background/50 px-3 py-1.5 rounded-xl border border-border/60">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-sm font-medium focus:outline-none"
+                className="min-w-0 w-full bg-transparent text-sm font-medium focus:outline-none"
               />
               {!eventsLoading && (
                 <Tooltip>
@@ -1529,7 +1529,7 @@ const LaborDemandForecastingPage: React.FC = () => {
               )}
             </div>
 
-            <div className="h-6 w-px bg-border/40 mx-1" />
+            <div className="hidden h-6 w-px bg-border/40 mx-1 sm:block" />
 
             {/* View Mode Toggle */}
             <div className="flex items-center border border-border/60 rounded-xl overflow-hidden bg-background/50">
@@ -1538,7 +1538,7 @@ const LaborDemandForecastingPage: React.FC = () => {
                   key={mode}
                   onClick={() => setViewMode(mode)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all capitalize",
+                    "flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium transition-all capitalize sm:gap-2 sm:px-4 sm:text-sm",
                     viewMode === mode
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
@@ -1555,7 +1555,7 @@ const LaborDemandForecastingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
             {isFetching && !isLoading && (
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <RefreshCw className="h-3.5 w-3.5 animate-spin" />
