@@ -43,6 +43,7 @@ export type BulkPublishValidationResult = {
   eligible: string[];
   complianceFailed: Array<{ id: string; reason: string }>;
   skipped: Array<{ id: string; reason: string }>;
+  engineUnavailable: boolean;
 };
 
 /**
@@ -75,6 +76,7 @@ type ActionPreview = {
   eligible: number;
   blocked: number;
   warned: number;
+  engineUnavailable?: boolean;
 };
 
 type ActionState =
@@ -223,6 +225,7 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
             blocked: validation.complianceFailed.length + validation.skipped.length,
             // warned = compliance-flagged eligible shifts (currently zero since compliance_failed = blocked)
             warned: 0,
+            engineUnavailable: validation.engineUnavailable,
           },
           validatedIds: validation.eligible,
           blockedDetails: [...validation.complianceFailed, ...validation.skipped],
@@ -703,9 +706,15 @@ export const BulkActionsToolbar: React.FC<BulkActionsToolbarProps> = ({
                 {/* Compliance validation ran — show detailed results */}
                 {actionState.type === 'confirming' && actionState.validatedIds ? (
                   <>
-                    <p className="text-emerald-400 font-medium">
-                      ✓ Compliance checked — {preview!.eligible} shift{preview!.eligible !== 1 ? 's' : ''} ready to publish.
-                    </p>
+                    {preview!.engineUnavailable ? (
+                      <p className="text-destructive font-medium">
+                        Compliance check incomplete — the engine was unavailable for one or more shifts.
+                      </p>
+                    ) : (
+                      <p className="text-emerald-400 font-medium">
+                        ✓ Compliance checked — {preview!.eligible} shift{preview!.eligible !== 1 ? 's' : ''} ready to publish.
+                      </p>
+                    )}
                     {preview!.blocked > 0 && (
                       <div className="space-y-1.5 text-destructive text-xs">
                         <p>

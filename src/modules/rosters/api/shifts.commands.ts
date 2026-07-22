@@ -2,7 +2,7 @@ import { supabase } from '@/platform/supabase/client';
 import { processInChunks } from '../domain/bulk-action-engine';
 import { Shift, isValidUuid, safeUuid, calculateMinutesBetweenTimes } from '../domain/shift.entity';
 import { CreateShiftData, UpdateShiftData } from './shifts.dto';
-import { complianceService } from '../services/compliance.service';
+import { complianceFailureReason, complianceService } from '../services/compliance.service';
 import { callRpc, callAuthenticatedRpc, callAuthenticatedVoidRpc, requireUser } from '@/platform/supabase/rpc/client';
 import { shiftsQueries } from './shifts.queries';
 import { ComplianceError } from '@/platform/supabase/rpc/errors';
@@ -59,6 +59,7 @@ export type BulkPublishValidationResult = {
     eligible: string[];
     complianceFailed: Array<{ id: string; reason: string }>;
     skipped: Array<{ id: string; reason: string }>;
+    engineUnavailable: boolean;
 };
 
 export const shiftsCommands = {
@@ -502,10 +503,14 @@ export const shiftsCommands = {
                     shift.end_time,
                     netMinutes,
                     id,
+                    id,
                 );
                 if (!validation.isValid) {
-                    const rules = validation.violations.join(', ');
-                    return { id, pass: false as const, reason: rules };
+                    return {
+                        id,
+                        pass: false as const,
+                        reason: complianceFailureReason(validation),
+                    };
                 }
                 // Flag assigned shifts within the 4h lock window for emergency publish
                 const ttsMs = shift.start_at
@@ -755,6 +760,7 @@ export const shiftsCommands = {
         const eligible: string[] = [];
         const complianceFailed: Array<{ id: string; reason: string }> = [];
         const skipped: Array<{ id: string; reason: string }> = [];
+        let engineUnavailable = false;
 
         const checks = await processInChunks(
             shifts.map(s => s.id),
@@ -783,11 +789,23 @@ export const shiftsCommands = {
                     shift.end_time,
                     netMinutes,
                     id,
+                    id,
                 );
 
+                if (validation.status === 'unavailable') {
+                    return {
+                        id,
+                        category: 'engine_unavailable' as const,
+                        reason: complianceFailureReason(validation),
+                    };
+                }
+
                 if (!validation.isValid) {
-                    const rules = validation.violations.join(', ');
-                    return { id, category: 'compliance_failed' as const, reason: rules };
+                    return {
+                        id,
+                        category: 'compliance_failed' as const,
+                        reason: complianceFailureReason(validation),
+                    };
                 }
 
                 return { id, category: 'eligible' as const, reason: '' };
@@ -796,17 +814,22 @@ export const shiftsCommands = {
 
         for (const r of checks) {
             if (!r.ok) {
-                complianceFailed.push({ id: r.id, reason: (r as any).error });
+                engineUnavailable = true;
+                complianceFailed.push({ id: r.id, reason: r.error });
             } else {
                 switch (r.value.category) {
                     case 'eligible':          eligible.push(r.id); break;
                     case 'compliance_failed': complianceFailed.push({ id: r.id, reason: r.value.reason }); break;
+                    case 'engine_unavailable':
+                        engineUnavailable = true;
+                        complianceFailed.push({ id: r.id, reason: r.value.reason });
+                        break;
                     case 'skipped':           skipped.push({ id: r.id, reason: r.value.reason }); break;
                 }
             }
         }
 
-        return { eligible, complianceFailed, skipped };
+        return { eligible, complianceFailed, skipped, engineUnavailable };
     },
 
     /* ============================================================

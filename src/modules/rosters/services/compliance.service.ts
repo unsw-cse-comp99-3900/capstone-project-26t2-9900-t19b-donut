@@ -144,9 +144,10 @@ export const complianceService = {
     endTime: string,
     netLengthMinutes: number,
     excludeV8ShiftId?: string,
+    shiftId?: string,
   ) {
     const result = await validateCompliance({
-      employeeId, shiftDate, startTime, endTime, netLengthMinutes, excludeV8ShiftId,
+      employeeId, shiftDate, startTime, endTime, netLengthMinutes, excludeV8ShiftId, shiftId,
     });
     // F5: 'unavailable' must NOT be treated as valid. Only 'passed' and 'warned'
     // mean the check ran and found no blocking violation. Any other status
@@ -154,10 +155,27 @@ export const complianceService = {
     // when the compliance engine is unreachable.
     return {
       isValid: result.status === 'passed' || result.status === 'warned',
+      status: result.status,
       violations: result.violations,
       warnings: result.warnings,
       weeklyHours: result.weeklyHours,
       maxWeeklyHours: result.maxWeeklyHours,
+      checksSkipped: result.checksSkipped,
     };
   },
 };
+
+export function complianceFailureReason(result: {
+  status: ComplianceStatus;
+  violations: string[];
+  warnings: string[];
+}): string {
+  const messages = result.violations.length > 0
+    ? result.violations
+    : result.warnings;
+
+  if (messages.length > 0) return messages.join(', ');
+  return result.status === 'unavailable'
+    ? 'Compliance engine unavailable — checks could not be performed'
+    : 'Shift failed compliance validation';
+}
