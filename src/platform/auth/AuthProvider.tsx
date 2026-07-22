@@ -2,6 +2,7 @@
 // Certificate-driven auth with Type X/Y permission model
 
 import React, { createContext, useEffect, useState } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import { supabase } from '@/platform/supabase/client';
 import { User, AccessLevel, Role, UserContract, AccessCertificate, PermissionObject } from './types';
 import { authService } from './auth.service';
@@ -9,7 +10,7 @@ import { hasAccess as checkAccess } from './access.policy';
 import { clearOfflineQueryCache } from '@/platform/offline/offlineQueryPersistence';
 import { setSentryUser } from '@/platform/observability/sentry';
 import { clearBiometricEnabled, isBiometricEnabled, setBiometricEnabled } from '@/platform/native/biometricPreferences';
-import { canUseFaceId, verifyFaceId } from '@/platform/native/biometrics';
+import { canUseFaceId, isNativeMobile, verifyFaceId } from '@/platform/native/biometrics';
 
 // Re-export types for backward compatibility with existing imports
 export type { User, AccessLevel, Role };
@@ -178,6 +179,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       setPermissionObject(null);
     }
+  }, [user]);
+
+  // A warm resume keeps the React tree mounted, so the cold-start session
+  // check above never runs. Lock as soon as a Face ID-enabled native app
+  // actually enters the background; the existing lock screen will then be
+  // waiting when the user returns. `pause` is intentionally used instead of
+  // `appStateChange`, because iOS can briefly become inactive for system UI
+  // (including the Face ID prompt itself) without entering the background.
+  useEffect(() => {
+    if (!user || !isNativeMobile()) return;
+
+    let disposed = false;
+    let pauseListener: { remove: () => Promise<void> } | undefined;
+
+    void CapacitorApp.addListener('pause', () => {
+      if (isBiometricEnabled()) {
+        setIsBiometricLockRequired(true);
+      }
+    }).then((listener) => {
+      if (disposed) {
+        void listener.remove();
+        return;
+      }
+      pauseListener = listener;
+    });
+
+    return () => {
+      disposed = true;
+      void pauseListener?.remove();
+    };
   }, [user]);
 
   const login = async (email: string, password: string) => {
