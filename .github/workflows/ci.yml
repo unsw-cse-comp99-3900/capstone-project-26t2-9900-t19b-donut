@@ -61,13 +61,6 @@ jobs:
         run: npm test
 
       - name: Build
-        env:
-          # Source-map upload is skipped automatically when these are unset
-          # (e.g. on PRs from forks). Add them as repo secrets for prod builds.
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          VITE_SENTRY_RELEASE: ${{ github.sha }}
         run: npm run build
 
       - name: Build web Docker image
@@ -87,6 +80,11 @@ jobs:
     timeout-minutes: 15
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+      VITE_SENTRY_RELEASE: ${{ github.sha }}
     steps:
       - name: Guard — require VERCEL_TOKEN
         id: guard
@@ -110,6 +108,18 @@ jobs:
             echo "flag=" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Guard — require production monitoring config
+        if: steps.guard.outputs.ok == 'true' && steps.target.outputs.env == 'production'
+        run: |
+          missing=0
+          for name in VITE_SENTRY_DSN SENTRY_AUTH_TOKEN SENTRY_ORG SENTRY_PROJECT VITE_SENTRY_RELEASE; do
+            if [ -z "${!name:-}" ]; then
+              echo "::error::$name is required for production Sentry monitoring."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - uses: actions/checkout@v5
         if: steps.guard.outputs.ok == 'true'
 
@@ -128,6 +138,8 @@ jobs:
 
       - name: Build
         if: steps.guard.outputs.ok == 'true'
+        env:
+          VITE_SENTRY_ENVIRONMENT: ${{ steps.target.outputs.env }}
         run: vercel build ${{ steps.target.outputs.flag }} --token="$VERCEL_TOKEN"
 
       - name: Deploy
