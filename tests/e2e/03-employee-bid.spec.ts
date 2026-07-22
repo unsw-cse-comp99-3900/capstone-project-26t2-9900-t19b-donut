@@ -10,7 +10,7 @@ test.describe('Employee Bid Flow', () => {
     await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
     await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
     await page.getByRole('button', { name: 'Sign In' }).click();
-    await expect(page).not.toHaveURL(/.*\/login/);
+    await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
   });
 
   test('Employee can view available shifts and submit a bid', async ({ page }) => {

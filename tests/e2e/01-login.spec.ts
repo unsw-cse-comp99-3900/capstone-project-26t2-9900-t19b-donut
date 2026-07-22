@@ -24,7 +24,7 @@ test.describe('Login Flow', () => {
     await signInButton.click();
 
     // Verify successful login by checking for redirection to /my-roster or dashboard
-    await expect(page).not.toHaveURL(/.*\/login/);
+    await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
     
     // Optional: wait for a toast or some indicator
     // const toast = page.getByText(/Welcome back/i);

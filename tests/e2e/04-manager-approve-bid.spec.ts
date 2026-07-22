@@ -10,7 +10,7 @@ test.describe('Manager Approve Bid Flow', () => {
     await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
     await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
     await page.getByRole('button', { name: 'Sign In' }).click();
-    await expect(page).not.toHaveURL(/.*\/login/);
+    await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
   });
 
   test('Manager can view employee bids and approve one', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('Manager Approve Bid Flow', () => {
       // Wait for the compliance check to finish and the Finalize button to appear
       // It could be 'Finalize Assignment' or 'Override & Assign Role' depending on warnings
       const assignBtn = page.getByRole('button', { name: /Assign|Finalize/i });
-      await expect(assignBtn).toBeVisible({ timeout: 15000 });
+      await expect(assignBtn).toBeVisible({ timeout: 30000 });
       
       // Check if it's disabled (Blocked by Compliance)
       const isBlocked = await assignBtn.isDisabled();

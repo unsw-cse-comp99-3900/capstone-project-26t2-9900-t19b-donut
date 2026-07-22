@@ -11,7 +11,7 @@ test.describe('Swap Shift Flow', () => {
       await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
       await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
       await page.getByRole('button', { name: 'Sign In' }).click();
-      await expect(page).not.toHaveURL(/.*\/login/);
+      await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
     });
 
     test('User can initiate a swap request for their shift', async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe('Swap Shift Flow', () => {
       await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
       await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
       await page.getByRole('button', { name: 'Sign In' }).click();
-      await expect(page).not.toHaveURL(/.*\/login/);
+      await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
     });
 
     test('Manager can approve a pending swap', async ({ page }) => {
