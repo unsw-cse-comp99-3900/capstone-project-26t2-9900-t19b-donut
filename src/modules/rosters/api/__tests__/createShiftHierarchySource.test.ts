@@ -26,6 +26,9 @@ describe('create-shift roster hierarchy contract', () => {
       'roster_subgroup_id: resolvedContext.subGroupId || null',
     );
     expect(orchestratorSource).toContain("title: 'Missing Roster Hierarchy'");
+    expect(orchestratorSource).toContain(
+      "operation: 'createShift.resolveRosterHierarchy'",
+    );
   });
 
   it('sends the database RPC its canonical roster_subgroup_id key', () => {
