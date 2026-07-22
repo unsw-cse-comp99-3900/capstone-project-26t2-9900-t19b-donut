@@ -92,7 +92,7 @@ const AuthLayout: React.FC = () => {
         logout,
     } = useAuth();
     const location = useLocation();
-    const noPadding = NO_PADDING_ROUTES.has(location.pathname);
+    const noPadding = NO_PADDING_ROUTES.has(location.pathname) || location.pathname.startsWith('/settings/');
 
     if (isLoading) {
         return (

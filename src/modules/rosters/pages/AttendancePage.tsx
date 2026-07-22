@@ -49,9 +49,8 @@ import {
   type GPSAnalysis,
 } from '@/modules/rosters/utils/gps';
 
-import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
+import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
-import { UnifiedModuleFunctionBar } from '@/modules/core/ui/components/UnifiedModuleFunctionBar';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { TimesheetRow as TimesheetRowComponent } from '@/modules/timesheets/ui/components/TimesheetRow';
@@ -655,83 +654,50 @@ const AttendancePage: React.FC = () => {
 
 
   return (
-    <div className={cn('h-full flex flex-col overflow-hidden p-4 lg:p-6 space-y-4', accessibleView && 'accessible-page accessible-attendance')}>
-      {/* ── Unified Header ────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-30">
-        <div className={cn(
-            "rounded-[32px] p-4 lg:p-6 transition-all border",
-            isDark 
-                ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
-                : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
-        )}>
-          {/* Row 1 & 2: Identity & Scope Filter */}
-          <PersonalPageHeader
-            title="My Attendance"
-            Icon={Fingerprint}
-            scope={scope}
-            setScope={setScope}
-            isGammaLocked={isGammaLocked}
-            className="mb-4 lg:mb-6"
-          />
-
-          {/* Row 3: Function Bar */}
-          <UnifiedModuleFunctionBar
-            transparent
-            startDate={startDate}
-            endDate={endDate}
-            onDateChange={(start, end) => {
-              setStartDate(start);
-              setEndDate(end);
-            }}
-            viewMode={viewMode}
-            onViewModeChange={(v) => setViewMode(v as 'card' | 'table')}
-            onRefresh={() => refetch()}
-            isLoading={logsLoading}
-            className="mt-1"
-            filters={
-              <>
-                {/* Mobile: icon-only, 44×44 ARIA-compliant touch target */}
-                <button
-                  onClick={() => setFilterDrawerOpen(true)}
-                  aria-label="Filter by status"
-                  className={cn(
-                    'md:hidden h-11 w-full flex items-center justify-center rounded-xl transition-all active:scale-95',
-                    statusFilter !== 'all'
-                      ? isDark ? 'bg-primary/15 text-primary ring-1 ring-primary/30' : 'bg-primary/10 text-primary ring-1 ring-primary/20'
-                      : isDark ? 'bg-white/5 text-white/70 active:bg-white/10' : 'bg-slate-100 text-slate-600 active:bg-slate-200',
-                  )}
-                >
-                  <Filter className="h-5 w-5" />
-                </button>
-                {/* Desktop: full text button */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setFilterDrawerOpen(true)}
-                  className={cn(
-                    'hidden md:flex h-10 lg:h-11 px-4 rounded-xl font-black uppercase text-[10px] tracking-wider transition-all shadow-sm',
-                    isDark ? "bg-[#111827]/60 border-white/5" : "bg-slate-100 border-slate-200/50",
-                    statusFilter !== 'all' && (isDark ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-primary/5 border-primary/10 text-primary'),
-                  )}
-                >
-                  <Filter className="h-3.5 w-3.5 mr-2 opacity-50" />
-                  <span>Filter</span>
-                </Button>
-
-                <StatusFilterDrawer
-                  open={filterDrawerOpen}
-                  onOpenChange={setFilterDrawerOpen}
-                  current={statusFilter}
-                  onSelect={setStatusFilter}
-                />
-              </>
-            }
-          />
-        </div>
-      </div>
+    <div className={cn('h-full flex flex-col overflow-hidden bg-background', accessibleView && 'accessible-page accessible-attendance')}>
+      <GoldStandardHeader
+        title="My Attendance"
+        Icon={Fingerprint}
+        scope={scope}
+        setScope={setScope}
+        isGammaLocked={isGammaLocked}
+        startDate={startDate}
+        endDate={endDate}
+        onDateChange={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+        }}
+        viewMode={viewMode}
+        onViewModeChange={(v) => setViewMode(v as 'card' | 'table')}
+        onRefresh={() => refetch()}
+        isLoading={logsLoading}
+        filters={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setFilterDrawerOpen(true)}
+            aria-label="Filter by status"
+            className={cn(
+              'h-11 w-full flex items-center justify-center rounded-xl p-0 transition-all active:scale-95',
+              'md:h-10 md:w-auto md:px-4 md:font-black md:uppercase md:text-[10px] md:tracking-wider md:shadow-sm lg:h-11',
+              isDark ? "bg-[#111827]/60 border-white/5" : "bg-slate-100 border-slate-200/50",
+              statusFilter !== 'all' && (isDark ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-primary/5 border-primary/10 text-primary'),
+            )}
+          >
+            <Filter className="h-5 w-5 md:h-3.5 md:w-3.5 md:mr-2 md:opacity-50" />
+            <span className="hidden md:inline">Filter</span>
+          </Button>
+        }
+      />
+      <StatusFilterDrawer
+        open={filterDrawerOpen}
+        onOpenChange={setFilterDrawerOpen}
+        current={statusFilter}
+        onSelect={setStatusFilter}
+      />
 
       {/* ── Main Content Area ─────────────────────────────────────────── */}
-      <div className="flex-1 min-h-0 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden px-2 lg:px-6 pb-4 lg:pb-6">
         <div className={cn(
             "h-full rounded-[32px] overflow-hidden transition-all border flex flex-col",
             isDark 

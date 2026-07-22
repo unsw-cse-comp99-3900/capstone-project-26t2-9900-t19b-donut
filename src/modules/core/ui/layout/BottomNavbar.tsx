@@ -116,12 +116,12 @@ const BottomNavbar: React.FC = () => {
 
   const middleItems = [
     { label: 'Roster', icon: Calendar, path: '/my-roster' },
-    { label: 'Atten', icon: Fingerprint, path: '/my-attendance' },
-    { label: 'Avail', icon: CalendarDays, path: '/my-availabilities' },
+    { label: 'Attendance', icon: Fingerprint, path: '/my-attendance' },
+    { label: 'Availability', icon: CalendarDays, path: '/my-availabilities' },
     { label: 'Bids', icon: BadgeCheck, path: '/my-bids' },
     { label: 'Swaps', icon: RefreshCw, path: '/my-swaps' },
-    { label: 'Radio', icon: Radio, path: '/my-broadcasts', badgeKey: 'broadcasts' },
-    { label: 'Notif', icon: BellRing, path: '/my-notifications', badgeKey: 'notifications' },
+    { label: 'Broadcasts', icon: Radio, path: '/my-broadcasts', badgeKey: 'broadcasts' },
+    { label: 'Notifications', icon: BellRing, path: '/my-notifications', badgeKey: 'notifications' },
   ];
 
   const moreItems = [
@@ -150,7 +150,7 @@ const BottomNavbar: React.FC = () => {
         cn(
           "relative flex items-center justify-center h-full rounded-full transition-all duration-300 ease-out flex-shrink-0 overflow-hidden",
           isActive 
-            ? "bg-foreground text-background shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.05)] px-4 max-w-[150px] nav-item-active" 
+            ? "bg-foreground text-background shadow-[0_4px_12px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_12px_rgba(255,255,255,0.05)] px-4 max-w-[180px] nav-item-active"
             : "w-[48px] max-w-[48px] px-0 text-muted-foreground hover:bg-muted/50"
         )
       }
@@ -176,9 +176,9 @@ const BottomNavbar: React.FC = () => {
             
             <div className={cn(
                "overflow-hidden transition-all duration-300 ease-out flex items-center",
-               isActive ? "max-w-[100px] opacity-100" : "max-w-0 opacity-0"
+               isActive ? "max-w-[130px] opacity-100" : "max-w-0 opacity-0"
             )}>
-              <span className="text-[11px] font-black uppercase tracking-[0.15em] whitespace-nowrap pt-[1px] block">
+              <span className="text-[10px] font-black uppercase tracking-[0.08em] whitespace-nowrap pt-[1px] block">
                 {item.label}
               </span>
             </div>

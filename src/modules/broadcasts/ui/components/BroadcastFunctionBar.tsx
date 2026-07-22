@@ -41,7 +41,7 @@ export const BroadcastFunctionBar: React.FC<BroadcastFunctionBarProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full items-center gap-2 sm:w-auto">
         <Button
           variant="outline"
           size="icon"
@@ -57,7 +57,7 @@ export const BroadcastFunctionBar: React.FC<BroadcastFunctionBarProps> = ({
 
         <Button
           onClick={onCreateGroup}
-          className="h-10 lg:h-11 px-4 lg:px-6 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase text-[10px] tracking-wider rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+          className="ml-auto h-10 lg:h-11 px-4 lg:px-6 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase text-[10px] tracking-wider rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] sm:ml-0"
         >
           <Plus className="h-4 w-4" />
           Create Group
