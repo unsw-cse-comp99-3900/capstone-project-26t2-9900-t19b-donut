@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 
 const SHIFT_LINK_PATTERN = /^\/shifts\/([^/?#]+)/;
 const SHIFTOPIA_CUSTOM_SCHEME = 'shiftopia:';
+export const SHIFTOPIA_WEB_ORIGIN = 'https://capstone-project-26t2-9900-t19b-don.vercel.app';
 
 export const isShiftDeepLinkPath = (pathname: string) => SHIFT_LINK_PATTERN.test(pathname);
 
@@ -13,7 +14,7 @@ const getShiftDeepLinkPath = (url: URL) => {
       : url.pathname;
   }
 
-  return url.pathname;
+  return url.origin === SHIFTOPIA_WEB_ORIGIN ? url.pathname : null;
 };
 
 export const routeNativeDeepLink = (url: string) => {
@@ -21,7 +22,7 @@ export const routeNativeDeepLink = (url: string) => {
     const parsedUrl = new URL(url);
     const shiftPath = getShiftDeepLinkPath(parsedUrl);
 
-    if (!isShiftDeepLinkPath(shiftPath)) {
+    if (!shiftPath || !isShiftDeepLinkPath(shiftPath)) {
       return false;
     }
 
@@ -33,6 +34,9 @@ export const routeNativeDeepLink = (url: string) => {
     return false;
   }
 };
+
+export const buildShiftUniversalLink = (shiftId: string) =>
+  `${SHIFTOPIA_WEB_ORIGIN}/shifts/${encodeURIComponent(shiftId)}`;
 
 export const initNativeDeepLinks = () => {
   if (!Capacitor.isNativePlatform()) {

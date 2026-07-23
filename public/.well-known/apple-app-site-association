@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "2V86F43APL.com.shiftopia.app"
+        ],
+        "components": [
+          {
+            "/": "/shifts/*",
+            "comment": "Open shared Shiftopia shifts in the iOS app."
+          }
+        ]
+      }
+    ]
+  }
+}
