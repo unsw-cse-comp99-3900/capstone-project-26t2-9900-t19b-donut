@@ -20,6 +20,7 @@ import { cn } from '@/modules/core/lib/utils';
 import { Shift } from '@/modules/rosters';
 import { useDropShift } from '@/modules/rosters/state/useRosterShifts';
 import { AttendanceBadge } from '@/modules/rosters/ui/components/AttendanceBadge';
+import { buildShiftUniversalLink } from '@/platform/native/deepLinks';
 
 import { useSwaps } from '@/modules/planning';
 import { useToast } from '@/modules/core/hooks/use-toast';
@@ -50,14 +51,7 @@ interface ShiftDetailsDialogProps {
 }
 
 export const buildShiftShareUrl = (shiftId: string) => {
-  const encodedShiftId = encodeURIComponent(shiftId);
-  if (Capacitor.isNativePlatform()) {
-    return `shiftopia:///shifts/${encodedShiftId}`;
-  }
-  if (typeof window === 'undefined') {
-    return `/shifts/${encodedShiftId}`;
-  }
-  return `${window.location.origin}/shifts/${encodedShiftId}`;
+  return buildShiftUniversalLink(shiftId);
 };
 
 // ── Cost Tooltip ──────────────────────────────────────────────────────────

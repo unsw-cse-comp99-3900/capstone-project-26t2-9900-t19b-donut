@@ -9,9 +9,8 @@ const source = readFileSync(resolve(__dirname, '../ShiftDetailsDialog.tsx'), 'ut
 describe('shift detail share link source', () => {
   it('builds stable shared shift links', () => {
     expect(source).toContain('buildShiftShareUrl');
-    expect(source).toContain('shiftopia:///shifts/');
-    expect(source).toContain('/shifts/');
-    expect(source).toContain('encodeURIComponent(shiftId)');
+    expect(source).toContain('buildShiftUniversalLink(shiftId)');
+    expect(source).not.toContain('shiftopia:///shifts/');
   });
 
   it('uses native sharing first, then web share, then clipboard', () => {
