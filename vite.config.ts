@@ -8,6 +8,17 @@ import webfontDl from 'vite-plugin-webfont-dl';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { VitePWA } from 'vite-plugin-pwa';
 
+function canUploadSourceMaps(mode: string): boolean {
+  return Boolean(
+    mode === 'production'
+    && !process.env.CAPACITOR_BUILD
+    && process.env.SENTRY_AUTH_TOKEN
+    && process.env.SENTRY_ORG
+    && process.env.SENTRY_PROJECT
+    && process.env.VITE_SENTRY_RELEASE,
+  );
+}
+
 export default defineConfig(({ mode }) => ({
   server: {
     host: '::',
@@ -45,10 +56,9 @@ export default defineConfig(({ mode }) => ({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
     }),
-    // Source-map upload runs only when SENTRY_AUTH_TOKEN is present (i.e. in CI
-    // for prod builds). Local prod builds without the token still produce
-    // source maps but skip the upload, so they never fail the build.
-    mode === 'production' && process.env.SENTRY_AUTH_TOKEN && sentryVitePlugin({
+    // Upload source maps only for fully configured production release builds.
+    // Uploaded maps are deleted from dist and are not deployed publicly.
+    canUploadSourceMaps(mode) && sentryVitePlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: process.env.SENTRY_ORG,
       project: process.env.SENTRY_PROJECT,
@@ -73,7 +83,7 @@ export default defineConfig(({ mode }) => ({
     },
   }),
   build: {
-    sourcemap: true,
+    sourcemap: canUploadSourceMaps(mode) ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks: {
