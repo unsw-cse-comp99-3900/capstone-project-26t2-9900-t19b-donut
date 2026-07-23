@@ -1,1 +1,4 @@
 project_id = "srfozdlphoempdattvtx"
+
+[functions.evaluate-compliance]
+verify_jwt = true

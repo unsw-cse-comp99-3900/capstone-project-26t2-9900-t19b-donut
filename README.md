@@ -121,7 +121,7 @@ Then start the frontend:
 npm run dev
 ```
 
-Open <http://localhost:8080>. To stop the supporting services, run:
+Open <http://localhost:5173>. To stop the supporting services, run:
 
 ```sh
 docker compose stop optimizer ml
@@ -135,11 +135,17 @@ To build and run the frontend, optimizer, and ML service together:
 docker compose up --build -d
 ```
 
+The web image receives all `VITE_*` values as build arguments because Vite
+embeds public configuration in the static bundle during `npm run build`.
+Create `.env` from `.env.example` before building. Changing one of these values
+requires rebuilding the `web-app` image.
+
 | Service | Local URL |
 |---|---|
 | Web application | <http://localhost:8080> |
 | Optimizer | <http://localhost:5005> |
 | ML service | <http://localhost:8000> |
+| Web health check | <http://localhost:8080/healthz> |
 
 Useful commands:
 
@@ -149,8 +155,12 @@ docker compose logs -f
 docker compose down
 ```
 
-Do not run the Docker web application and `npm run dev` at the same time because
-both use port 8080.
+The CI workflow builds `Dockerfile.web` on every pull request and every push to
+`main`. This verifies that the production web image remains buildable; it does
+not publish the image to a container registry.
+
+The Docker web application uses port 8080, while `npm run dev` uses port 5173,
+so both can run at the same time when needed.
 
 ## Environment Variables
 

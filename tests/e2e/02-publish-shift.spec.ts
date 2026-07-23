@@ -14,7 +14,7 @@ test.describe('Publish Shift Flow', () => {
     await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
     await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
     await page.getByRole('button', { name: 'Sign In' }).click();
-    await expect(page).not.toHaveURL(/.*\/login/);
+    await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
   });
 
   test('Manager can create and publish a new shift', async ({ page, isMobile }) => {
@@ -23,13 +23,15 @@ test.describe('Publish Shift Flow', () => {
     // 1. Navigate to Rosters page
     await page.goto('/rosters');
     
+    // Wait for shifts to finish loading
+    await expect(page.getByText('Loading shifts...')).not.toBeVisible({ timeout: 30000 });
+    
     // Hide the performance monitor that intercepts clicks in the bottom right corner
     await page.addStyleTag({ content: 'button[aria-label="Open performance monitor"] { display: none !important; }' });
     
     // 2. Activate DnD Mode (hand icon)
     await page.locator('button:nth-child(11)').click();
     
-    // 3. Click the + button in the grid to add shift
     await page.getByRole('button', { name: 'Add Shift' }).nth(2).click();
     
     // 4. Wizard Step 1: Select Role

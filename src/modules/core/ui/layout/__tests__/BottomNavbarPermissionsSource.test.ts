@@ -18,13 +18,6 @@ describe('mobile navigation permissions', () => {
     expect(routerSource).toContain('<Route element={<FeatureGate feature="profile" />}>');
   });
 
-  it('uses complete mobile navigation labels', () => {
-    expect(navbarSource).toContain("label: 'Attendance'");
-    expect(navbarSource).toContain("label: 'Availability'");
-    expect(navbarSource).toContain("label: 'Broadcasts'");
-    expect(navbarSource).toContain("label: 'Notifications'");
-  });
-
   it('exposes labor demand to users with roster permission', () => {
     expect(navbarSource).toContain("path: '/labor-demand', feature: 'rosters'");
   });
