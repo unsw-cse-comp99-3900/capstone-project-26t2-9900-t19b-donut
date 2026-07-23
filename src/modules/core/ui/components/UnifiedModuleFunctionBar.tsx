@@ -111,6 +111,7 @@ export const UnifiedModuleFunctionBar: React.FC<UnifiedModuleFunctionBarProps> =
             ...(datePickerActive ? ['minmax(44px, 0.7fr)'] : []),
             ...(viewModeActive ? ['minmax(44px, 0.7fr)'] : []),
             ...unwrappedFilters.map(() => 'minmax(0, 1.8fr)'),
+            ...unwrappedChildrenList.map(() => 'minmax(44px, 0.7fr)'),
             ...(refreshActive ? ['minmax(44px, 0.55fr)'] : []),
         ];
 
@@ -264,7 +265,7 @@ export const UnifiedModuleFunctionBar: React.FC<UnifiedModuleFunctionBarProps> =
 
                 {/* 4. Bulk Mode & Settings (passed as children) */}
                 {unwrappedChildrenList.map((child, idx) => (
-                    <div key={`child-${idx}`} className="w-full col-span-full [&_button]:w-full [&_button]:justify-center">
+                    <div key={`child-${idx}`} className="w-full min-w-0 [&_button]:w-full [&_button]:justify-center">
                         {child}
                     </div>
                 ))}

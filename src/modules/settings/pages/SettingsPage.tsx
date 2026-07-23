@@ -547,7 +547,7 @@ const SettingsPage: React.FC = () => {
       {/* ── Main Content Area ─────────────────────────────────────────── */}
       <div className="flex-1 min-h-0 overflow-hidden pt-2 lg:pt-4">
         <div className={cn(
-            "h-full rounded-[32px] overflow-auto transition-all border p-6 lg:p-10",
+            "h-full rounded-[32px] overflow-auto transition-all border p-6 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:p-10",
             isDark 
                 ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                 : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
