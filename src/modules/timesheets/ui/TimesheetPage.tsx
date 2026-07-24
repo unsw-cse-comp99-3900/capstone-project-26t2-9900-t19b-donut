@@ -2,6 +2,13 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { format, startOfWeek, startOfMonth } from 'date-fns';
 import { Clock, RefreshCw, ListFilter } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/modules/core/ui/primitives/toggle-group';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/modules/core/ui/primitives/select';
 
 import { useToast } from '@/modules/core/hooks/use-toast';
 import { useAuth } from '@/platform/auth/useAuth';
@@ -229,10 +236,31 @@ export const TimesheetPage: React.FC = () => {
                     />
                 }
                 functionBarChildren={
-                    <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-foreground/[0.03] border border-foreground/[0.05]">
+                    <div className="w-full min-w-0">
+                        <div className="md:hidden">
+                            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as typeof statusFilter)}>
+                                <SelectTrigger
+                                    aria-label="Filter timesheets by status"
+                                    className="h-11 w-full min-w-0 rounded-xl border-foreground/[0.05] bg-foreground/[0.03] px-3 text-xs font-bold uppercase"
+                                >
+                                    <div className="flex min-w-0 items-center gap-2">
+                                        <ListFilter className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                                        <SelectValue />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All statuses</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="approved">Approved</SelectItem>
+                                    <SelectItem value="rejected">Rejected</SelectItem>
+                                    <SelectItem value="no_show">No-Show</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-xl bg-foreground/[0.03] border border-foreground/[0.05]">
                             <ListFilter className="h-3 w-3 text-muted-foreground/40" />
-                            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/40 mr-1">Status</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mr-1">Status</span>
                             
                             <ToggleGroup 
                                 type="single" 
@@ -241,9 +269,9 @@ export const TimesheetPage: React.FC = () => {
                                 className="bg-transparent"
                             >
                                 <ToggleGroupItem value="all" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg">All</ToggleGroupItem>
-                                <ToggleGroupItem value="pending" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-amber-500/10 data-[state=on]:text-amber-500">Pending</ToggleGroupItem>
-                                <ToggleGroupItem value="approved" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-emerald-500/10 data-[state=on]:text-emerald-500">Approved</ToggleGroupItem>
-                                <ToggleGroupItem value="rejected" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-rose-500/10 data-[state=on]:text-rose-500">Rejected</ToggleGroupItem>
+                                <ToggleGroupItem value="pending" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-amber-500/10 data-[state=on]:text-amber-800 dark:data-[state=on]:text-amber-300">Pending</ToggleGroupItem>
+                                <ToggleGroupItem value="approved" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-emerald-500/10 data-[state=on]:text-emerald-700 dark:data-[state=on]:text-emerald-300">Approved</ToggleGroupItem>
+                                <ToggleGroupItem value="rejected" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-rose-500/10 data-[state=on]:text-rose-700 dark:data-[state=on]:text-rose-300">Rejected</ToggleGroupItem>
                                 <ToggleGroupItem value="no_show" className="h-7 px-3 text-[9px] font-black uppercase tracking-widest rounded-lg data-[state=on]:bg-slate-500/20">No-Show</ToggleGroupItem>
                             </ToggleGroup>
                         </div>

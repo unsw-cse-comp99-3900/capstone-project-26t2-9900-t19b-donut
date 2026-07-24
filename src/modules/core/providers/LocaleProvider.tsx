@@ -10,6 +10,19 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children }) => {
   const { orgBranding } = useSettings();
 
   useEffect(() => {
+    const syncDocumentLanguage = (language: string) => {
+      document.documentElement.lang = language;
+    };
+
+    syncDocumentLanguage(i18n.resolvedLanguage || i18n.language);
+    i18n.on('languageChanged', syncDocumentLanguage);
+
+    return () => {
+      i18n.off('languageChanged', syncDocumentLanguage);
+    };
+  }, []);
+
+  useEffect(() => {
     if ((orgBranding as any)?.language) {
       i18n.changeLanguage((orgBranding as any).language);
     }
