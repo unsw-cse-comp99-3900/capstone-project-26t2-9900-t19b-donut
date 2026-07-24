@@ -12,17 +12,17 @@ export const TimesheetStatusBadge: React.FC<TimesheetStatusBadgeProps> = ({ stat
     const s = (status as string).toUpperCase();
 
     const variants: Record<string, string> = {
-        'DRAFT': 'bg-slate-500/10 text-slate-400 border-slate-500/10',
-        'SUBMITTED': 'bg-sky-500/10 text-sky-400 border-sky-500/10',
-        'APPROVED': 'bg-emerald-500/15 text-emerald-400 border-emerald-500/10',
-        'REJECTED': 'bg-rose-500/15 text-rose-400 border-rose-500/10',
-        'NO_SHOW': 'bg-red-600/20 text-red-500 border-red-600/10 font-bold',
-        'ACTIVE': 'bg-primary/20 text-primary border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]',
-        'COMPLETED': 'bg-white/5 text-white/40 border-white/5',
-        'UPCOMING': 'bg-amber-500/10 text-amber-500 border-amber-500/10',
+        'DRAFT': 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/10',
+        'SUBMITTED': 'bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/10',
+        'APPROVED': 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/10',
+        'REJECTED': 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/10',
+        'NO_SHOW': 'bg-red-600/20 text-red-700 dark:text-red-300 border-red-600/10 font-bold',
+        'ACTIVE': 'bg-primary/20 text-indigo-700 dark:text-indigo-300 border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]',
+        'COMPLETED': 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/10',
+        'UPCOMING': 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/10',
     };
 
-    const variant = variants[s] || 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+    const variant = variants[s] || 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20';
 
     return (
         <Badge 
