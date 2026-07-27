@@ -45,3 +45,8 @@ __pycache__/
 ios/App/Pods/
 ios/App/App.xcworkspace/xcuserdata/
 ios/.DS_Store
+ios/App/CapApp-SPM/build/
+ios/App/App.xcodeproj/-Xcc/
+
+# Apple push keys must never enter source control
+*.p8

@@ -1,3 +1,4 @@
+/// <reference types="@capacitor/push-notifications" />
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -13,6 +14,9 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
       showSpinner: false,
+    },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'banner', 'list'],
     },
   },
 };

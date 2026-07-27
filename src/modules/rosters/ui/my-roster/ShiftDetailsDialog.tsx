@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { isShiftLocked, isShiftCommenced } from '@/modules/rosters/domain/shift-locking.utils';
 import { ResponsiveDialog } from '@/modules/core/ui/components/ResponsiveDialog';
 import { Button } from '@/modules/core/ui/primitives/button';
@@ -13,6 +14,7 @@ import {
   CheckCircle2,
   Loader2,
   Share2,
+  CalendarPlus,
   WifiOff,
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -21,6 +23,7 @@ import { Shift } from '@/modules/rosters';
 import { useDropShift } from '@/modules/rosters/state/useRosterShifts';
 import { AttendanceBadge } from '@/modules/rosters/ui/components/AttendanceBadge';
 import { buildShiftUniversalLink } from '@/platform/native/deepLinks';
+import { buildShiftCalendarFile } from '@/modules/rosters/utils/shift-calendar';
 
 import { useSwaps } from '@/modules/planning';
 import { useToast } from '@/modules/core/hooks/use-toast';
@@ -102,6 +105,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [calendarStatus, setCalendarStatus] = useState<'idle' | 'ready' | 'failed'>('idle');
 
   const dropShiftMutation = useDropShift();
   const isDropping = dropShiftMutation.isPending;
@@ -149,6 +153,12 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
     const timer = window.setTimeout(() => setShareStatus('idle'), 2200);
     return () => window.clearTimeout(timer);
   }, [shareStatus]);
+
+  React.useEffect(() => {
+    if (calendarStatus === 'idle') return undefined;
+    const timer = window.setTimeout(() => setCalendarStatus('idle'), 2200);
+    return () => window.clearTimeout(timer);
+  }, [calendarStatus]);
 
   const paidBreak = (shiftData?.shift as any)?.paid_break_minutes ?? 0;
   const unpaidBreak = (shiftData?.shift as any)?.unpaid_break_minutes ?? shiftData?.shift.break_minutes ?? 0;
@@ -257,6 +267,51 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
     }
   };
 
+  const handleAddToCalendar = async () => {
+    const shareUrl = buildShiftShareUrl(shift.id);
+
+    try {
+      const calendarFile = buildShiftCalendarFile({
+        shift,
+        shareUrl,
+        groupName,
+        subGroupName,
+      });
+
+      if (Capacitor.isNativePlatform()) {
+        const storedFile = await Filesystem.writeFile({
+          path: `calendar/${calendarFile.filename}`,
+          data: calendarFile.content,
+          directory: Directory.Cache,
+          encoding: Encoding.UTF8,
+          recursive: true,
+        });
+
+        await Share.share({
+          title: 'Add Shiftopia shift to calendar',
+          text: 'Open the calendar file to add this shift.',
+          files: [storedFile.uri],
+          dialogTitle: 'Add to calendar',
+        });
+      } else {
+        const blob = new Blob([calendarFile.content], { type: 'text/calendar;charset=utf-8' });
+        const objectUrl = URL.createObjectURL(blob);
+        const download = document.createElement('a');
+        download.href = objectUrl;
+        download.download = calendarFile.filename;
+        document.body.appendChild(download);
+        download.click();
+        download.remove();
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+      }
+
+      setCalendarStatus('ready');
+    } catch (error) {
+      if ((error as DOMException)?.name === 'AbortError') return;
+      setCalendarStatus('failed');
+    }
+  };
+
   const confirmDrop = async () => {
     if (isOffline) {
       offlineActionToast();
@@ -345,6 +400,28 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
             statusIcons={null}
             footerActions={
               <div className="flex flex-col gap-2 w-full">
+                <Button
+                  onClick={handleAddToCalendar}
+                  className="h-11 w-full rounded-2xl bg-primary font-black uppercase tracking-widest text-[11px] text-primary-foreground active:scale-95"
+                >
+                  <CalendarPlus size={16} className="mr-2" />
+                  Add to calendar
+                </Button>
+                {calendarStatus !== 'idle' && (
+                  <div
+                    className={cn(
+                      'flex items-center justify-center gap-2 rounded-2xl border px-3 py-2 text-[11px] font-black uppercase tracking-widest',
+                      calendarStatus === 'ready'
+                        ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300'
+                        : 'border-rose-400/30 bg-rose-500/10 text-rose-300'
+                    )}
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {calendarStatus === 'ready' ? <CheckCircle2 size={14} /> : <X size={14} />}
+                    {calendarStatus === 'ready' ? 'Calendar file ready' : 'Calendar export failed'}
+                  </div>
+                )}
                 <Button
                   onClick={handleShareShift}
                   variant="secondary"

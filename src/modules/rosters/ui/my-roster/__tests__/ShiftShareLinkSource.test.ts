@@ -29,4 +29,13 @@ describe('shift detail share link source', () => {
     expect(source).toContain('Share failed');
     expect(source).toContain('aria-live="polite"');
   });
+
+  it('exports the shift as an ICS calendar file on web and native platforms', () => {
+    expect(source).toContain("from '@capacitor/filesystem'");
+    expect(source).toContain('buildShiftCalendarFile');
+    expect(source).toContain('Filesystem.writeFile');
+    expect(source).toContain("type: 'text/calendar;charset=utf-8'");
+    expect(source).toContain('Add to calendar');
+    expect(source).toContain('Calendar file ready');
+  });
 });
