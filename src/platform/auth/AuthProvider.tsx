@@ -11,6 +11,7 @@ import { clearOfflineQueryCache } from '@/platform/offline/offlineQueryPersisten
 import { setSentryUser } from '@/platform/observability/sentry';
 import { clearBiometricEnabled, isBiometricEnabled, setBiometricEnabled } from '@/platform/native/biometricPreferences';
 import { canUseFaceId, isNativeMobile, verifyFaceId } from '@/platform/native/biometrics';
+import { unregisterApplePushNotifications } from '@/platform/native/pushNotifications';
 
 // Re-export types for backward compatibility with existing imports
 export type { User, AccessLevel, Role };
@@ -246,6 +247,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const logout = async () => {
+    await unregisterApplePushNotifications().catch((error) => {
+      console.warn('[Push] Push cleanup did not complete during logout', error);
+    });
     await supabase.auth.signOut();
     if (typeof window !== 'undefined') {
       sessionStorage.clear();

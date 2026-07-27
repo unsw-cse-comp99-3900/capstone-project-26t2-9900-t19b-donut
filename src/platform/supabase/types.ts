@@ -6594,6 +6594,22 @@ export type Database = {
       }
     }
     Functions: {
+      register_push_device: {
+        Args: {
+          p_app_id?: string
+          p_environment?: string
+          p_platform?: string
+          p_token: string
+        }
+        Returns: string
+      }
+      unregister_push_device: {
+        Args: {
+          p_app_id?: string
+          p_token: string
+        }
+        Returns: boolean
+      }
       accept_swap_offer: { Args: { p_offer_id: string }; Returns: undefined }
       acknowledge_broadcast: {
         Args: { broadcast_uuid: string; employee_uuid: string }
