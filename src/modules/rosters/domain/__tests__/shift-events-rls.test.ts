@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 const migration = readFileSync(
   resolve(
     process.cwd(),
-    'supabase/migrations/20260721010000_allow_shift_assigners_insert_shift_events.sql',
+    'supabase/migrations/20260722184451_allow_shift_assigners_insert_shift_events.sql',
   ),
   'utf8',
 );
