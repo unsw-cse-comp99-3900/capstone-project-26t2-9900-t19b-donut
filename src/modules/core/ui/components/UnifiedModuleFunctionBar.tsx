@@ -338,6 +338,7 @@ export const UnifiedModuleFunctionBar: React.FC<UnifiedModuleFunctionBarProps> =
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => onViewModeChange('table')}
+                                    aria-label="List view"
                                     className={cn(
                                         "h-8 w-8 lg:h-9 lg:w-9 rounded-lg transition-all",
                                         viewMode === 'table' ? (isDark ? "bg-[#0f172a] text-white shadow-sm" : "bg-white text-slate-900 shadow-sm") : "text-muted-foreground hover:bg-muted/50"
@@ -356,6 +357,7 @@ export const UnifiedModuleFunctionBar: React.FC<UnifiedModuleFunctionBarProps> =
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => onViewModeChange('card')}
+                                    aria-label="Card view"
                                     className={cn(
                                         "h-8 w-8 lg:h-9 lg:w-9 rounded-lg transition-all",
                                         viewMode === 'card' ? (isDark ? "bg-[#0f172a] text-white shadow-sm" : "bg-white text-slate-900 shadow-sm") : "text-muted-foreground hover:bg-muted/50"
@@ -404,6 +406,7 @@ export const UnifiedModuleFunctionBar: React.FC<UnifiedModuleFunctionBarProps> =
                         size="icon"
                         onClick={onRefresh}
                         disabled={isLoading}
+                        aria-label="Refresh"
                         className={cn(
                             "h-10 w-10 lg:h-11 lg:w-11 rounded-xl flex-shrink-0 transition-all",
                             isDark ? "bg-[#111827]/60 hover:bg-[#111827]/80" : "bg-slate-100 hover:bg-slate-200"

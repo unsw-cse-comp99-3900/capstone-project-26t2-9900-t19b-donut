@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 const SignUpPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -85,30 +86,26 @@ const SignUpPage: React.FC = () => {
     };
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#0f1113]">
-                <Loader2 className="h-10 w-10 text-purple-500 animate-spin" />
-            </div>
-        );
+        return <PageState isLoading loadingMsg="Loading your account..." className="min-h-screen bg-background" />;
     }
 
     if (isSuccess) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center p-6 bg-[#0f1113]">
+            <div className="flex min-h-screen w-full items-center justify-center bg-background p-6">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="w-full max-w-md p-10 rounded-2xl bg-[#1a1c1e] border border-white/5 shadow-2xl text-center"
+                    className="w-full max-w-md rounded-2xl border border-border bg-card p-10 text-center shadow-2xl"
                 >
                     <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                         <CheckCircle2 className="w-10 h-10 text-emerald-400" />
                     </div>
-                    <h2 className="text-3xl font-bold text-white mb-4">Verification Sent</h2>
-                    <p className="text-gray-400 mb-8">
+                    <h2 className="mb-4 text-3xl font-bold text-foreground">Verification Sent</h2>
+                    <p className="mb-8 text-muted-foreground">
                         We've sent a link to <strong>{email}</strong>.
                     </p>
                     <Link to="/login">
-                        <Button className="w-full h-14 bg-purple-600 hover:bg-purple-500 text-white rounded-xl">
+                        <Button className="h-14 w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
                             Return to Sign In
                         </Button>
                     </Link>
@@ -118,7 +115,7 @@ const SignUpPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#0f1113] font-sans">
+        <div className="flex min-h-screen w-full flex-col bg-background font-sans md:flex-row">
 
             {/* LEFT SIDE */}
             <motion.div
@@ -143,7 +140,7 @@ const SignUpPage: React.FC = () => {
                 <div className="absolute bottom-12 left-12 z-10">
                     <div className="flex items-center gap-2 mb-4">
                         <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                            <ShieldCheck className="w-5 h-5 text-purple-400" />
+                            <ShieldCheck className="w-5 h-5 text-[#2F80ED]" />
                         </div>
                         <span className="text-white/80 text-xs uppercase">Premium Experience</span>
                     </div>
@@ -166,15 +163,19 @@ const SignUpPage: React.FC = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
+                className="flex flex-1 items-center justify-center bg-card p-6 md:p-12"
             >
                 <div className="w-full max-w-md">
 
-                    <h1 className="text-4xl font-bold text-white mb-3">Create an account</h1>
+                    <Link to="/" className="mb-6 inline-flex items-center gap-3">
+                        <img src="/icons/icon-192.png" alt="" className="h-10 w-10 rounded-xl" />
+                        <span className="text-xl font-bold text-foreground">Shiftopia</span>
+                    </Link>
+                    <h1 className="mb-3 text-4xl font-bold text-foreground">Create an account</h1>
 
-                    <p className="text-gray-400 mb-6">
+                    <p className="mb-6 text-muted-foreground">
                         Already have an account?{' '}
-                        <Link to="/login" className="text-purple-400">Log in</Link>
+                        <Link to="/login" className="text-primary hover:text-primary/80">Log in</Link>
                     </p>
 
                     <AnimatePresence>
@@ -209,7 +210,7 @@ const SignUpPage: React.FC = () => {
                             onChange={e => setConfirmPassword(e.target.value)}
                         />
 
-                        <Button className="w-full h-14 bg-purple-600">
+                        <Button className="h-14 w-full bg-primary text-primary-foreground hover:bg-primary/90">
                             {isSubmitting ? <Loader2 className="animate-spin" /> : 'Create account'}
                         </Button>
 

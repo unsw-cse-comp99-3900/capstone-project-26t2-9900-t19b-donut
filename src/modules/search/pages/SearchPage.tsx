@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Search as SearchIcon, X, ArrowLeft } from 'lucide-react';
 import { Input } from '@/modules/core/ui/primitives/input';
 import { Button } from '@/modules/core/ui/primitives/button';
-import { Skeleton } from '@/modules/core/ui/primitives/skeleton';
 import { Card, CardContent } from '@/modules/core/ui/primitives/card';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 const SearchPage: React.FC = () => {
   const { searchTerm, setSearchTerm, searchResults, performSearch, isSearching } = useSearch();
@@ -86,13 +86,14 @@ const SearchPage: React.FC = () => {
         )}
       </div>
 
-      {isSearching ? (
-        <div className="space-y-4">
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </div>
-      ) : searchResults.length > 0 ? (
+      <PageState
+        isLoading={isSearching}
+        loadingMsg="Searching..."
+        isEmpty={inputValue.length >= 2 && searchResults.length === 0}
+        emptyTitle="No search results"
+        emptyDesc={`No results were found for "${inputValue}". Try different keywords or check your spelling.`}
+      >
+      {searchResults.length > 0 ? (
         <div className="space-y-4">
           {searchResults.map((result, index) => (
             <Card
@@ -130,17 +131,13 @@ const SearchPage: React.FC = () => {
             </Card>
           ))}
         </div>
-      ) : inputValue.length >= 2 ? (
-        <div className="text-center py-12">
-          <p className="text-lg text-muted-foreground">No results found for "{inputValue}"</p>
-          <p className="text-sm text-muted-foreground mt-2">Try different keywords or check your spelling</p>
-        </div>
       ) : (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">Start typing to search</p>
           <p className="text-sm text-muted-foreground mt-2">Search for templates, rosters, timesheets, and more</p>
         </div>
       )}
+      </PageState>
 
       <div className="mt-8 text-sm text-muted-foreground">
         <p>Tip: Press <kbd className="px-2 py-1 bg-muted rounded">ESC</kbd> to go back</p>

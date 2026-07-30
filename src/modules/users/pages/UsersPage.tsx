@@ -104,62 +104,65 @@ const UsersPage: React.FC = () => {
                 )}>
                     <PageState
                         isLoading={isLoading}
+                        loadingMsg="Loading employees..."
+                        isError={profilesResult.isError}
+                        errorTitle="Could not load employees"
+                        errorMsg="Employee profiles could not be loaded. Please try again."
+                        onRetry={() => refetchProfiles()}
                         isEmpty={!selectedUserId}
                         emptyTitle="No Employee Selected"
                         emptyDesc="Select an employee from the dropdown above to view their profile, compliance, and performance metrics."
                     >
-                        {/* We use conditional rendering below instead of else to let PageState render the wrapper correctly */}
+                        {selectedUserId && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, ease: "easeOut" }}
+                                className="space-y-10"
+                            >
+                                {/* Summary Action Header for Selected User */}
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-border/10">
+                                    <div>
+                                        <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">{selectedUser?.full_name}</h2>
+                                        <p className="text-muted-foreground text-sm font-medium">{selectedUser?.email}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        {isAuthorizedAdmin && selectedUser && (
+                                            <DeleteUserDialog
+                                                userId={selectedUserId}
+                                                userName={selectedUser.full_name}
+                                                onSuccess={() => {
+                                                    setSelectedUserId('');
+                                                    refetchProfiles();
+                                                }}
+                                            />
+                                        )}
+                                        <Button variant="outline" className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[10px]">
+                                            Edit Profile
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Sectioned Content */}
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                    <SkillsSection employeeId={selectedUserId} />
+                                    <LicensesSection employeeId={selectedUserId} />
+                                    <WorkRightsSection employeeId={selectedUserId} />
+                                </div>
+
+                                <div className="space-y-8">
+                                    <UserContractsSection
+                                        employeeId={selectedUserId}
+                                        employeeName={selectedUser?.full_name || ''}
+                                    />
+                                    <AccessCertificatesSection
+                                        employeeId={selectedUserId}
+                                        employeeName={selectedUser?.full_name || ''}
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
                     </PageState>
-
-                    {selectedUserId && !isLoading && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
-                            className="space-y-10"
-                        >
-                            {/* Summary Action Header for Selected User */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-border/10">
-                                <div>
-                                    <h2 className="text-3xl font-black uppercase tracking-tight text-foreground">{selectedUser?.full_name}</h2>
-                                    <p className="text-muted-foreground text-sm font-medium">{selectedUser?.email}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    {isAuthorizedAdmin && selectedUser && (
-                                        <DeleteUserDialog 
-                                            userId={selectedUserId}
-                                            userName={selectedUser.full_name}
-                                            onSuccess={() => {
-                                                setSelectedUserId('');
-                                                refetchProfiles();
-                                            }}
-                                        />
-                                    )}
-                                    <Button variant="outline" className="rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[10px]">
-                                        Edit Profile
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* Sectioned Content */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                <SkillsSection employeeId={selectedUserId} />
-                                <LicensesSection employeeId={selectedUserId} />
-                                <WorkRightsSection employeeId={selectedUserId} />
-                            </div>
-
-                            <div className="space-y-8">
-                                <UserContractsSection
-                                    employeeId={selectedUserId}
-                                    employeeName={selectedUser?.full_name || ''}
-                                />
-                                <AccessCertificatesSection
-                                    employeeId={selectedUserId}
-                                    employeeName={selectedUser?.full_name || ''}
-                                />
-                            </div>
-                        </motion.div>
-                    )}
                 </div>
             </div>
         </div>

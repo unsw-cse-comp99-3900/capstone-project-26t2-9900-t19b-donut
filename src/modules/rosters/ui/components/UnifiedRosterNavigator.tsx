@@ -217,7 +217,8 @@ export const UnifiedRosterNavigator: React.FC<UnifiedRosterNavigatorProps> = ({
           <button
             onClick={handlePrev}
             disabled={prevDisabled}
-            className="h-6 w-6 flex items-center justify-center rounded-md transition-all text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label={`Previous ${viewType}`}
+            className="h-8 w-8 flex items-center justify-center rounded-md transition-all text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -234,7 +235,8 @@ export const UnifiedRosterNavigator: React.FC<UnifiedRosterNavigatorProps> = ({
           <button
             onClick={handleNext}
             disabled={nextDisabled}
-            className="h-6 w-6 flex items-center justify-center rounded-md transition-all text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label={`Next ${viewType}`}
+            className="h-8 w-8 flex items-center justify-center rounded-md transition-all text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <ChevronRight className="h-4 w-4" />
           </button>

@@ -7,7 +7,6 @@ import {
   BellRing,
   CheckCheck,
   X,
-  Inbox,
   Search,
   Filter,
   Calendar,
@@ -16,7 +15,6 @@ import {
   MessageSquare,
   Clock,
   ArrowRight,
-  WifiOff,
 } from 'lucide-react';
 import {
   formatDistanceToNow,
@@ -34,6 +32,7 @@ import { cn } from '@/modules/core/lib/utils';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { useAccessibility } from '@/modules/core/contexts/AccessibilityContext';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { pageVariants, itemVariants, listItemSpring } from '@/modules/core/ui/motion/presets';
 import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
@@ -88,6 +87,8 @@ const MyNotificationsPage: React.FC = () => {
     notifications,
     unreadCount,
     loading,
+    error,
+    refetch,
     markRead,
     markAllRead,
     dismiss,
@@ -231,39 +232,21 @@ const MyNotificationsPage: React.FC = () => {
             cachedLabel="Offline - showing saved notifications"
             emptyLabel="Offline - saved notifications are not available yet"
           />
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="h-24 w-full bg-primary/5 rounded-2xl animate-pulse" />
-              ))}
-            </div>
-          ) : offlineState === 'offline-empty' ? (
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col items-center justify-center py-24 text-center opacity-70"
-            >
-              <div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-6">
-                <WifiOff className="h-10 w-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-xl font-black uppercase tracking-widest text-foreground/80">No cached notifications</h3>
-              <p className="text-muted-foreground max-w-sm mt-1 text-sm">
-                Reconnect once to load your notifications, then this page can show saved notifications offline.
-              </p>
-            </motion.div>
-          ) : filteredNotifications.length === 0 ? (
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col items-center justify-center py-24 text-center opacity-70"
-            >
-              <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                <Inbox className="h-10 w-10 text-primary/40" />
-              </div>
-              <h3 className="text-xl font-black uppercase tracking-widest text-foreground/80">You're all caught up</h3>
-              <p className="text-muted-foreground max-w-sm mt-1 text-sm">
-                No notifications found. Enjoy your productive workspace!
-              </p>
-            </motion.div>
-          ) : (
+          <PageState
+            isLoading={loading}
+            loadingMsg="Loading notifications..."
+            isError={Boolean(error)}
+            errorTitle="Could not load notifications"
+            errorMsg={error?.message}
+            onRetry={() => refetch()}
+            isEmpty={offlineState === 'offline-empty' || filteredNotifications.length === 0}
+            emptyTitle={offlineState === 'offline-empty' ? 'No cached notifications' : "You're all caught up"}
+            emptyDesc={
+              offlineState === 'offline-empty'
+                ? 'Reconnect once to load your notifications, then this page can show saved notifications offline.'
+                : 'No notifications found. Enjoy your productive workspace!'
+            }
+          >
             <motion.div variants={pageVariants} className="flex flex-col gap-4 pb-12">
               {groupedNotifications.map((group) => (
                 <motion.section variants={itemVariants} key={group.title} className="flex flex-col gap-4">
@@ -383,7 +366,7 @@ const MyNotificationsPage: React.FC = () => {
                 </motion.section>
               ))}
             </motion.div>
-          )}
+          </PageState>
       </div>
 
       {/* Footer Info */}

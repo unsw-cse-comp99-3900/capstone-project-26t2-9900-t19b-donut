@@ -7,6 +7,7 @@ import { canUseFaceId } from '@/platform/native/biometrics';
 import { ArrowLeft, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -85,15 +86,11 @@ const LoginPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f1113]">
-        <Loader2 className="h-10 w-10 text-purple-500 animate-spin" />
-      </div>
-    );
+    return <PageState isLoading loadingMsg="Loading your account..." className="min-h-screen bg-background" />;
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#0f1113] font-sans">
+    <div className="min-h-screen w-full flex flex-col bg-background font-sans md:flex-row">
 
       {/* LEFT SIDE */}
       <motion.div
@@ -119,7 +116,7 @@ const LoginPage: React.FC = () => {
         <div className="absolute bottom-12 left-12 z-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <ShieldCheck className="w-5 h-5 text-purple-400" />
+              <ShieldCheck className="w-5 h-5 text-[#2F80ED]" />
             </div>
             <span className="text-white/80 text-xs uppercase tracking-wider">
               Enterprise Grade Security
@@ -144,12 +141,12 @@ const LoginPage: React.FC = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
+        className="relative flex flex-1 items-center justify-center bg-card p-6 md:p-12"
       >
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/10 hover:text-white md:left-12"
+          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground md:left-12"
           aria-label="Back to home"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -160,12 +157,16 @@ const LoginPage: React.FC = () => {
 
           {/* Header */}
           <header className="mb-10">
-            <h1 className="text-4xl font-bold text-white mb-3">Sign In</h1>
-            <p className="text-gray-400">
+            <Link to="/" className="mb-6 inline-flex items-center gap-3">
+              <img src="/icons/icon-192.png" alt="" className="h-10 w-10 rounded-xl" />
+              <span className="text-xl font-bold text-foreground">Shiftopia</span>
+            </Link>
+            <h1 className="mb-3 text-4xl font-bold text-foreground">Sign In</h1>
+            <p className="text-muted-foreground">
               Already have an account?{' '}
               <Link
                 to="/signup"
-                className="text-purple-400 hover:text-purple-300 underline underline-offset-4"
+                className="text-primary underline underline-offset-4 hover:text-primary/80"
               >
                 Create one
               </Link>
@@ -192,35 +193,36 @@ const LoginPage: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label className="text-sm text-gray-300">Email Address</label>
+              <label className="text-sm text-foreground/80">Email Address</label>
               <div className="relative mt-2">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="email"
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-14 pl-12 bg-[#25282c] text-base text-white rounded-xl"
+                  className="h-14 rounded-xl border-border bg-muted/50 pl-12 text-base text-foreground"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-sm text-gray-300">Password</label>
+              <label className="text-sm text-foreground/80">Password</label>
               <div className="relative mt-2">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-14 pl-12 pr-12 bg-[#25282c] text-base text-white rounded-xl"
+                  className="h-14 rounded-xl border-border bg-muted/50 pl-12 pr-12 text-base text-foreground"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>
@@ -229,12 +231,12 @@ const LoginPage: React.FC = () => {
 
             {/* Actions */}
             <div className="flex justify-between text-sm">
-              <label className="flex items-center gap-2 text-gray-400">
+              <label className="flex items-center gap-2 text-muted-foreground">
                 <input type="checkbox" className="w-4 h-4" />
                 Remember me
               </label>
 
-              <Link to="/forgot-password" className="text-purple-400">
+              <Link to="/forgot-password" className="text-primary hover:text-primary/80">
                 Forgot password?
               </Link>
             </div>
@@ -243,26 +245,26 @@ const LoginPage: React.FC = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-14 bg-purple-600 hover:bg-purple-500 rounded-xl"
+              className="h-14 w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90"
             >
               {isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign In'}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="mt-8 text-center text-gray-500 text-xs">
+          <div className="mt-8 text-center text-xs text-muted-foreground">
             Or continue with
           </div>
 
           {/* OneLogin */}
           <Button
             variant="outline"
-            className="w-full h-14 mt-4 border-gray-700 text-white rounded-xl"
+            className="mt-4 h-14 w-full rounded-xl border-border text-foreground hover:bg-muted"
           >
             Login with OneLogin
           </Button>
 
-          <footer className="mt-12 text-center text-xs text-gray-600">
+          <footer className="mt-12 text-center text-xs text-muted-foreground">
             © 2026 Shiftopia Labor Management
           </footer>
         </div>

@@ -24,28 +24,13 @@ import {
 
 const Logo: React.FC = () => (
   <Link to="/" className="flex items-center gap-2.5">
-    <svg width="38" height="38" viewBox="0 0 38 38" className="drop-shadow-md">
-      <defs>
-        <linearGradient id="sp-logo" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#d946ef" />
-          <stop offset="100%" stopColor="#7c3aed" />
-        </linearGradient>
-      </defs>
-      <rect width="38" height="38" rx="11" fill="url(#sp-logo)" />
-      <path
-        d="M25 13.5c-1.4-1.5-3.6-2.4-6-2.4-3.6 0-6.2 1.9-6.2 4.6 0 5.4 11.4 3 11.4 8.4 0 2.7-2.8 4.6-6.4 4.6-2.4 0-4.6-.9-6-2.4"
-        fill="none"
-        stroke="white"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <circle cx="27" cy="11.5" r="2.4" fill="white" />
-    </svg>
-    <span className="text-xl font-extrabold tracking-tight text-[#160e2e]">
-      Shift
-      <span className="bg-gradient-to-r from-fuchsia-500 to-violet-600 bg-clip-text text-transparent">
-        oPia
-      </span>
+    <img
+      src="/icons/icon-192.png"
+      alt=""
+      className="h-[38px] w-[38px] rounded-[11px] drop-shadow-md"
+    />
+    <span className="text-xl font-extrabold tracking-tight text-[#081B33]">
+      Shift<span className="text-[#1565C0]">opia</span>
     </span>
   </Link>
 );

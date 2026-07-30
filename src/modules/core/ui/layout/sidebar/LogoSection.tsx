@@ -15,15 +15,20 @@ const LogoSection: React.FC<LogoSectionProps> = ({ isCollapsed }) => {
   return (
     <div className="flex items-center justify-between p-4 border-b border-border">
       <div className="flex items-center gap-3 overflow-hidden">
+        <img
+          src="/icons/icon-192.png"
+          alt=""
+          className="h-9 w-9 shrink-0 rounded-[10px] shadow-sm"
+        />
         {!isCollapsed && (
           <motion.span 
-            className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400"
+            className="text-xl font-semibold text-primary"
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            ShiftoPia
+            Shiftopia
           </motion.span>
         )}
       </div>

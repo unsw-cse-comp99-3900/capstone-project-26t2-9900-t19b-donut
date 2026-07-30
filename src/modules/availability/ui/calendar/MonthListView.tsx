@@ -219,7 +219,7 @@ export function MonthListView({ onSelectDate, isLocked = false }: MonthListViewP
               className={cn(
                 "p-4 transition-all duration-200",
                 locked && "opacity-60 bg-gray-50 dark:bg-gray-800/50",
-                isPastDate && "opacity-40 cursor-not-allowed",
+                isPastDate && "opacity-60 cursor-not-allowed",
                 existingAvailability && "border-l-4",
                 dayStatus === 'Available' && "border-l-green-500",
                 dayStatus === 'Unavailable' && "border-l-red-500",

@@ -20,7 +20,7 @@ export const SidebarUser: React.FC = () => {
                 <h3 className="font-bold text-sm text-foreground truncate tracking-tight">
                     {user.fullName}
                 </h3>
-                <p className="text-[10px] font-medium text-muted-foreground/70 uppercase tracking-widest mt-0.5">
+                <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mt-0.5">
                     {activeCertificate ? `<${activeCertificate.accessLevel}>` : (user.systemRole || 'Team Member')}
                 </p>
             </div>

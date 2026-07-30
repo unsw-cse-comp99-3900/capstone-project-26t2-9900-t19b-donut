@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/core/ui/primitives/card';
 import { Button } from '@/modules/core/ui/primitives/button';
-import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/modules/core/ui/primitives/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { useMetricAnalysis } from '../hooks/useMetricAnalysis';
 import { useDateRange } from '../hooks/useDateRange';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { LineChart as LineChartIcon } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -27,20 +28,11 @@ const AnalysisPage: React.FC = () => {
   const { data: liveData, isLoading } = useMetricAnalysis(metricId, filters);
 
   if (!metricId) {
-    return (
-      <div className="flex items-center justify-center h-full text-white">
-        Metric ID was not provided.
-      </div>
-    );
+    return <PageState isError errorTitle="Metric unavailable" errorMsg="Metric ID was not provided." />;
   }
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-64 gap-4">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-        <p className="text-white/60 animate-pulse">Analyzing live data...</p>
-      </div>
-    );
+    return <PageState isLoading loadingMsg="Analyzing live data..." />;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

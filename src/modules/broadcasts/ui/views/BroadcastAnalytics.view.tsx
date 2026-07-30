@@ -2,35 +2,14 @@ import React from 'react';
 import { BarChart3, TrendingUp, Users, MessageSquare, Eye, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/modules/core/ui/primitives/card';
 import { Badge } from '@/modules/core/ui/primitives/badge';
-import { Skeleton } from '@/modules/core/ui/primitives/skeleton';
 import { useBroadcastAnalytics } from '../../state/useBroadcastAnalytics';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 export const BroadcastAnalytics: React.FC = () => {
     const { analytics, isLoading, error, refetch } = useBroadcastAnalytics();
 
-    if (isLoading) {
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
-                <Skeleton className="h-32" />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                <p className="text-destructive font-medium">{error}</p>
-                <button
-                    onClick={refetch}
-                    className="px-4 py-2 rounded-md bg-primary text-primary-foreground text-sm hover:opacity-90"
-                >
-                    Retry
-                </button>
-            </div>
-        );
+    if (isLoading || error) {
+        return <PageState isLoading={isLoading} loadingMsg="Loading broadcast analytics..." isError={Boolean(error)} errorMsg={error || undefined} onRetry={refetch} />;
     }
 
     if (!analytics) return null;

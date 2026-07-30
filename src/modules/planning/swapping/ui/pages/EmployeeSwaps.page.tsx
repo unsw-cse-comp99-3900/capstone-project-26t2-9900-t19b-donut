@@ -18,7 +18,6 @@ import {
 } from '@/modules/core/ui/primitives/tooltip';
 import {
     ArrowLeftRight,
-    Loader2,
     Eye,
     X,
     Clock,
@@ -58,6 +57,7 @@ import { ViewOffersModal } from '../components/ViewOffersModal';
 import { UnifiedSwapModal } from '../components/UnifiedSwapModal';
 import { SwapSelectionToolbar } from '../components/SwapSelectionToolbar';
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription, DrawerClose } from '@/modules/core/ui/primitives/drawer';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { useQuery } from '@tanstack/react-query';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
@@ -1120,12 +1120,26 @@ export const EmployeeSwapsPage: React.FC = () => {
                         ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
-            {isLoading ? (
-                <div className="flex items-center justify-center py-16">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
-                    <span className="ml-2 text-muted-foreground">Loading swaps...</span>
-                </div>
-            ) : activeTab === 'available-swaps' ? (
+            <PageState
+                isLoading={isLoading}
+                loadingMsg="Loading swaps..."
+                isEmpty={
+                    activeTab === 'available-swaps'
+                        ? filteredAvailableSwaps.length === 0
+                        : activeTab === 'my-offers'
+                            ? filteredMyOffers.length === 0
+                            : filteredMySwaps.length === 0
+                }
+                emptyTitle={
+                    activeTab === 'available-swaps'
+                        ? 'No available swaps'
+                        : activeTab === 'my-offers'
+                            ? 'No matching offers'
+                            : 'No matching swaps'
+                }
+                emptyDesc={priorityFilter !== 'all' ? 'Try clearing the priority filter.' : 'Check back later for opportunities.'}
+            >
+            {activeTab === 'available-swaps' ? (
                 viewMode === 'card' ? (
                     <div className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 scrollbar-none">
                         <AnimatePresence mode="wait">
@@ -1686,6 +1700,7 @@ export const EmployeeSwapsPage: React.FC = () => {
                     </div>
                 ))
             }
+            </PageState>
                 </div>
             </div>
 

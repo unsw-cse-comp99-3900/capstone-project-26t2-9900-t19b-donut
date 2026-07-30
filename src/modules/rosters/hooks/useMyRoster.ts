@@ -65,6 +65,7 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         isOffline,
         hasCachedData,
         isShowingCachedData,
+        refetch,
     } = useOfflineAwareQuery<Shift[]>({
         // Use the centralized query key factory
         queryKey: shiftKeys.byEmployee(user?.id || '', startDateStr, endDateStr),
@@ -194,6 +195,7 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         isOffline,
         hasCachedData,
         isShowingCachedData,
+        refetch,
         getShiftsForDate,
         goToPrevious,
         goToNext
