@@ -400,16 +400,22 @@ const ProfileSettings: React.FC = () => {
     <div className="space-y-8 max-w-2xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label className="text-slate-600 dark:text-white/60">First name</Label>
+          <Label htmlFor="profile-first-name" className="text-slate-700 dark:text-slate-200">First name</Label>
           <Input 
+            id="profile-first-name"
+            name="given-name"
+            autoComplete="given-name"
             value={formData.firstName} 
             onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
             className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"
           />
         </div>
         <div className="space-y-2">
-          <Label className="text-slate-600 dark:text-white/60">Last name</Label>
+          <Label htmlFor="profile-last-name" className="text-slate-700 dark:text-slate-200">Last name</Label>
           <Input 
+            id="profile-last-name"
+            name="family-name"
+            autoComplete="family-name"
             value={formData.lastName} 
             onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
             className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"
@@ -417,17 +423,27 @@ const ProfileSettings: React.FC = () => {
         </div>
       </div>
       <div className="space-y-2">
-        <Label className="text-slate-600 dark:text-white/60">Email address</Label>
+        <Label htmlFor="profile-email" className="text-slate-700 dark:text-slate-200">Email address</Label>
         <Input 
+          id="profile-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          aria-describedby="profile-email-help"
           value={formData.email} 
           disabled
-          className="bg-slate-50 border-slate-200 text-slate-500 dark:bg-white/5 dark:border-white/10 dark:text-white/40 cursor-not-allowed"
+          className="bg-slate-50 border-slate-300 text-slate-600 dark:bg-white/10 dark:border-white/30 dark:text-slate-300 cursor-not-allowed"
         />
-        <p className="text-xs text-slate-500 dark:text-blue-200/40">Email cannot be changed directly for security reasons.</p>
+        <p id="profile-email-help" className="text-xs text-slate-600 dark:text-slate-300">Email cannot be changed directly for security reasons.</p>
       </div>
       <div className="space-y-2">
-        <Label className="text-slate-600 dark:text-white/60">Phone number</Label>
+        <Label htmlFor="profile-phone" className="text-slate-700 dark:text-slate-200">Phone number</Label>
         <Input 
+          id="profile-phone"
+          name="tel"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           value={formData.phone} 
           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
           className="bg-white border-slate-200 text-slate-900 dark:bg-white/5 dark:border-white/10 dark:text-white"

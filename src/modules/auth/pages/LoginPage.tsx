@@ -105,7 +105,8 @@ const LoginPage: React.FC = () => {
         {/* Image */}
         <img
           src="/auth-bg.jpeg"
-          alt="Background"
+          alt=""
+          aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover scale-105"
         />
 
@@ -149,7 +150,7 @@ const LoginPage: React.FC = () => {
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/10 hover:text-white md:left-12"
+          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[16px] font-semibold text-gray-200 transition hover:bg-white/10 hover:text-white md:left-12"
           aria-label="Back to home"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -160,9 +161,9 @@ const LoginPage: React.FC = () => {
 
           {/* Header */}
           <header className="mb-10">
-            <h1 className="text-4xl font-bold text-white mb-3">Sign In</h1>
-            <p className="text-gray-400">
-              Already have an account?{' '}
+            <h1 className="mb-3 text-[32px] font-bold leading-tight text-white sm:text-4xl">Sign in</h1>
+            <p className="text-[16px] leading-relaxed text-gray-300">
+              New to Shiftopia?{' '}
               <Link
                 to="/signup"
                 className="text-purple-400 hover:text-purple-300 underline underline-offset-4"
@@ -176,12 +177,16 @@ const LoginPage: React.FC = () => {
           <AnimatePresence>
             {(loginError || authError) && (
               <motion.div
+                id="login-error"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400 text-sm"
+                className="mb-6 flex items-center gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-[16px] leading-relaxed text-red-300"
               >
-                <AlertCircle className="w-5 h-5" />
+                <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
                 <p>{loginError || authError}</p>
               </motion.div>
             )}
@@ -192,45 +197,58 @@ const LoginPage: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label className="text-sm text-gray-300">Email Address</label>
+              <label htmlFor="login-email" className="text-[16px] font-medium text-gray-200">Email address</label>
               <div className="relative mt-2">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <Input
+                  id="login-email"
+                  name="email"
                   type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-14 pl-12 bg-[#25282c] text-base text-white rounded-xl"
+                  aria-invalid={Boolean(loginError || authError)}
+                  aria-describedby={loginError || authError ? 'login-error' : undefined}
+                  className="h-14 rounded-xl bg-[#25282c] pl-12 text-[16px] text-white placeholder:text-gray-400"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-sm text-gray-300">Password</label>
+              <label htmlFor="login-password" className="text-[16px] font-medium text-gray-200">Password</label>
               <div className="relative mt-2">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                 <Input
+                  id="login-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-14 pl-12 pr-12 bg-[#25282c] text-base text-white rounded-xl"
+                  aria-invalid={Boolean(loginError || authError)}
+                  aria-describedby={loginError || authError ? 'login-error' : undefined}
+                  className="h-14 rounded-xl bg-[#25282c] pl-12 pr-14 text-[16px] text-white placeholder:text-gray-400"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                  className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-gray-300"
                 >
-                  {showPassword ? <EyeOff /> : <Eye />}
+                  {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                 </button>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex justify-between text-sm">
-              <label className="flex items-center gap-2 text-gray-400">
-                <input type="checkbox" className="w-4 h-4" />
+            <div className="flex flex-wrap items-center justify-between gap-3 text-[16px]">
+              <label className="flex min-h-11 items-center gap-2 text-gray-300">
+                <input type="checkbox" className="h-5 w-5" />
                 Remember me
               </label>
 
@@ -243,26 +261,26 @@ const LoginPage: React.FC = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-14 bg-purple-600 hover:bg-purple-500 rounded-xl"
+              className="h-14 w-full rounded-xl bg-purple-600 text-[16px] hover:bg-purple-500"
             >
               {isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign In'}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="mt-8 text-center text-gray-500 text-xs">
+          <div className="mt-8 text-center text-[14px] text-gray-400">
             Or continue with
           </div>
 
           {/* OneLogin */}
           <Button
             variant="outline"
-            className="w-full h-14 mt-4 border-gray-700 text-white rounded-xl"
+            className="mt-4 h-14 w-full rounded-xl border-gray-600 text-[16px] text-white"
           >
             Login with OneLogin
           </Button>
 
-          <footer className="mt-12 text-center text-xs text-gray-600">
+          <footer className="mt-12 text-center text-[14px] text-gray-400">
             © 2026 Shiftopia Labor Management
           </footer>
         </div>

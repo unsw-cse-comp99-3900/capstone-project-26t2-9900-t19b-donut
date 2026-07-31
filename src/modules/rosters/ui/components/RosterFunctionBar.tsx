@@ -148,17 +148,17 @@ const IconButton: React.FC<{
   const variantClasses = {
     default: isActive
       ? 'bg-slate-200 dark:bg-white/15 text-slate-800 dark:text-white'
-      : 'text-slate-500 dark:text-white/60 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10',
+      : 'text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/15',
     success: isActive
       ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300'
-      : 'text-slate-500 dark:text-white/60 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-500/10',
+      : 'text-slate-600 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-500/15',
     warning: isActive
       ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300'
-      : 'text-slate-500 dark:text-white/60 hover:text-amber-700 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-500/10',
+      : 'text-slate-600 dark:text-slate-200 hover:text-amber-700 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-500/15',
     danger: isActive
       ? 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300'
-      : 'text-slate-500 dark:text-white/60 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-500/10',
-    ghost: 'text-slate-400 dark:text-white/40 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5',
+      : 'text-slate-600 dark:text-slate-200 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-500/15',
+    ghost: 'text-slate-600 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/15',
   };
 
   return (
@@ -166,10 +166,14 @@ const IconButton: React.FC<{
       <Tooltip>
         <TooltipTrigger asChild>
           <button
+            type="button"
+            aria-label={isLoading ? `${tooltip}, loading` : tooltip}
+            aria-pressed={isActive || undefined}
+            aria-busy={isLoading}
             onClick={onClick}
             disabled={disabled || isLoading}
             className={cn(
-              'h-8 w-8 flex items-center justify-center rounded-lg transition-all',
+              'h-11 w-11 md:h-8 md:w-8 flex items-center justify-center rounded-lg transition-all',
               variantClasses[variant],
               disabled && 'opacity-30 cursor-not-allowed',
               isLoading && 'animate-pulse',
@@ -177,7 +181,7 @@ const IconButton: React.FC<{
             )}
           >
             {isLoading ? (
-              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+              <RefreshCw aria-hidden="true" className="h-3.5 w-3.5 animate-spin" />
             ) : (
               icon
             )}

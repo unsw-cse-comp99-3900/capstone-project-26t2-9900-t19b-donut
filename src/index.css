@@ -23,21 +23,8 @@ body,
   padding: 0;
 }
 
-/* Accessible View keeps motion and interaction predictable while retaining
-   the user's native iOS reduced-motion preference as the stronger setting. */
-html[data-accessible-view='true'] {
-  font-size: 17px;
-}
-
-html[data-accessible-view='true'] *,
-html[data-accessible-view='true'] *::before,
-html[data-accessible-view='true'] *::after {
-  scroll-behavior: auto !important;
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
-}
-
+/* Motion reduction follows the native iOS/browser preference. Accessible
+   View must not rewrite every active Framer Motion transition at runtime. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
@@ -54,14 +41,43 @@ html[data-accessible-view='true'] .accessible-page select {
   min-height: 44px;
 }
 
+/* Accessible View enlarges page content without changing the root rem size.
+   Keeping navigation outside this scope prevents the iOS dock and More panel
+   from moving underneath the active touch target. */
+html[data-accessible-view='true'] .accessible-page {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
 html[data-accessible-view='true'] .accessible-page .text-\[8px\],
 html[data-accessible-view='true'] .accessible-page .text-\[9px\],
 html[data-accessible-view='true'] .accessible-page .text-\[10px\],
 html[data-accessible-view='true'] .accessible-page .text-\[11px\],
+html[data-accessible-view='true'] .accessible-page .text-\[12px\],
 html[data-accessible-view='true'] .accessible-page .text-xs {
-  font-size: 0.875rem;
-  line-height: 1.3rem;
+  font-size: 14px;
+  line-height: 1.4;
   letter-spacing: normal;
+}
+
+html[data-accessible-view='true'] .accessible-page .text-\[13px\],
+html[data-accessible-view='true'] .accessible-page .text-\[14px\],
+html[data-accessible-view='true'] .accessible-page .text-sm {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+html[data-accessible-view='true'] .accessible-page .text-\[15px\],
+html[data-accessible-view='true'] .accessible-page .text-\[16px\],
+html[data-accessible-view='true'] .accessible-page .text-base {
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+html[data-accessible-view='true'] .accessible-page .text-lg {
+  font-size: 18px;
+  line-height: 1.5;
 }
 
 html[data-accessible-view='true'] .accessible-page .accessible-card-grid {
@@ -118,7 +134,7 @@ html[data-accessible-view='true'] .accessible-page .opacity-60 {
     --popover-foreground: 210 40% 98%;
 
     /* Primary: Electric Indigo */
-    --primary: 243 75% 59%;
+    --primary: 239 75% 55%;
     /* #4f46e5 */
     --primary-foreground: 210 40% 98%;
 
@@ -127,7 +143,7 @@ html[data-accessible-view='true'] .accessible-page .opacity-60 {
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 22% 72%;
 
     /* Accent: Matching Primary or Amber for highlights */
     --accent: 217 33% 17%;

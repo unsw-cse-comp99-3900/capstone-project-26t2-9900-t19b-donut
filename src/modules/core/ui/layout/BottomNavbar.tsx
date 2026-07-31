@@ -38,6 +38,8 @@ const BottomNavbar: React.FC = () => {
   const location = useLocation();
   const { accessibleView, toggleAccessibleView } = useAccessibility();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const morePanelRef = useRef<HTMLDivElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
   const mobileDockBottom = 'max(0.375rem, calc(env(safe-area-inset-bottom, 0px) - 1.25rem))';
 
   useEffect(() => {
@@ -86,6 +88,19 @@ const BottomNavbar: React.FC = () => {
     setMoreOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!moreOpen) return;
+    morePanelRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMoreOpen(false);
+        moreButtonRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [moreOpen]);
+
   // Smooth scroll active item into view
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -115,13 +130,13 @@ const BottomNavbar: React.FC = () => {
   };
 
   const middleItems = [
-    { label: 'Roster', icon: Calendar, path: '/my-roster' },
-    { label: 'Atten', icon: Fingerprint, path: '/my-attendance' },
-    { label: 'Avail', icon: CalendarDays, path: '/my-availabilities' },
-    { label: 'Bids', icon: BadgeCheck, path: '/my-bids' },
-    { label: 'Swaps', icon: RefreshCw, path: '/my-swaps' },
-    { label: 'Radio', icon: Radio, path: '/my-broadcasts', badgeKey: 'broadcasts' },
-    { label: 'Notif', icon: BellRing, path: '/my-notifications', badgeKey: 'notifications' },
+    { label: 'Roster', accessibleLabel: 'My roster', icon: Calendar, path: '/my-roster' },
+    { label: 'Atten', accessibleLabel: 'Attendance', icon: Fingerprint, path: '/my-attendance' },
+    { label: 'Avail', accessibleLabel: 'Availability', icon: CalendarDays, path: '/my-availabilities' },
+    { label: 'Bids', accessibleLabel: 'My bids', icon: BadgeCheck, path: '/my-bids' },
+    { label: 'Swaps', accessibleLabel: 'My swaps', icon: RefreshCw, path: '/my-swaps' },
+    { label: 'Radio', accessibleLabel: 'Broadcasts', icon: Radio, path: '/my-broadcasts', badgeKey: 'broadcasts' },
+    { label: 'Notif', accessibleLabel: 'Notifications', icon: BellRing, path: '/my-notifications', badgeKey: 'notifications' },
   ];
 
   const moreItems = [
@@ -142,10 +157,32 @@ const BottomNavbar: React.FC = () => {
 
   const isMoreRouteActive = moreItems.some((item) => location.pathname.startsWith(item.path));
 
+  const handleAccessibleViewToggle = () => {
+    // Close the anchored menu before changing page layout. This avoids iOS
+    // synthesising a click against controls that move under the user's finger.
+    setMoreOpen(false);
+    window.requestAnimationFrame(() => {
+      toggleAccessibleView();
+    });
+  };
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm('Log out of Shiftopia?');
+    if (!confirmed) return;
+    setMoreOpen(false);
+    await logout();
+  };
+
   // CSS-only expanding pill (no Framer Motion layout conflicts)
-  const NavItem = ({ item }: { item: typeof middleItems[0] }) => (
-    <NavLink
+  const NavItem = ({ item }: { item: typeof middleItems[0] }) => {
+    const badgeCount = getBadgeCount(item.badgeKey);
+    const accessibleName = badgeCount > 0
+      ? `${item.accessibleLabel}, ${badgeCount} unread`
+      : item.accessibleLabel;
+    return (
+      <NavLink
       to={item.path}
+      aria-label={accessibleName}
       className={({ isActive }) =>
         cn(
           "relative flex items-center justify-center h-full rounded-full transition-all duration-300 ease-out flex-shrink-0 overflow-hidden",
@@ -156,12 +193,10 @@ const BottomNavbar: React.FC = () => {
       }
     >
       {({ isActive }) => {
-        const badgeCount = getBadgeCount(item.badgeKey);
-        
         return (
           <div className="flex items-center gap-2">
             <div className="relative">
-              <item.icon className={cn("h-5 w-5 flex-shrink-0 transition-colors", isActive ? "text-background" : "text-muted-foreground")} strokeWidth={isActive ? 2.5 : 2} />
+              <item.icon aria-hidden="true" className={cn("h-5 w-5 flex-shrink-0 transition-colors", isActive ? "text-background" : "text-muted-foreground")} strokeWidth={isActive ? 2.5 : 2} />
               {badgeCount > 0 && (
                 <span className={cn(
                   "absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[8px] font-black border-2",
@@ -185,14 +220,16 @@ const BottomNavbar: React.FC = () => {
           </div>
         );
       }}
-    </NavLink>
-  );
+      </NavLink>
+    );
+  };
 
   return (
     <>
       <AnimatePresence>
         {moreOpen && (
           <motion.div
+            aria-hidden="true"
             key="more-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -207,6 +244,11 @@ const BottomNavbar: React.FC = () => {
       <AnimatePresence>
         {moreOpen && (
           <motion.div
+            ref={morePanelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="More navigation options"
+            tabIndex={-1}
             key="more-panel"
             initial={{ opacity: 0, y: 30, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
@@ -216,7 +258,7 @@ const BottomNavbar: React.FC = () => {
               filter: { type: 'tween', duration: 0.2, ease: 'easeOut' }
             }}
             style={{ bottom: `calc(${mobileDockBottom} + 5.5rem)` }}
-            className="fixed left-4 right-4 z-[59] rounded-[32px] bg-card/80 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.3)] overflow-hidden"
+            className="fixed left-4 right-4 z-[59] rounded-[32px] bg-card/95 backdrop-blur-3xl border border-border dark:border-white/20 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.3)] overflow-hidden focus:outline-none"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/10 dark:to-white/0 pointer-events-none" />
             <div className="relative p-5">
@@ -225,7 +267,7 @@ const BottomNavbar: React.FC = () => {
                 role="switch"
                 aria-checked={accessibleView}
                 aria-label="Accessible view"
-                onClick={toggleAccessibleView}
+                onClick={handleAccessibleViewToggle}
                 className={cn(
                   'mb-4 flex min-h-14 w-full items-center gap-3 rounded-2xl border px-4 text-left transition-colors',
                   accessibleView
@@ -254,7 +296,7 @@ const BottomNavbar: React.FC = () => {
                 </span>
               </button>
 
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-4 ml-1">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground mb-4 ml-1">
                 {moreItems.length > 0 ? 'Management & Tools' : 'Account'}
               </h3>
               <div className="grid grid-cols-3 gap-2">
@@ -272,11 +314,11 @@ const BottomNavbar: React.FC = () => {
                       )}
                     >
                       <div className={cn('transition-all duration-300', isActive && 'scale-110 -translate-y-0.5')}>
-                        <Icon className="h-6 w-6" strokeWidth={isActive ? 2.5 : 2} />
+                        <Icon aria-hidden="true" className="h-6 w-6" strokeWidth={isActive ? 2.5 : 2} />
                       </div>
                       <span className={cn(
                         "text-[9px] font-black uppercase tracking-widest text-center leading-tight mt-1",
-                        isActive ? "text-background" : "text-muted-foreground/80"
+                        isActive ? "text-background" : "text-muted-foreground"
                       )}>
                         {label}
                       </span>
@@ -285,10 +327,10 @@ const BottomNavbar: React.FC = () => {
                 })}
                 <button
                   type="button"
-                  onClick={() => logout()}
+                  onClick={handleLogout}
                   className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-2xl text-destructive hover:bg-destructive/10 transition-all duration-300"
                 >
-                  <LogOut className="h-6 w-6" />
+                  <LogOut aria-hidden="true" className="h-6 w-6" />
                   <span className="text-[9px] font-black uppercase tracking-widest text-center leading-tight mt-1">
                     Log out
                   </span>
@@ -323,6 +365,7 @@ const BottomNavbar: React.FC = () => {
 
         {/* MORE TOGGLE (Pinned Right - Fixed Width) */}
         <button
+          ref={moreButtonRef}
           type="button"
           aria-label={moreOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={moreOpen}
@@ -334,7 +377,7 @@ const BottomNavbar: React.FC = () => {
               : "bg-card text-foreground shadow-sm hover:bg-muted"
           )}
         >
-          {moreOpen ? <X className="h-5 w-5" strokeWidth={2.5} /> : <Menu className="h-5 w-5" strokeWidth={isMoreRouteActive ? 2.5 : 2} />}
+          {moreOpen ? <X aria-hidden="true" className="h-5 w-5" strokeWidth={2.5} /> : <Menu aria-hidden="true" className="h-5 w-5" strokeWidth={isMoreRouteActive ? 2.5 : 2} />}
         </button>
       </motion.nav>
     </>

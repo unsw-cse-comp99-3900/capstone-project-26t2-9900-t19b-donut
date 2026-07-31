@@ -3,7 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, addDays, startOfWeek } from 'date-fns';
-import { Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { Badge } from '@/modules/core/ui/primitives/badge';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Separator } from '@/modules/core/ui/primitives/separator';
@@ -123,6 +123,29 @@ const NewRostersPage: React.FC = () => {
   const { scope, setScope, isGammaLocked } = useScopeFilter('managerial');
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
+  const [isMobileSummaryExpanded, setIsMobileSummaryExpanded] = useState(false);
+  const summaryTouchStartY = useRef<number | null>(null);
+
+  const handleSummaryTouchStart = (event: React.TouchEvent) => {
+    summaryTouchStartY.current = event.touches[0]?.clientY ?? null;
+  };
+
+  const handleSummaryTouchEnd = (event: React.TouchEvent) => {
+    if (summaryTouchStartY.current === null) return;
+    const endY = event.changedTouches[0]?.clientY ?? summaryTouchStartY.current;
+    const deltaY = endY - summaryTouchStartY.current;
+    summaryTouchStartY.current = null;
+
+    if (Math.abs(deltaY) < 36) return;
+    if (isMobileSummaryExpanded) {
+      if (deltaY > 0) setIsMobileSummaryExpanded(false);
+    } else {
+      // Accept either vertical discovery gesture while collapsed. A downward
+      // swipe matches the requested interaction; an upward swipe follows the
+      // conventional bottom-sheet gesture.
+      setIsMobileSummaryExpanded(true);
+    }
+  };
 
   const { showUnfilledPanel, setShowUnfilledPanel, isDnDModeActive } = useRosterStore(
     useShallow((s) => ({
@@ -1386,7 +1409,80 @@ const NewRostersPage: React.FC = () => {
       />
 
       {/* Footer Summary */}
-      <div className="border-t border-slate-200 dark:border-white/5 bg-white dark:bg-black/20 backdrop-blur-md px-6 py-3 flex-shrink-0">
+      <section
+        aria-label="Roster summary"
+        onTouchStart={handleSummaryTouchStart}
+        onTouchEnd={handleSummaryTouchEnd}
+        className={cn(
+          'md:hidden relative z-20 mx-2 mb-[calc(9.5rem+env(safe-area-inset-bottom))] flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_-8px_28px_rgba(15,23,42,0.14)] transition-[max-height] duration-300 dark:border-white/10 dark:bg-[#111827]',
+          isMobileSummaryExpanded ? 'max-h-[42dvh]' : 'max-h-[76px]',
+        )}
+      >
+        <button
+          type="button"
+          aria-expanded={isMobileSummaryExpanded}
+          aria-controls="mobile-roster-summary-details"
+          onClick={() => setIsMobileSummaryExpanded((expanded) => !expanded)}
+          className="flex min-h-[76px] w-full touch-pan-y items-center gap-3 px-4 text-left"
+        >
+          <span className="flex min-w-0 flex-1 items-center gap-4">
+            <span>
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Total shifts
+              </span>
+              <span className="block text-lg font-black text-foreground">{totalShifts}</span>
+            </span>
+            <span>
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Assigned
+              </span>
+              <span className="block text-lg font-black text-emerald-500">{totalAssignedShifts}</span>
+            </span>
+            <span>
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Unfilled
+              </span>
+              <span className="block text-lg font-black text-amber-500">{totalUnfilledShifts}</span>
+            </span>
+          </span>
+          <span className="flex shrink-0 flex-col items-center gap-1 text-muted-foreground">
+            <span className="h-1 w-9 rounded-full bg-muted-foreground/30" aria-hidden="true" />
+            {isMobileSummaryExpanded
+              ? <ChevronDown className="h-5 w-5" aria-hidden="true" />
+              : <ChevronUp className="h-5 w-5" aria-hidden="true" />}
+            <span className="sr-only">
+              {isMobileSummaryExpanded ? 'Collapse roster summary' : 'Expand roster summary'}
+            </span>
+          </span>
+        </button>
+
+        <div
+          id="mobile-roster-summary-details"
+          className="max-h-[calc(42dvh-76px)] touch-pan-y overflow-y-auto overscroll-contain border-t border-slate-200 px-4 pb-5 pt-3 dark:border-white/10"
+        >
+          <div className="grid grid-cols-1 gap-2.5 text-sm">
+            <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-3">
+              <span className="text-muted-foreground">Estimated cost</span>
+              <span className="font-semibold text-foreground">${estimatedCost.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-3">
+              <span className="text-muted-foreground">Budget</span>
+              <span className="font-semibold text-foreground">${budget.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-3">
+              <span className="text-muted-foreground">Remaining</span>
+              <span className={cn('font-semibold', remainingBudget >= 0 ? 'text-emerald-500' : 'text-red-500')}>
+                ${remainingBudget.toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+            Swipe down to collapse this summary.
+          </p>
+        </div>
+      </section>
+
+      <div className="hidden md:block border-t border-slate-200 dark:border-white/5 bg-white dark:bg-black/20 backdrop-blur-md px-6 py-3 flex-shrink-0">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between text-sm gap-3">
           <div className="flex items-center gap-6">
             <div>
@@ -1419,31 +1515,31 @@ const NewRostersPage: React.FC = () => {
                   <TooltipContent className="w-64 p-4 bg-zinc-900 border-white/10 shadow-2xl" side="top" sideOffset={10}>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Global Labour Estimate</p>
+                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Global Labour Estimate</p>
                         <Badge variant="outline" className="text-[9px] bg-emerald-500/10 text-emerald-400 border-emerald-500/20">Award Compliant</Badge>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs">
-                          <span className="text-white/50">Ordinary Base Pay</span>
+                          <span className="text-slate-300">Ordinary Base Pay</span>
                           <span className="text-white font-mono">{formatCost(projection.stats.costBreakdown.base)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-white/50">Weekend & Night Penalties</span>
+                          <span className="text-slate-300">Weekend & Night Penalties</span>
                           <span className="text-emerald-400 font-mono">+{formatCost(projection.stats.costBreakdown.penalty)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-white/50">Overtime Loadings</span>
+                          <span className="text-slate-300">Overtime Loadings</span>
                           <span className="text-amber-400 font-mono">+{formatCost(projection.stats.costBreakdown.overtime)}</span>
                         </div>
                         {projection.stats.costBreakdown.allowance > 0 && (
                           <div className="flex justify-between text-xs">
-                            <span className="text-white/50">Meal & Industry Allowances</span>
+                            <span className="text-slate-300">Meal & Industry Allowances</span>
                             <span className="text-blue-400 font-mono">+{formatCost(projection.stats.costBreakdown.allowance)}</span>
                           </div>
                         )}
                         {projection.stats.costBreakdown.leave > 0 && (
                           <div className="flex justify-between text-xs">
-                            <span className="text-white/50">Annual Leave Loading (17.5%)</span>
+                            <span className="text-slate-300">Annual Leave Loading (17.5%)</span>
                             <span className="text-purple-400 font-mono">+{formatCost(projection.stats.costBreakdown.leave)}</span>
                           </div>
                         )}
@@ -1454,12 +1550,12 @@ const NewRostersPage: React.FC = () => {
                       </div>
                       <div className="pt-1">
                         <div className="flex justify-between text-[10px]">
-                          <span className="text-white/30 italic">Target Budget</span>
-                          <span className="text-white/40 font-mono">{formatCost(budget)}</span>
+                          <span className="text-slate-300 italic">Target Budget</span>
+                          <span className="text-slate-200 font-mono">{formatCost(budget)}</span>
                         </div>
                         <div className="flex justify-between text-[10px] mt-0.5">
-                          <span className="text-white/30 italic">Variance</span>
-                          <span className={cn("font-mono", remainingBudget >= 0 ? "text-emerald-500/60" : "text-red-500/60")}>
+                          <span className="text-slate-300 italic">Variance</span>
+                          <span className={cn("font-mono", remainingBudget >= 0 ? "text-emerald-300" : "text-red-300")}>
                             {remainingBudget >= 0 ? '-' : '+'}{formatCost(Math.abs(remainingBudget))}
                           </span>
                         </div>
