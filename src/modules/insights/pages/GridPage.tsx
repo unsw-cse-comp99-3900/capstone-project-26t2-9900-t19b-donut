@@ -1,11 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { useIsMobile } from '@/modules/core/hooks/use-mobile';
-import { format, eachDayOfInterval, startOfYear, endOfYear, getISOWeek } from 'date-fns';
+import {
+    addWeeks, eachDayOfInterval, endOfWeek, endOfYear, format,
+    getISOWeek, isSameWeek, startOfWeek, startOfYear,
+} from 'date-fns';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { useEmployees, useShiftsByDateRange } from '@/modules/rosters/state/useRosterShifts';
 import {
     Loader2, Activity, Users, CalendarDays,
     GraduationCap, RefreshCw, ShieldAlert, CheckCircle2, AlertTriangle,
+    ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { calculateMinutesBetweenTimes } from '@/modules/rosters/domain/shift.entity';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -36,6 +40,12 @@ interface ShiftPillData {
     subDeptName?: string;
     roleName?: string;
     isDraft: boolean;
+}
+
+interface AggregatedEmployeeData {
+    byDate: Record<string, ShiftPillData[]>;
+    byWeek: Record<number, number>;
+    draftDates: Set<string>;
 }
 
 // ── Compliance types ──────────────────────────────────────────────────────────
@@ -219,6 +229,240 @@ const avatarCls = (s: CompV8Severity) =>
         ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
         : 'bg-primary/10 text-primary border border-primary/5';
 
+interface MobileShiftGridProps {
+    aggregatedData: Record<string, AggregatedEmployeeData>;
+    complianceMap: Record<string, EmpComp>;
+    employees: Array<{ id: string; first_name: string; last_name: string }>;
+    isLoading: boolean;
+    selectedDate: Date;
+    setSelectedDate: (date: Date) => void;
+    studentVisaMap: Record<string, boolean>;
+    viewMode: 'hours' | 'compliance';
+    onViewModeChange: (mode: 'hours' | 'compliance') => void;
+}
+
+const MobileShiftGrid: React.FC<MobileShiftGridProps> = ({
+    aggregatedData,
+    complianceMap,
+    employees,
+    isLoading,
+    selectedDate,
+    setSelectedDate,
+    studentVisaMap,
+    viewMode,
+    onViewModeChange,
+}) => {
+    const touchStart = React.useRef<{ x: number; y: number } | null>(null);
+    const weekStartsOn = 1 as const;
+    const weekStart = startOfWeek(selectedDate, { weekStartsOn });
+    const weekEnd = endOfWeek(selectedDate, { weekStartsOn });
+    const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
+    const currentWeek = isSameWeek(selectedDate, new Date(), { weekStartsOn });
+
+    const moveWeek = (amount: number) => setSelectedDate(addWeeks(selectedDate, amount));
+
+    const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+        if (!touchStart.current) return;
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStart.current.x;
+        const deltaY = touch.clientY - touchStart.current.y;
+        touchStart.current = null;
+
+        if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.25) {
+            moveWeek(deltaX < 0 ? 1 : -1);
+        }
+    };
+
+    return (
+        <div
+            className="flex-1 min-h-0 overflow-y-auto overscroll-y-contain px-4 pb-6"
+            onTouchStart={(event) => {
+                const touch = event.touches[0];
+                touchStart.current = { x: touch.clientX, y: touch.clientY };
+            }}
+            onTouchEnd={handleTouchEnd}
+        >
+            <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-lg pt-3 pb-3">
+                <div className="rounded-2xl border border-border/60 bg-card shadow-sm p-2">
+                    <div className="mb-1 grid grid-cols-2 rounded-xl bg-muted/50 p-1" role="group" aria-label="Grid display mode">
+                        {(['hours', 'compliance'] as const).map((mode) => (
+                            <button
+                                key={mode}
+                                type="button"
+                                onClick={() => onViewModeChange(mode)}
+                                aria-pressed={viewMode === mode}
+                                className={cn(
+                                    'min-h-9 rounded-lg text-[11px] font-extrabold uppercase tracking-wider transition-colors',
+                                    viewMode === mode
+                                        ? 'bg-background text-primary shadow-sm'
+                                        : 'text-muted-foreground',
+                                )}
+                            >
+                                {mode}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="grid grid-cols-[44px_1fr_44px] items-center gap-1">
+                        <button
+                            type="button"
+                            onClick={() => moveWeek(-1)}
+                            className="h-11 w-11 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted active:scale-95 transition"
+                            aria-label="Previous week"
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                        </button>
+
+                        <label className="relative min-w-0 h-11 rounded-xl hover:bg-muted transition-colors flex flex-col items-center justify-center cursor-pointer">
+                            <span className="text-sm font-extrabold text-foreground">
+                                {format(weekStart, 'MMM d')} – {format(weekEnd, 'MMM d, yyyy')}
+                            </span>
+                            <span className="text-[10px] font-semibold text-muted-foreground">Tap to choose a date</span>
+                            <input
+                                type="date"
+                                value={format(selectedDate, 'yyyy-MM-dd')}
+                                onChange={(event) => {
+                                    if (event.target.value) {
+                                        setSelectedDate(new Date(`${event.target.value}T12:00:00`));
+                                    }
+                                }}
+                                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                aria-label="Choose a date"
+                            />
+                        </label>
+
+                        <button
+                            type="button"
+                            onClick={() => moveWeek(1)}
+                            className="h-11 w-11 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted active:scale-95 transition"
+                            aria-label="Next week"
+                        >
+                            <ChevronRight className="h-5 w-5" />
+                        </button>
+                    </div>
+
+                    <div className="mt-1 flex items-center justify-between px-2 pb-1">
+                        <span className="text-[10px] font-medium text-muted-foreground">
+                            Swipe left or right to change week
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedDate(new Date())}
+                            disabled={currentWeek}
+                            className="min-h-8 rounded-lg px-3 text-[11px] font-bold text-primary hover:bg-primary/10 disabled:text-muted-foreground/40 disabled:hover:bg-transparent"
+                        >
+                            This week
+                        </button>
+                    </div>
+                </div>
+                <p className="sr-only" aria-live="polite">
+                    Showing week {format(weekStart, 'MMMM d')} to {format(weekEnd, 'MMMM d, yyyy')}
+                </p>
+            </div>
+
+            <div className="space-y-3">
+                {employees.map((emp) => {
+                    const empComp = complianceMap[emp.id];
+                    const severity = empComp?.overallV8Severity ?? 'ok';
+                    const weekHours = weekDays.reduce((total, day) => {
+                        const date = format(day, 'yyyy-MM-dd');
+                        return total + (aggregatedData[emp.id]?.byDate[date] || [])
+                            .reduce((sum, shift) => sum + shift.netHours, 0);
+                    }, 0);
+
+                    return (
+                        <article key={emp.id} className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
+                            <div className="flex items-start justify-between gap-3 p-3 pb-2">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <div className={cn(
+                                        'h-10 w-10 rounded-xl flex shrink-0 items-center justify-center text-xs font-extrabold',
+                                        avatarCls(severity),
+                                    )}>
+                                        {getInitials(emp.first_name, emp.last_name)}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-1.5">
+                                            <h3 className="truncate text-sm font-bold text-foreground">
+                                                {emp.first_name} {emp.last_name}
+                                            </h3>
+                                            {studentVisaMap[emp.id] && (
+                                                <Badge variant="warning" className="h-4 px-1 text-[8px] shrink-0">Visa</Badge>
+                                            )}
+                                        </div>
+                                        <p className="text-[11px] text-muted-foreground">
+                                            {weekHours ? `${parseFloat(weekHours.toFixed(1))} hours this week` : 'No hours this week'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className={cn(
+                                    'flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10px] font-extrabold',
+                                    severity === 'violation' && 'bg-red-500/15 text-red-700 dark:text-red-300',
+                                    severity === 'warning' && 'bg-amber-500/15 text-amber-700 dark:text-amber-300',
+                                    severity === 'ok' && 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
+                                )}>
+                                    {severity === 'violation' ? <ShieldAlert className="h-3 w-3" />
+                                        : severity === 'warning' ? <AlertTriangle className="h-3 w-3" />
+                                        : <CheckCircle2 className="h-3 w-3" />}
+                                    {severity === 'violation' ? 'Issue' : severity === 'warning' ? 'Near limit' : 'OK'}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-7 gap-1 border-t border-border/40 bg-muted/15 p-2">
+                                {weekDays.map((day) => {
+                                    const date = format(day, 'yyyy-MM-dd');
+                                    const dayShifts = aggregatedData[emp.id]?.byDate[date] || [];
+                                    const hours = dayShifts.reduce((sum, shift) => sum + shift.netHours, 0);
+                                    const isDraft = aggregatedData[emp.id]?.draftDates.has(date) ?? false;
+                                    const isViolation = empComp?.dailyViolations.has(date) ?? false;
+                                    const isWarning = empComp?.dailyWarnings.has(date) ?? false;
+
+                                    return (
+                                        <div key={date} className="min-w-0 text-center">
+                                            <div className="mb-1">
+                                                <div className="text-[9px] font-extrabold uppercase text-muted-foreground">
+                                                    {format(day, 'EEE')}
+                                                </div>
+                                                <div className="text-xs font-bold text-foreground">{format(day, 'd')}</div>
+                                            </div>
+                                            <div
+                                                className={cn(
+                                                    'h-11 rounded-lg flex items-center justify-center text-[11px] font-extrabold',
+                                                    getDailyCellClass(hours, isViolation, isWarning, isDraft),
+                                                )}
+                                                title={dayShifts.length ? `${dayShifts.length} shift(s), ${hours.toFixed(1)} hours` : 'No shifts'}
+                                            >
+                                                {hours > 0
+                                                    ? viewMode === 'compliance'
+                                                        ? <span className="h-2 w-2 rounded-full bg-current" />
+                                                        : `${parseFloat(hours.toFixed(1))}h`
+                                                    : '—'}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {severity !== 'ok' && (
+                                <p className="border-t border-border/40 px-3 py-2 text-[11px] text-muted-foreground">
+                                    {empComp?.worstDesc}
+                                </p>
+                            )}
+                        </article>
+                    );
+                })}
+
+                {employees.length === 0 && !isLoading && (
+                    <div className="rounded-2xl border border-border/60 bg-card p-10 text-center">
+                        <Users className="mx-auto mb-3 h-8 w-8 text-muted-foreground/40" />
+                        <p className="text-sm font-semibold">No personnel found</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Try changing the organization or filters.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 // ── GridPage ──────────────────────────────────────────────────────────────────
 
 const GridPage: React.FC = () => {
@@ -230,6 +474,7 @@ const GridPage: React.FC = () => {
     const today = new Date();
     const [year, setYear] = useState(today.getFullYear());
     const [viewMode, setViewMode] = useState<'hours' | 'compliance'>('hours');
+    const [mobileSelectedDate, setMobileSelectedDate] = useState(today);
 
     const startDate = useMemo(() => format(startOfYear(new Date(year, 0, 1)), 'yyyy-MM-dd'), [year]);
     const endDate   = useMemo(() => format(endOfYear(new Date(year, 0, 1)),  'yyyy-MM-dd'), [year]);
@@ -265,11 +510,7 @@ const GridPage: React.FC = () => {
     const sortedWeekNums = useMemo(() => weeks.map(w => w.weekNum), [weeks]);
 
     const { aggregatedData, finalEmployees } = useMemo(() => {
-        const data: Record<string, { 
-            byDate: Record<string, ShiftPillData[]>; 
-            byWeek: Record<number, number>;
-            draftDates: Set<string>;
-        }> = {};
+        const data: Record<string, AggregatedEmployeeData> = {};
         const empMap = new Map<string, { id: string; first_name: string; last_name: string }>();
 
         employeesByContract.forEach(emp => {
@@ -374,13 +615,18 @@ const GridPage: React.FC = () => {
 
     // Auto-scroll to today
     React.useEffect(() => {
-        if (!isLoading && finalEmployees.length > 0) {
+        if (!isMobile && !isLoading && finalEmployees.length > 0) {
             const todayStr = format(new Date(), 'yyyy-MM-dd');
             const el = document.getElementById(`col-${todayStr}`);
             if (el && scrollContainerRef.current)
                 el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
-    }, [isLoading, finalEmployees.length]);
+    }, [isMobile, isLoading, finalEmployees.length]);
+
+    const handleMobileDateChange = (date: Date) => {
+        setMobileSelectedDate(date);
+        if (date.getFullYear() !== year) setYear(date.getFullYear());
+    };
 
     const handleRefresh = () => {
         queryClient.invalidateQueries({ queryKey: ['shifts', 'list'] });
@@ -399,7 +645,29 @@ const GridPage: React.FC = () => {
                 scope={scope}
                 setScope={setScope}
                 isGammaLocked={isGammaLocked}
-                functionBar={
+                functionBar={isMobile ? (
+                    <div className="flex w-full items-center justify-between gap-2">
+                        <div className="flex items-center gap-3 rounded-xl border border-border/40 bg-muted/30 px-3 py-2">
+                            <span className="flex items-center gap-1.5 text-[10px] font-bold">
+                                <Users className="h-3.5 w-3.5 text-muted-foreground" />
+                                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : finalEmployees.length} PERSONNEL
+                            </span>
+                            <span className="h-3 w-px bg-border" />
+                            <span className="flex items-center gap-1.5 text-[10px] font-bold">
+                                <CalendarDays className="h-3.5 w-3.5 text-muted-foreground" />
+                                {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : shifts.length} SHIFTS
+                            </span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleRefresh}
+                            className="h-11 w-11 shrink-0 rounded-xl flex items-center justify-center text-muted-foreground hover:bg-muted"
+                            aria-label="Refresh data"
+                        >
+                            <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
+                        </button>
+                    </div>
+                ) : (
                     <div className="flex flex-wrap items-center justify-between gap-4 w-full">
                         <div className="flex items-center gap-3 flex-wrap">
                             <div className="flex items-center gap-4 px-4 py-2 bg-muted/30 rounded-2xl border border-border/40">
@@ -463,10 +731,23 @@ const GridPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                }
+                )}
             />
 
             {/* ── BODY ── */}
+            {isMobile ? (
+                <MobileShiftGrid
+                    aggregatedData={aggregatedData}
+                    complianceMap={complianceMap}
+                    employees={finalEmployees}
+                    isLoading={isLoading}
+                    selectedDate={mobileSelectedDate}
+                    setSelectedDate={handleMobileDateChange}
+                    studentVisaMap={studentVisaMap}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                />
+            ) : (
             <div className={cn(
                 "flex-1 min-h-0 mx-4 lg:mx-6 mb-4 lg:mb-6 bg-card border border-border/50 rounded-[32px] shadow-2xl shadow-black/5 overflow-hidden flex flex-col relative",
                 isDark ? "bg-[#1c2333]/40" : "bg-white/70 backdrop-blur-md"
@@ -754,6 +1035,7 @@ const GridPage: React.FC = () => {
                     </table>
                 </div>
             </div>
+            )}
 
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
