@@ -12,7 +12,7 @@ import { supabase } from '@/platform/supabase/client';
 import { Card } from '@/modules/core/ui/primitives/card';
 import { Badge } from '@/modules/core/ui/primitives/badge';
 import { Button } from '@/modules/core/ui/primitives/button';
-import { Skeleton } from '@/modules/core/ui/primitives/skeleton';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import {
   Select,
   SelectContent,
@@ -141,21 +141,17 @@ export default function RejectionsPage() {
 
       {/* Table */}
       <Card className="overflow-hidden">
-        {isLoading ? (
-          <div className="p-4 space-y-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 w-full" />
-            ))}
-          </div>
-        ) : isError ? (
-          <div className="p-6 text-sm text-rose-500">
-            Failed to load rejections. The compliance_rejections table may not yet be migrated.
-          </div>
-        ) : (data ?? []).length === 0 ? (
-          <div className="p-12 text-center text-sm text-muted-foreground">
-            No compliance rejections recorded in this window.
-          </div>
-        ) : (
+        <PageState
+          isLoading={isLoading}
+          loadingMsg="Loading compliance rejections..."
+          isError={isError}
+          errorTitle="Could not load compliance rejections"
+          errorMsg="The compliance rejections table may not yet be migrated."
+          onRetry={() => refetch()}
+          isEmpty={(data ?? []).length === 0}
+          emptyTitle="No compliance rejections"
+          emptyDesc="No compliance rejections were recorded in this window."
+        >
           <table className="w-full text-sm">
             <thead className="bg-muted/30 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
               <tr>
@@ -198,7 +194,7 @@ export default function RejectionsPage() {
               ))}
             </tbody>
           </table>
-        )}
+        </PageState>
       </Card>
     </div>
   );

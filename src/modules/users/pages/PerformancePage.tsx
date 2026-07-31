@@ -20,6 +20,7 @@ import {
 } from '@/modules/core/ui/primitives/select';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { PersonalPageHeader } from '@/modules/core/ui/components/PersonalPageHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { PerformanceFunctionBar } from '../ui/components/PerformanceFunctionBar';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
@@ -114,7 +115,7 @@ export default function PerformancePage() {
     ];
 
     const { scope, setScope, isGammaLocked } = useScopeFilter('managerial');
-    const { data: rows = [], isLoading } = useQuarterlyReport(selectedYear, selectedQuarter, scope);
+    const { data: rows = [], isLoading, isError, error, refetch } = useQuarterlyReport(selectedYear, selectedQuarter, scope);
 
     /* ─── Sorting ─── */
     const sortedRows = useMemo(() => {
@@ -338,15 +339,17 @@ export default function PerformancePage() {
                         ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
-                {isLoading ? (
-                    <div className="flex items-center justify-center h-48">
-                        <p className="text-muted-foreground text-sm animate-pulse">Loading report…</p>
-                    </div>
-                ) : rows.length === 0 ? (
-                    <div className="flex items-center justify-center h-48">
-                        <p className="text-muted-foreground text-sm">No data for this quarter. Click "Refresh All" to populate.</p>
-                    </div>
-                ) : (
+                <PageState
+                    isLoading={isLoading}
+                    loadingMsg="Loading performance report..."
+                    isError={isError}
+                    errorTitle="Could not load performance report"
+                    errorMsg={error instanceof Error ? error.message : undefined}
+                    onRetry={() => refetch()}
+                    isEmpty={rows.length === 0}
+                    emptyTitle="No performance data"
+                    emptyDesc='No data is available for this quarter. Select "Refresh All" to populate it.'
+                >
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             {/* Group Headers */}
@@ -419,7 +422,7 @@ export default function PerformancePage() {
                             </tbody>
                         </table>
                     </div>
-                )}
+                </PageState>
             </div>
           </div>
 

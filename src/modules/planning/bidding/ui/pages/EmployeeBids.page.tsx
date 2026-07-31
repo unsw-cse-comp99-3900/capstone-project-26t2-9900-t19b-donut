@@ -52,6 +52,7 @@ import { getBidPriority } from '../utils/bid-priority';
 import { getDeptColor, getRowClass } from '../utils/bid-dept-styles';
 import { getParticipationStatus } from '../utils/bid-participation';
 import type { ShiftData, BidData, ShiftOpportunity } from '../types';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 // ============================================================================
 // MOTION VARIANTS
@@ -151,14 +152,24 @@ export const EmployeeBidsPage: React.FC = () => {
     // ========================================================================
     // DATA FETCHING
     // ========================================================================
-    const { data: rawAvailableShifts = [] } = useQuery({
+    const {
+        data: rawAvailableShifts = [],
+        isLoading: isShiftsLoading,
+        isError: isShiftsError,
+        refetch: refetchShifts,
+    } = useQuery({
         queryKey: ['openBidShifts', scopeKey, hierarchyFilters.organizationId, hierarchyFilters.departmentId, hierarchyFilters.subDepartmentId],
         queryFn: () => biddingApi.getOpenBidShifts(hierarchyFilters),
         enabled: !!user && !!hierarchyFilters.organizationId && !isScopeLoading,
         staleTime: 60_000, // 1 minute staleTime
     });
 
-    const { data: rawMyBids = [] } = useQuery({
+    const {
+        data: rawMyBids = [],
+        isLoading: isBidsLoading,
+        isError: isBidsError,
+        refetch: refetchBids,
+    } = useQuery({
         queryKey: ['myBids', user?.id],
         queryFn: () => (user ? biddingApi.getMyBids(user.id) : Promise.resolve([])),
         enabled: !!user,
@@ -715,6 +726,7 @@ export const EmployeeBidsPage: React.FC = () => {
                                 <Button
                                     variant="ghost"
                                     size="sm"
+                                    aria-label="Bidding settings"
                                     className={cn(
                                         "flex items-center justify-center transition-all p-0 flex-shrink-0 active:scale-95",
                                         "h-11 w-full rounded-xl", // Mobile: uniform 44px, full width
@@ -798,7 +810,7 @@ export const EmployeeBidsPage: React.FC = () => {
                                 type="button"
                             >
                                 <div className="hidden md:flex flex-col items-start gap-0.5">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/30 leading-none">Group By</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground leading-none">Group By</span>
                                     <span className="truncate max-w-[120px] sm:max-w-[180px] text-xs sm:text-sm font-semibold">
                                         {(() => {
                                             const map: Record<string, string> = {
@@ -910,12 +922,18 @@ export const EmployeeBidsPage: React.FC = () => {
                         ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
-                {isScopeLoading || (eligibilityPending && rawAvailableShifts.length > 0) ? (
-                    <div className="flex-1 flex flex-col items-center justify-center gap-3">
-                        <Loader2 className="h-8 w-8 text-primary animate-spin" />
-                        <p className="text-xs text-muted-foreground/60 uppercase tracking-widest font-black animate-pulse">Scanning Compliance...</p>
-                    </div>
-                ) : viewMode === 'card' ? (
+                <PageState
+                    isLoading={isScopeLoading || isShiftsLoading || isBidsLoading || (eligibilityPending && rawAvailableShifts.length > 0)}
+                    loadingMsg="Scanning bid eligibility..."
+                    isError={isShiftsError || isBidsError}
+                    errorTitle="Could not load bidding opportunities"
+                    errorMsg="Available shifts or your existing bids could not be loaded."
+                    onRetry={() => Promise.all([refetchShifts(), refetchBids()])}
+                    isEmpty={filteredBidOpportunities.length === 0}
+                    emptyTitle="No shifts match your filters"
+                    emptyDesc="Try expanding your date range or clearing priority filters."
+                >
+                {viewMode === 'card' ? (
                 <div className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-none">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -935,7 +953,7 @@ export const EmployeeBidsPage: React.FC = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold text-foreground/60">No shifts match your filters</p>
-                                        <p className="text-xs text-muted-foreground/40 mt-1">Try expanding your date range or clearing priority filters.</p>
+                                        <p className="text-xs text-muted-foreground mt-1">Try expanding your date range or clearing priority filters.</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -1186,6 +1204,7 @@ export const EmployeeBidsPage: React.FC = () => {
                         </div>
                     </div>
                 )}
+                </PageState>
                 </div>
             </div>
 

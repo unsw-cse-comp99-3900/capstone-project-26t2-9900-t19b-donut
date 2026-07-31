@@ -89,7 +89,12 @@ const TimeGrid: React.FC<TimeGridProps> = ({ days, renderShifts }) => {
       </div>
 
       {/* ===== SCROLLABLE GRID AREA ===== */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-auto pb-24 scrollbar-none">
+      <div
+        ref={scrollRef}
+        tabIndex={0}
+        aria-label="Roster schedule"
+        className="flex-1 overflow-y-auto overflow-x-auto pb-24 scrollbar-none"
+      >
         <div className="relative" style={{ height: HOUR_HEIGHT * 24 }}>
           {/* Background grid with hour rows */}
           <div className="absolute inset-0 flex">

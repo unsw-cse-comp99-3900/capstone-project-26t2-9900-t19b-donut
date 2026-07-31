@@ -26,6 +26,7 @@ import {
 } from '../api/timesheets.supabase.api';
 import { useScopeFilter, ScopeMode } from '@/platform/auth/useScopeFilter';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 /**
  * TimesheetPage
@@ -55,6 +56,7 @@ export const TimesheetPage: React.FC = () => {
 
     const [shifts, setShifts] = useState<TimesheetShiftRow[]>([]);
     const [loading, setLoading] = useState(false);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     const { toast } = useToast();
 
@@ -62,6 +64,7 @@ export const TimesheetPage: React.FC = () => {
     const loadShifts = useCallback(async () => {
         if (!selectedOrganizationId) return;
         setLoading(true);
+        setLoadError(null);
         try {
             const startStr = format(range.start, 'yyyy-MM-dd');
             const endStr = format(range.end, 'yyyy-MM-dd');
@@ -75,6 +78,7 @@ export const TimesheetPage: React.FC = () => {
             setShifts(data);
         } catch (error) {
             console.error('Error loading shifts:', error);
+            setLoadError('Failed to load timesheet data. Please try again.');
             toast({
                 title: 'Error loading data',
                 description: 'Failed to load timesheet data. Please try again.',
@@ -287,7 +291,18 @@ export const TimesheetPage: React.FC = () => {
                         ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
-                    <div className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-none">
+                    <PageState
+                        isLoading={loading}
+                        loadingMsg="Loading timesheets..."
+                        isError={Boolean(loadError)}
+                        errorTitle="Could not load timesheets"
+                        errorMsg={loadError || undefined}
+                        onRetry={loadShifts}
+                        isEmpty={entries.length === 0}
+                        emptyTitle="No timesheets found"
+                        emptyDesc="No assigned shifts match the selected date, scope, search, and status filters."
+                    >
+                      <div className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-none">
                         <TimesheetTable
                             entries={entries}
                             selectedDate={selectedDate}
@@ -304,7 +319,8 @@ export const TimesheetPage: React.FC = () => {
                             isRefreshing={loading}
                             hideTopControls
                         />
-                    </div>
+                      </div>
+                    </PageState>
                 </div>
             </div>
         </div>

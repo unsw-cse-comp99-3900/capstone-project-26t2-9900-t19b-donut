@@ -22,6 +22,7 @@ import { SharedShiftCard } from '../../../../planning/ui/components/SharedShiftC
 import { estimateDetailedCostFromShift } from '@/modules/rosters/domain/projections/utils/cost';
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 /* ============================================================
    DESIGN TOKENS (Deprecated hex scales, using theme-aware variables)
@@ -513,6 +514,7 @@ export const ManagerSwapsPage: React.FC = () => {
     const [complianceApprovalTarget, setComplianceApprovalTarget] = useState<SwapRequestManagement | null>(null);
     const [swapRequests, setSwapRequests] = useState<SwapRequestManagement[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -521,6 +523,7 @@ export const ManagerSwapsPage: React.FC = () => {
         if (!currentOrgId) return;
 
         setIsLoading(true);
+        setLoadError(null);
         try {
             const apiData = await swapsApi.fetchSwapRequests({
                 organizationId: currentOrgId,
@@ -531,6 +534,7 @@ export const ManagerSwapsPage: React.FC = () => {
             setSwapRequests(uiData);
         } catch (error) {
             console.error(error);
+            setLoadError('Failed to load swap requests.');
             toast({
                 title: 'Error fetching requests',
                 description: 'Failed to load swap requests.',
@@ -705,27 +709,18 @@ export const ManagerSwapsPage: React.FC = () => {
                         : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
                 )}>
                     <div className="flex-1 overflow-y-auto custom-scrollbar px-4 lg:px-6 py-6">
-                    {isLoading ? (
-                        <div className="flex flex-col items-center justify-center py-32 gap-4">
-                            <div className="h-10 w-10 rounded-full border-2 border-border border-t-indigo-500 animate-spin" />
-                            <span className="text-[10px] font-mono text-muted-foreground/40 uppercase tracking-[0.3em]">Loading requests</span>
-                        </div>
-                    ) : filteredRequests.length === 0 ? (
-                        /* Empty State */
-                        <div className="flex flex-col items-center justify-center py-32 gap-6">
-                            <div className="relative">
-                                <div className="h-20 w-20 rounded-3xl bg-muted/40 border border-border flex items-center justify-center shadow-2xl">
-                                    <ArrowLeftRight className="h-8 w-8 text-muted-foreground/20" />
-                                </div>
-                                <div className="absolute -inset-4 bg-primary/5 rounded-full blur-2xl animate-pulse" />
-                            </div>
-                            <div className="text-center">
-                                <p className="text-sm font-black text-foreground/40 mb-1 uppercase tracking-widest">No {statusFilter === 'all' ? '' : statusFilter.replace('_', ' ').toLowerCase()} requests</p>
-                                <p className="text-[11px] text-muted-foreground/40 font-mono font-black">Check back later or adjust your filters</p>
-                            </div>
-                        </div>
-                    ) : (
-                        /* Request Cards */
+                    <PageState
+                        isLoading={isLoading}
+                        loadingMsg="Loading swap requests..."
+                        isError={Boolean(loadError)}
+                        errorTitle="Could not load swap requests"
+                        errorMsg={loadError || undefined}
+                        onRetry={fetchData}
+                        isEmpty={filteredRequests.length === 0}
+                        emptyTitle={`No ${statusFilter === 'all' ? '' : `${statusFilter.replace('_', ' ').toLowerCase()} `}requests`}
+                        emptyDesc="Check back later or adjust your filters."
+                    >
+                        {/* Request Cards */}
                         <div className="space-y-4">
                             {/* Select All (for pending) */}
                             {statusFilter === 'MANAGER_PENDING' && filteredRequests.length > 1 && (
@@ -867,7 +862,7 @@ export const ManagerSwapsPage: React.FC = () => {
                                 ))}
                             </AnimatePresence>
                         </div>
-                    )}
+                    </PageState>
                 </div>
             </div>
         </div>

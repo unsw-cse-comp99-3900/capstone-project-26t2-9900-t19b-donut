@@ -5,12 +5,13 @@ import MyRosterCalendar from '@/modules/rosters/ui/my-roster/MyRosterCalendar';
 import { MyOffersModal } from '@/modules/rosters/ui/my-roster/MyOffersModal';
 import { useRosterView, useMyRoster } from '@/modules/rosters';
 import { usePendingOfferCount, useMyOffers } from '@/modules/rosters/state/useRosterShifts';
-import { CalendarDays, Info, Loader2, Mail, WifiOff } from 'lucide-react';
+import { CalendarDays, Mail } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
 
 import { GoldStandardHeader } from '@/modules/core/ui/components/GoldStandardHeader';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import { useScopeFilter } from '@/platform/auth/useScopeFilter';
 import { useOrgSelection } from '@/modules/core/contexts/OrgSelectionContext';
 import { useTheme } from '@/modules/core/contexts/ThemeContext';
@@ -159,7 +160,7 @@ const MyRosterPage: React.FC = () => {
   useOrgSelection(); // keeps context subscription without unused destructure
   const { scope, setScope, isGammaLocked } = useScopeFilter('personal');
 
-  const { shifts, isLoading, error, offlineState, isOffline, getShiftsForDate } = useMyRoster(view, selectedDate, scope);
+  const { shifts, isLoading, error, offlineState, isOffline, getShiftsForDate, refetch } = useMyRoster(view, selectedDate, scope);
 
   const [showOffersModal, setShowOffersModal] = useState(false);
 
@@ -252,55 +253,34 @@ const MyRosterPage: React.FC = () => {
               emptyLabel="Offline - saved roster is not available yet"
             />
             <div className="min-h-0 flex-1">
-              {isLoading ? (
-                <div className="h-full flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="h-9 w-9 animate-spin text-primary/60" />
-                  <span className="text-sm text-muted-foreground font-medium tracking-wide">
-                    Loading your roster…
-                  </span>
-                </div>
-              ) : offlineState === 'offline-empty' ? (
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
-                  <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
-                    <WifiOff className="h-7 w-7 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground">No cached roster available</h3>
-                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                      Reconnect once to load your roster, then this page can show the saved schedule offline.
-                    </p>
-                  </div>
-                </div>
-              ) : error ? (
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center p-8">
-                  <div className="w-14 h-14 rounded-2xl bg-destructive/10 flex items-center justify-center">
-                    <Info className="h-7 w-7 text-destructive" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground">Could not load roster</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Failed to fetch shifts. Try refreshing the page.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                accessibleView ? (
+              <PageState
+                isLoading={isLoading}
+                loadingMsg="Loading your roster..."
+                isError={Boolean(error)}
+                errorTitle="Could not load roster"
+                errorMsg="Failed to fetch shifts. Try refreshing the page."
+                onRetry={() => refetch()}
+                isEmpty={offlineState === 'offline-empty'}
+                emptyTitle="No cached roster available"
+                emptyDesc="Reconnect once to load your roster, then this page can show the saved schedule offline."
+              >
+                {accessibleView ? (
                   <AccessibleRosterList shifts={shifts || []} isOffline={isOffline} />
                 ) : (
-                <MyRosterCalendar
-                  view={view}
-                  onViewChange={setView}
-                  selectedDate={selectedDate}
-                  onDateChange={setSelectedDate}
-                  getShiftsForDate={getShiftsForDate}
-                  shifts={shifts || []}
-                  pendingOfferCount={pendingOfferCount}
-                  offerDates={offerDates}
-                  onOffersClick={() => setShowOffersModal(true)}
-                  isOffline={isOffline}
-                />
-                )
-              )}
+                  <MyRosterCalendar
+                    view={view}
+                    onViewChange={setView}
+                    selectedDate={selectedDate}
+                    onDateChange={setSelectedDate}
+                    getShiftsForDate={getShiftsForDate}
+                    shifts={shifts || []}
+                    pendingOfferCount={pendingOfferCount}
+                    offerDates={offerDates}
+                    onOffersClick={() => setShowOffersModal(true)}
+                    isOffline={isOffline}
+                  />
+                )}
+              </PageState>
             </div>
           </div>
         </div>
