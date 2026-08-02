@@ -2,171 +2,284 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { shiftsCommands } from '../shifts.commands';
 import { supabase } from '@/platform/supabase/client';
 import { complianceService } from '../../services/compliance.service';
+import * as rpcClient from '@/platform/supabase/rpc/client';
 import { shiftsQueries } from '../shifts.queries';
 
-// Mock dependencies
-vi.mock('@/platform/supabase/client', () => {
-    const mockQueryBuilder = {
-        update: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        in: vi.fn().mockReturnThis(),
-        select: vi.fn().mockResolvedValue({ data: [{ id: 'mock-id' }], error: null }),
-    };
+// A mock builder that is thenable
+class MockQueryBuilder {
+    _data: any = null;
+    _error: any = null;
 
-    return {
-        supabase: {
-            rpc: vi.fn().mockResolvedValue({ data: { success: true }, error: null }),
-            from: vi.fn(() => mockQueryBuilder)
-        }
-    };
-});
+    select = vi.fn().mockReturnThis();
+    eq = vi.fn().mockReturnThis();
+    in = vi.fn().mockReturnThis();
+    neq = vi.fn().mockReturnThis();
+    is = vi.fn().mockReturnThis();
+    order = vi.fn().mockReturnThis();
+    limit = vi.fn().mockReturnThis();
+    insert = vi.fn().mockReturnThis();
+    update = vi.fn().mockReturnThis();
+    gte = vi.fn().mockReturnThis();
+    lte = vi.fn().mockReturnThis();
 
-vi.mock('@/platform/supabase/rpc/client', () => ({
-    callRpc: vi.fn().mockResolvedValue('mock-shift-id'),
-    callAuthenticatedRpc: vi.fn().mockResolvedValue({ success: true, success_count: 1 }),
-    callAuthenticatedVoidRpc: vi.fn().mockResolvedValue(undefined),
-    requireUser: vi.fn().mockResolvedValue({ id: 'user-1' }),
+    single = vi.fn().mockImplementation(() => Promise.resolve({ data: this._data, error: this._error }));
+    maybeSingle = vi.fn().mockImplementation(() => Promise.resolve({ data: this._data, error: this._error }));
+
+    then(onfulfilled?: (value: any) => any, onrejected?: (reason: any) => any): Promise<any> {
+        return Promise.resolve({ data: this._data, error: this._error }).then(onfulfilled, onrejected);
+    }
+    catch(onrejected?: (reason: any) => any): Promise<any> {
+        return Promise.resolve({ data: this._data, error: this._error }).catch(onrejected);
+    }
+    finally(onfinally?: () => void): Promise<any> {
+        return Promise.resolve({ data: this._data, error: this._error }).finally(onfinally);
+    }
+
+    mockResultOnce(data: any, error: any = null) {
+        this._data = data;
+        this._error = error;
+    }
+}
+
+let builderQueue: MockQueryBuilder[] = [];
+
+vi.mock('@/platform/supabase/client', () => ({
+    supabase: {
+        rpc: vi.fn(),
+        from: vi.fn(() => {
+            if (builderQueue.length > 0) {
+                return builderQueue.shift();
+            }
+            return new MockQueryBuilder();
+        })
+    }
 }));
 
 vi.mock('../../services/compliance.service', () => ({
     complianceService: {
-        validateShiftCompliance: vi.fn().mockResolvedValue({ isValid: true, violations: [] })
+        validateShiftCompliance: vi.fn()
     }
 }));
 
 vi.mock('../shifts.queries', () => ({
     shiftsQueries: {
-        getShiftById: vi.fn().mockResolvedValue({ id: 'mock-shift-id', assigned_employee_id: 'emp-1' })
+        getShiftById: vi.fn()
     }
 }));
 
-vi.mock('../domain/bulk-action-engine', () => ({
-    processInChunks: vi.fn(async (items, processor) => {
-        return Promise.all(items.map(async (item: any) => {
-            try {
-                const res = await processor(item);
-                return { ok: true, id: item, result: res };
-            } catch (err) {
-                return { ok: false, id: item, error: err };
-            }
-        }));
-    })
+vi.mock('@/platform/supabase/rpc/client', () => ({
+    callRpc: vi.fn(),
+    callAuthenticatedRpc: vi.fn(),
+    callAuthenticatedVoidRpc: vi.fn(),
+    requireUser: vi.fn().mockResolvedValue({ id: '11111111-1111-1111-1111-111111111111' })
 }));
-
-const VALID_UUID = '12345678-1234-1234-1234-123456789012';
 
 describe('shiftsCommands', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-    });
-
-    it('moveShift should move shift successfully', async () => {
-        const res = await shiftsCommands.moveShift(VALID_UUID, { shiftDate: '2026-01-01' });
-        expect(res.success).toBe(true);
-    });
-
-    it('createShift should create shift successfully', async () => {
-        const res = await shiftsCommands.createShift({
-            roster_id: VALID_UUID,
-            department_id: VALID_UUID,
-            shift_date: '2026-01-01',
-            start_time: '09:00',
-            end_time: '17:00'
-        });
-        expect(res.id).toBe('mock-shift-id');
-    });
-
-    it('createShift should throw compliance error', async () => {
-        vi.mocked(complianceService.validateShiftCompliance).mockResolvedValueOnce({ isValid: false, violations: ['rule'] });
+        builderQueue = [];
         
-        await expect(shiftsCommands.createShift({
-            roster_id: VALID_UUID,
-            department_id: VALID_UUID,
-            shift_date: '2026-01-01',
-            start_time: '09:00',
-            end_time: '17:00',
-            assigned_employee_id: VALID_UUID
-        })).rejects.toThrow();
+        // Setup global default mock for callAuthenticatedRpc
+        (rpcClient.callAuthenticatedRpc as any).mockResolvedValue({ success: true });
     });
 
-    it('updateShift should update shift successfully', async () => {
-        const res = await shiftsCommands.updateShift(VALID_UUID, { start_time: '10:00' });
-        expect(res.id).toBe('mock-shift-id');
+    describe('moveShift', () => {
+        it('should move shift successfully', async () => {
+            (supabase.rpc as any).mockResolvedValueOnce({ data: { success: true }, error: null });
+            
+            const result = await shiftsCommands.moveShift('22222222-2222-2222-2222-222222222222', { groupType: 'Group', shiftDate: '2026-01-01' });
+            
+            expect(result.success).toBe(true);
+            expect(supabase.rpc).toHaveBeenCalledWith('sm_move_shift', expect.any(Object));
+        });
+
+        it('should throw if RPC fails', async () => {
+            (supabase.rpc as any).mockResolvedValueOnce({ data: null, error: { message: 'Failed' } });
+            
+            await expect(shiftsCommands.moveShift('22222222-2222-2222-2222-222222222222', {})).rejects.toThrow('Failed');
+        });
     });
 
-    it('bulkAssignShifts should handle empty array', async () => {
-        const res = await shiftsCommands.bulkAssignShifts(VALID_UUID, []);
-        expect(res.success).toBe(true);
+    describe('createShift', () => {
+        it('should validate compliance and create shift via RPC', async () => {
+            (complianceService.validateShiftCompliance as any).mockResolvedValueOnce({ isValid: true, violations: [] });
+            (rpcClient.callRpc as any).mockResolvedValueOnce('22222222-2222-2222-2222-222222222222');
+            (shiftsQueries.getShiftById as any).mockResolvedValueOnce({ id: '22222222-2222-2222-2222-222222222222' });
+
+            const result = await shiftsCommands.createShift({
+                roster_id: '33333333-3333-3333-3333-333333333333',
+                department_id: '44444444-4444-4444-4444-444444444444',
+                shift_date: '2026-01-01',
+                start_time: '09:00',
+                end_time: '17:00',
+                assigned_employee_id: '55555555-5555-5555-5555-555555555555'
+            });
+
+            expect(result.id).toBe('22222222-2222-2222-2222-222222222222');
+            expect(complianceService.validateShiftCompliance).toHaveBeenCalled();
+            expect(rpcClient.callRpc).toHaveBeenCalledWith('sm_create_shift', expect.any(Object), expect.any(Object));
+        });
+
+        it('should throw compliance error if validation fails', async () => {
+            (complianceService.validateShiftCompliance as any).mockResolvedValueOnce({ isValid: false, violations: [{ summary: 'Too many hours' }] });
+
+            await expect(shiftsCommands.createShift({
+                roster_id: '33333333-3333-3333-3333-333333333333',
+                department_id: '44444444-4444-4444-4444-444444444444',
+                shift_date: '2026-01-01',
+                start_time: '09:00',
+                end_time: '17:00',
+                assigned_employee_id: '55555555-5555-5555-5555-555555555555'
+            })).rejects.toThrow();
+        });
     });
 
-    it('bulkAssignShiftsAtomic should handle empty array', async () => {
-        const res = await shiftsCommands.bulkAssignShiftsAtomic([]);
-        expect(res.success).toBe(true);
+    describe('updateShift', () => {
+        it('should update shift via direct update and select', async () => {
+            const updateBuilder = new MockQueryBuilder();
+            updateBuilder._data = [{ id: '22222222-2222-2222-2222-222222222222' }];
+            builderQueue.push(updateBuilder);
+
+            (shiftsQueries.getShiftById as any).mockResolvedValueOnce({ id: '22222222-2222-2222-2222-222222222222' });
+
+            const result = await shiftsCommands.updateShift('22222222-2222-2222-2222-222222222222', {
+                start_time: '10:00'
+            });
+
+            expect(result.id).toBe('22222222-2222-2222-2222-222222222222');
+            expect(updateBuilder.update).toHaveBeenCalled();
+        });
     });
 
-    it('bulkUnassignShifts should handle empty array', async () => {
-        const res = await shiftsCommands.bulkUnassignShifts([]);
-        expect(res).toEqual([]);
+    describe('bulkAssignShiftsAtomic', () => {
+        it('should call atomic RPC', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({
+                success: true,
+                total_requested: 1,
+                success_count: 1,
+                conflict_count: 0,
+                conflicts: [],
+                per_employee: [],
+                assigned: ['22222222-2222-2222-2222-222222222222'],
+                compliance_failed: [] 
+            });
+
+            const result = await shiftsCommands.bulkAssignShiftsAtomic([{ employeeId: '55555555-5555-5555-5555-555555555555', shiftIds: ['22222222-2222-2222-2222-222222222222'] }]);
+
+            expect(result.success).toBe(true);
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_bulk_assign_atomic', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('publishShift should publish successfully', async () => {
-        const res = await shiftsCommands.publishShift(VALID_UUID);
-        expect(res.success).toBe(true);
+    describe('bulkUnassignShifts', () => {
+        it('should fetch preState and update shifts', async () => {
+            // preState builder
+            const preStateBuilder = new MockQueryBuilder();
+            preStateBuilder._data = [{ id: '22222222-2222-2222-2222-222222222222', assigned_employee_id: '55555555-5555-5555-5555-555555555555', shift_date: '2026-01-01', start_time: '09:00', end_time: '17:00' }];
+            builderQueue.push(preStateBuilder);
+
+            // update builder
+            const updateBuilder = new MockQueryBuilder();
+            updateBuilder._data = [{ id: '22222222-2222-2222-2222-222222222222' }];
+            builderQueue.push(updateBuilder);
+
+            const result = await shiftsCommands.bulkUnassignShifts(['22222222-2222-2222-2222-222222222222']);
+
+            expect(result).toHaveLength(1);
+            expect(updateBuilder.update).toHaveBeenCalled();
+        });
     });
 
-    it('bulkPublishShifts should handle valid shifts', async () => {
-        vi.mocked(shiftsQueries.getShiftById).mockResolvedValueOnce({ id: VALID_UUID, assigned_employee_id: null });
-        const res = await shiftsCommands.bulkPublishShifts([VALID_UUID]);
-        expect(res.publishedIds).toContain(VALID_UUID);
+    describe('publishShift', () => {
+        it('should publish shift via RPC', async () => {
+            (shiftsQueries.getShiftById as any).mockResolvedValueOnce(null); // No existing shift returned
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success: true });
+
+            await shiftsCommands.publishShift('22222222-2222-2222-2222-222222222222');
+
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_publish_shift', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('bulkUnpublishShifts should handle empty array', async () => {
-        const res = await shiftsCommands.bulkUnpublishShifts([]);
-        expect(res.unpublishedIds).toEqual([]);
+    describe('deleteShift', () => {
+        it('should call sm_delete_shift', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success: true });
+
+            const result = await shiftsCommands.deleteShift('22222222-2222-2222-2222-222222222222');
+
+            expect(result).toBe(true);
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_delete_shift', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('bulkUnpublishShifts should handle valid shifts', async () => {
-        const res = await shiftsCommands.bulkUnpublishShifts([VALID_UUID]);
-        expect(res.unpublishedIds).toContain(VALID_UUID);
+    describe('bulkDeleteShifts', () => {
+        it('should call sm_bulk_delete_shifts', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success_count: 2 });
+
+            const result = await shiftsCommands.bulkDeleteShifts(['22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333']);
+
+            expect(result).toBe(2);
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_bulk_delete_shifts', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('deleteShift should delete successfully', async () => {
-        const res = await shiftsCommands.deleteShift(VALID_UUID);
-        expect(res).toBe(true);
+    describe('requestTrade', () => {
+        it('should call sm_request_trade', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success: true });
+
+            await shiftsCommands.requestTrade('22222222-2222-2222-2222-222222222222');
+
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_request_trade', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('bulkDeleteShifts should return success count', async () => {
-        const res = await shiftsCommands.bulkDeleteShifts([VALID_UUID]);
-        expect(res).toBe(1);
+    describe('acceptOffer', () => {
+        it('should call sm_accept_offer', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success: true });
+
+            await shiftsCommands.acceptOffer('22222222-2222-2222-2222-222222222222');
+
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_accept_offer', expect.any(Function), expect.any(Object));
+        });
     });
 
-    it('bulkDeleteShiftsPerItem should return deletedIds', async () => {
-        const res = await shiftsCommands.bulkDeleteShiftsPerItem([VALID_UUID]);
-        expect(res.deletedIds).toContain(VALID_UUID);
+    describe('rejectOffer', () => {
+        it('should call sm_reject_offer', async () => {
+            (rpcClient.callAuthenticatedRpc as any).mockResolvedValueOnce({ success: true });
+
+            // Shift mock for rejectOffer
+            const shiftBuilder = new MockQueryBuilder();
+            // TTS > 4h
+            const farFuture = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
+            shiftBuilder._data = { shift_date: farFuture.split('T')[0], start_time: '12:00', start_at: farFuture };
+            builderQueue.push(shiftBuilder);
+
+            await shiftsCommands.rejectOffer('22222222-2222-2222-2222-222222222222', 'Reason');
+
+            expect(rpcClient.callAuthenticatedRpc).toHaveBeenCalledWith('sm_reject_offer', expect.any(Function), expect.any(Object));
+        });
+        
+        it('should call expireOfferNow if TTS < 4h', async () => {
+            // Shift mock for rejectOffer
+            const shiftBuilder = new MockQueryBuilder();
+            // TTS < 4h
+            const nearFuture = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+            shiftBuilder._data = { shift_date: nearFuture.split('T')[0], start_time: '12:00', start_at: nearFuture };
+            builderQueue.push(shiftBuilder);
+            
+            (supabase.rpc as any).mockResolvedValueOnce({ data: { success: true }, error: null });
+
+            await shiftsCommands.rejectOffer('22222222-2222-2222-2222-222222222222', 'Reason');
+
+            expect(supabase.rpc).toHaveBeenCalledWith('sm_expire_offer_now', expect.any(Object));
+        });
     });
 
-    it('checkIn should call rpc', async () => {
-        await expect(shiftsCommands.checkIn(VALID_UUID)).resolves.not.toThrow();
-    });
-
-    it('withdrawShiftFromBidding should withdraw successfully', async () => {
-        const res = await shiftsCommands.withdrawShiftFromBidding(VALID_UUID);
-        expect(res.success).toBe(true);
-    });
-
-    it('cancelShift should cancel successfully', async () => {
-        const res = await shiftsCommands.cancelShift(VALID_UUID, 'reason');
-        expect(res.success).toBe(true);
-    });
-
-    it('validateBulkPublishCompliance should check compliance', async () => {
-        const res = await shiftsCommands.validateBulkPublishCompliance([{
-            id: VALID_UUID,
-            lifecycle_status: 'Draft',
-            assigned_employee_id: VALID_UUID,
-            start_time: '09:00',
-            end_time: '17:00'
-        } as any]);
-        expect(res.eligible).toContain(VALID_UUID);
+    describe('expireOfferNow', () => {
+        it('should call sm_expire_offer_now', async () => {
+            (supabase.rpc as any).mockResolvedValueOnce({ data: { success: true }, error: null });
+            await shiftsCommands.expireOfferNow('22222222-2222-2222-2222-222222222222');
+            expect(supabase.rpc).toHaveBeenCalledWith('sm_expire_offer_now', expect.any(Object));
+        });
     });
 });

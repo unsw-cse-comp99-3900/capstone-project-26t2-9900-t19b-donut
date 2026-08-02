@@ -1,0 +1,362 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/Users/zhangrui/Desktop/26T2/COMP9900/Shiftopia-Donut[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m src/modules/broadcasts/state/__tests__/useBroadcasts.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 265[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/PageState.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 301[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/ErrorBoundary.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 544[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/state/__tests__/useRosterMutations.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 624[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/__tests__/engine.bench.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 480[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/projections/worker/__tests__/projection.worker.pool.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m src/modules/templates/state/__tests__/useTemplateEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/state/__tests__/useRosterShifts.test.tsx [2m([22m[2m28 tests[22m[2m)[22m[33m 1570[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/pages/__tests__/LaborDemandForecastingPage.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 118[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.queries.test.ts[2m > [22m[2mshiftsQueries[2m > [22m[2mgetTemplates[2m > [22m[2mshould fetch and return templates
+[22m[39m[shiftsQueries.getTemplates] Fetching with: {
+  subDepartmentId: [32m'33333333-3333-3333-3333-333333333333'[39m,
+  departmentId: [90mundefined[39m
+}
+
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.queries.test.ts[2m > [22m[2mshiftsQueries[2m > [22m[2mgetTemplates[2m > [22m[2mshould fetch and return templates
+[22m[39m[shiftsQueries.getTemplates] Found: [33m1[39m templates
+
+ [32m✓[39m src/modules/rosters/api/__tests__/shifts.queries.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msends ONE atomic commit with all passing employees and never re-simulates
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m3[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'5db9d6f3-d70c-4c77-8b8a-4fc7f606c6a7'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2mforwards a non-null idempotency key to commitAtomic
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'5c2e4372-6893-4e6a-af39-d3c76f76fd44'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msends every passing employee to the RPC (no client-side drops) and surfaces DB-level failures
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [ [32m'e2'[39m ],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'c422e5bd-80fc-4636-b807-861787a6564a'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msurfaces concurrency conflicts reported by the atomic RPC lost-update guard
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m0[39m,
+  failedEmployees: [ [32m'e1'[39m ],
+  concurrencyConflicts: [ [32m's1'[39m ],
+  idempotencyKey: [32m'8d62c2e7-4249-465d-be2a-bb87c5b9d409'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2mexcludes non-passing proposals from the commit
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'0291e351-1feb-41a7-930c-e09eb54a7a41'[39m
+}
+
+ [32m✓[39m src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-ui.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/planning/bidding/ui/views/OpenBidsView/__tests__/OpenBidsView.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m src/modules/timesheets/api/__tests__/timesheets.supabase.api.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mcommit[2m > [22m[2mshould call atomic commit and return results
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'7771b73b-433d-4302-b909-05a72b3b11ab'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Compliance validation: 0ms
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Compliance repair: re-homed 0 of 1 rejected shift(s) in 0ms (1 left uncovered for compliance)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Audit complete: 0ms
+[AutoScheduler] Preview ready: {
+  run_id: [32m'b17052bc'[39m,
+  status: [32m'OPTIMAL'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m1[39m,
+  fallback: [33mfalse[39m,
+  totalMs: [33m1[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Preview ready: {
+  run_id: [32m'cd42826f'[39m,
+  status: [32m'INFEASIBLE'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m0[39m,
+  fallback: [33mtrue[39m,
+  totalMs: [33m10[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Preview ready: {
+  run_id: [32m'3d17150a'[39m,
+  status: [32m'UNKNOWN'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m0[39m,
+  fallback: [33mtrue[39m,
+  totalMs: [33m3[39m
+}
+
+ [32m✓[39m src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcreateSwapRequest[2m > [22m[2mshould create swap request and update shift status
+[22m[39m[API] Creating swap request: {
+  requesterV8ShiftId: [32m's1'[39m,
+  requestedByEmployeeId: [32m'e1'[39m,
+  swapWithEmployeeId: [32m'e2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcreateSwapRequest[2m > [22m[2mshould throw if shift is time locked
+[22m[39m[API] Creating swap request: {
+  requesterV8ShiftId: [32m's1'[39m,
+  requestedByEmployeeId: [32m'e1'[39m,
+  swapWithEmployeeId: [32m'e2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mgetAvailableSwaps[2m > [22m[2mshould apply filters and return swaps
+[22m[39m[API LOG] Fetched swaps count: [33m1[39m
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mmakeOffer[2m > [22m[2mshould make an offer with time lock check
+[22m[39m[API] Making offer on swap: { swapId: [32m'swap1'[39m, targetV8ShiftId: [32m's2'[39m, targetId: [32m'target1'[39m }
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mmakeOffer[2m > [22m[2mshould throw if self offering
+[22m[39m[API] Making offer on swap: { swapId: [32m'swap1'[39m, targetV8ShiftId: [32m's2'[39m, targetId: [32m'req1'[39m }
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcancelSwapRequest[2m > [22m[2mshould update status and revert shift
+[22m[39m[API] Cancelling swap: swap1
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2macceptTrade[2m > [22m[2mshould check compliance and call sm_accept_trade
+[22m[39m[API] Accepting trade: {
+  swapId: [32m'swap1'[39m,
+  offerId: [32m'off1'[39m,
+  offererId: [32m'target1'[39m,
+  offerV8ShiftId: [32m's2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mrejectTrade[2m > [22m[2mshould update offer status
+[22m[39m[API] Rejecting trade offer: off1
+
+ [32m✓[39m src/modules/planning/swapping/api/__tests__/swaps.api.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2muses the bulk RPC and groups results by employee
+[22m[39m[RosterFetcher] Fetching roster context for 2 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2muses the bulk RPC and groups results by employee
+[22m[39m[RosterFetcher] Bulk roster fetch successful (2 total shifts)
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mexcludes the candidate shifts themselves from the existing-roster context
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mexcludes the candidate shifts themselves from the existing-roster context
+[22m[39m[RosterFetcher] Bulk roster fetch successful (1 total shifts)
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mfalls back to per-employee chunked fetch when bulk RPC returns an error
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mreturns empty arrays for employees if both fetch paths fail
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks employee as "has data" when availability_rules has any record
+[22m[39m[RosterFetcher] Availability: 1/1 employees have declared records (will be hard-filtered); 0 treated as universally available
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks employee as "no data" when availability_rules has no record
+[22m[39m[RosterFetcher] Availability: 0/1 employees have declared records (will be hard-filtered); 1 treated as universally available
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks "has data" via slot-presence inference if rules query fails
+[22m[39m[RosterFetcher] Availability: 1/1 employees have declared records (will be hard-filtered); 0 treated as universally available
+
+ [32m✓[39m src/modules/scheduling/data/__tests__/roster-fetcher.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/duration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/structural-rules.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m src/modules/planning/swapping/ui/pages/__tests__/ManagerSwaps.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 69[2mms[22m[39m
+ [32m✓[39m src/modules/planning/swapping/ui/pages/__tests__/EmployeeSwaps.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 86[2mms[22m[39m
+ [32m✓[39m src/modules/planning/bidding/ui/pages/__tests__/EmployeeBids.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 77[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/fairness-ledger.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/roles.projector.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/bid/bid.happy.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/demand-uncertainty.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+[90mstdout[2m | src/modules/templates/state/__tests__/useTemplates.test.tsx[2m > [22m[2museTemplates[2m > [22m[2mfetchTemplates should load templates and update state
+[22m[39m[Templates] Raw fetch result: {
+  data: [ { id: [32m't-1'[39m, name: [32m'Template 1'[39m, groups: [] } ],
+  error: [1mnull[22m,
+  options: [90mundefined[39m
+}
+
+ [32m✓[39m src/modules/core/providers/__tests__/LocaleProvider.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 44[2mms[22m[39m
+[90mstdout[2m | src/modules/templates/state/__tests__/useTemplates.test.tsx[2m > [22m[2museTemplates[2m > [22m[2mdeleteTemplate should remove template from state
+[22m[39m[Templates] Raw fetch result: {
+  data: [ { id: [32m't-1'[39m, name: [32m'Template 1'[39m, groups: [] } ],
+  error: [1mnull[22m,
+  options: [90mundefined[39m
+}
+
+ [32m✓[39m src/modules/templates/state/__tests__/useTemplates.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/rest-requirements.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/__tests__/dst.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/demandFinalization.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[90mstdout[2m | src/modules/templates/api/__tests__/templates.service.test.ts[2m > [22m[2mtemplates.service[2m > [22m[2mdeleteTemplate[2m > [22m[2mshould call cascade rpc and then delete
+[22m[39m[Template Delete] Cascaded 10 shifts for template t-1
+
+ [32m✓[39m src/modules/templates/api/__tests__/templates.service.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmaps RPC success to correct totals and per-employee breakdown
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 2 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmaps RPC success to correct totals and per-employee breakdown
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m3[39m, conflict_count: [33m0[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mpropagates concurrency conflicts from the RPC
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mpropagates concurrency conflicts from the RPC
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m1[39m, conflict_count: [33m1[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmarks employee as failed when committed=0 in per_employee
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmarks employee as failed when committed=0 in per_employee
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m0[39m, conflict_count: [33m1[39m, failedEmployees: [ [32m'e1'[39m ] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2msets all employees as failed when RPC throws
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 2 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2msets all employees as failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mforwards the idempotency key to the RPC call
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=aaaaaaaa-0000-4000-8000-bbbbbbbbbbbb
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mforwards the idempotency key to the RPC call
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m1[39m, conflict_count: [33m0[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts committed on RPC success
+[22m[39m[BulkAssignmentCommitter] Committing [33m2[39m shifts to e1
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts committed on RPC success
+[22m[39m[BulkAssignmentCommitter] RPC result: {
+  success: [33mtrue[39m,
+  total_requested: [33m2[39m,
+  success_count: [33m2[39m,
+  failure_count: [33m0[39m,
+  message: [32m'ok'[39m
+}
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] Committing [33m1[39m shifts to e1
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] RPC result: { success: [33mfalse[39m, message: [32m'rpc fail'[39m }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC throws
+[22m[39m[BulkAssignmentCommitter] Committing [33m1[39m shifts to e1
+
+ [32m✓[39m src/modules/planning/unified/__tests__/swap/swap.happy.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/ruleBaseline.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/services/__tests__/shiftSynthesizer.orchestrator.test.ts[2m > [22m[2mshiftSynthesizer.orchestrator[2m > [22m[2msynthesizeAndInsertShifts[2m > [22m[2mshould synthesize shifts, insert them and return created count
+[22m[39m{"level":"info","message":"compliance check complete -- blocked shifts still inserted as Draft","timestamp":"2026-08-02T14:56:01.664Z","operation":"synthesizeAndInsertShifts","totalShifts":1,"complianceBlockedCount":1,"module":"shiftSynthesizer.orchestrator"}
+
+ [32m✓[39m src/modules/rosters/services/__tests__/shiftSynthesizer.orchestrator.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/swap/swap.blocked.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-state.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/platform/auth/access.policy.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/services/__tests__/demandTensorBuilder.service.test.ts[2m > [22m[2mdemandTensorBuilder.service[2m > [22m[2mbuildScopeDemand[2m > [22m[2mshould build demand and handle empty events
+[22m[39m{"level":"info","message":"building scope demand","timestamp":"2026-08-02T14:56:02.060Z","operation":"buildScopeDemand","date":"2026-01-01","engineMode":"ml_only","baselineCount":0,"predictionRoleCount":0,"module":"demandTensorBuilder"}
+
+ [32m✓[39m src/modules/rosters/services/__tests__/demandTensorBuilder.service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/bidding-urgency.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/consecutive-days.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/utils/__tests__/shift-calendar.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/platform/native/__tests__/deepLinksSource.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/daily-limits.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/templateBuilder.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/utils/__tests__/shift-layout.utils.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/coverage.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.commands.test.ts[2m > [22m[2mshiftsCommands[2m > [22m[2mbulkUnassignShifts[2m > [22m[2mshould fetch preState and update shifts
+[22m[39m{"operation":"bulk_unassign","actor_id":"11111111-1111-1111-1111-111111111111","shift_ids":["22222222-2222-2222-2222-222222222222"],"removed_assignments":[{"shift_id":"22222222-2222-2222-2222-222222222222","removed_employee_id":"55555555-5555-5555-5555-555555555555","shift_date":"2026-01-01","start_time":"09:00","end_time":"17:00"}],"timestamp":"2026-08-02T14:56:03.640Z"}
+
+ [32m✓[39m src/modules/rosters/api/__tests__/shifts.commands.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/ordinary-hours-avg.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/student-visa.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/__tests__/employee-context-cache.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/ruleEvaluator.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/modules/scheduling/__tests__/schema-contract.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/min-engagement.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/group.projector.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/bid/bid.blocked.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-fsm.test.ts [2m([22m[2m45 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/tts-urgency-flow.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/scheduling/audit/__tests__/auditor.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/stale-compliance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/availability-rules.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/sliceGridMapper.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/ui/my-roster/__tests__/ShiftShareLinkSource.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/platform/auth/__tests__/biometricAppLifecycleSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/projections/worker/__tests__/projectionWorkerBundlingSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/attendanceLayoutRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shiftSynthesizer.policy.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/shift-mutated.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/settingsLayoutRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/core/__tests__/notificationsOfflineSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/platform/native/__tests__/universalLinksConfig.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/ui/my-roster/__tests__/ShiftDetailsOfflineSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/service/__tests__/planning-request.service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/MobileAccessGuardSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/concurrency/select-offer.race.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/core/lib/__tests__/theme.utils.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/employment-rules.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/meal-break.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/reopen.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/timesheets/ui/components/__tests__/TimesheetContrastSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/__tests__/myBroadcastsOfflineSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineRouteGuardSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/api/__tests__/autoschedule.api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/spread-of-hours.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/__tests__/utils.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/shiftDeepLinkRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-events-rls.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/core/__tests__/AppShellSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineQueryPersistenceSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/core/pages/__tests__/IndexInstallPromptSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/api/__tests__/createShiftHierarchySource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineAwareQuerySource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/layout/__tests__/BottomNavbarPermissionsSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/auth/pages/__tests__/BiometricUnlockThemeSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/pages/__tests__/LaborDemandMobileLayoutSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/primitives/__tests__/toastViewportSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/__tests__/broadcastNotificationsListSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/api/__tests__/broadcasts.queries.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m

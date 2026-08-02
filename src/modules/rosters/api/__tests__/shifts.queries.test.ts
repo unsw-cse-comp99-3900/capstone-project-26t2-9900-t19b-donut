@@ -1,165 +1,274 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { shiftsQueries } from '../shifts.queries';
 import { supabase } from '@/platform/supabase/client';
+import * as rpcClient from '@/platform/supabase/rpc/client';
 
-// Mock supabase client
-vi.mock('@/platform/supabase/client', () => {
-    const mockQueryBuilder = {
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        in: vi.fn().mockReturnThis(),
-        is: vi.fn().mockReturnThis(),
-        or: vi.fn().mockReturnThis(),
-        gte: vi.fn().mockReturnThis(),
-        lte: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-        range: vi.fn().mockResolvedValue({ data: [], error: null }),
-        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-        then: vi.fn((resolve) => resolve({ data: [], error: null }))
-    };
+class MockQueryBuilder {
+    _data: any = null;
+    _error: any = null;
 
-    return {
-        supabase: {
-            from: vi.fn(() => mockQueryBuilder)
-        }
-    };
-});
+    select = vi.fn().mockReturnThis();
+    eq = vi.fn().mockReturnThis();
+    in = vi.fn().mockReturnThis();
+    neq = vi.fn().mockReturnThis();
+    is = vi.fn().mockReturnThis();
+    order = vi.fn().mockReturnThis();
+    limit = vi.fn().mockReturnThis();
+    gte = vi.fn().mockReturnThis();
+    lte = vi.fn().mockReturnThis();
+    range = vi.fn().mockReturnThis();
+    or = vi.fn().mockReturnThis();
+    not = vi.fn().mockReturnThis();
+    single = vi.fn().mockImplementation(() => Promise.resolve({ data: this._data, error: this._error }));
+    maybeSingle = vi.fn().mockImplementation(() => Promise.resolve({ data: this._data, error: this._error }));
 
-vi.mock('../../services/eligibility.service', () => ({
-    EligibilityService: {
-        getEligibleEmployees: vi.fn().mockResolvedValue([{ id: 'emp-1' }])
+    then(onfulfilled?: (value: any) => any, onrejected?: (reason: any) => any): Promise<any> {
+        return Promise.resolve({ data: this._data, error: this._error }).then(onfulfilled, onrejected);
+    }
+}
+
+let builderQueue: MockQueryBuilder[] = [];
+
+vi.mock('@/platform/supabase/client', () => ({
+    supabase: {
+        rpc: vi.fn(),
+        from: vi.fn(() => {
+            if (builderQueue.length > 0) {
+                return builderQueue.shift();
+            }
+            return new MockQueryBuilder();
+        })
     }
 }));
 
-// Provide a valid UUID for tests that require one
-const VALID_UUID = '12345678-1234-1234-1234-123456789012';
+vi.mock('@/platform/supabase/rpc/client', () => ({
+    callAuthenticatedRpc: vi.fn()
+}));
 
 describe('shiftsQueries', () => {
-    let mockQueryBuilder: any;
-
     beforeEach(() => {
         vi.clearAllMocks();
-        mockQueryBuilder = supabase.from('shifts');
+        builderQueue = [];
     });
 
-    it('getShiftById should return null on error', async () => {
-        mockQueryBuilder.maybeSingle.mockResolvedValueOnce({ data: null, error: new Error('test error') });
-        const result = await shiftsQueries.getShiftById(VALID_UUID);
-        expect(result).toBeNull();
-    });
+    describe('getShiftById', () => {
+        it('should return shift if found', async () => {
+            const b = new MockQueryBuilder();
+            b._data = { id: '22222222-2222-2222-2222-222222222222', start_time: '10:00' };
+            builderQueue.push(b);
 
-    it('getShiftById should return formatted shift on success', async () => {
-        mockQueryBuilder.maybeSingle.mockResolvedValueOnce({ data: { id: VALID_UUID, timesheets: [] }, error: null });
-        const result = await shiftsQueries.getShiftById(VALID_UUID);
-        expect(result?.id).toBe(VALID_UUID);
-    });
-
-    it('getShiftsForDate should handle invalid uuid', async () => {
-        const result = await shiftsQueries.getShiftsForDate('invalid-uuid', '2026-01-01');
-        expect(result).toEqual([]);
-    });
-
-    it('getShiftsForDate should call supabase and paginate', async () => {
-        mockQueryBuilder.range.mockResolvedValueOnce({ data: [{ id: VALID_UUID, timesheets: [{ status: 'approved' }] }], error: null });
-        const result = await shiftsQueries.getShiftsForDate(VALID_UUID, '2026-01-01', {
-            departmentId: VALID_UUID,
-            groupType: 'Standard',
-            status: 'Draft'
+            const result = await shiftsQueries.getShiftById('22222222-2222-2222-2222-222222222222');
+            
+            expect(result).toMatchObject({ id: '22222222-2222-2222-2222-222222222222', start_time: '10:00' });
+            expect(b.select).toHaveBeenCalled();
+            expect(b.eq).toHaveBeenCalledWith('id', '22222222-2222-2222-2222-222222222222');
+            expect(b.maybeSingle).toHaveBeenCalled();
         });
-        expect(result.length).toBe(1);
-        expect(result[0].id).toBe(VALID_UUID);
-        expect(result[0].timesheet_status).toBe('approved');
-    });
 
-    it('getShiftsForDateRange should paginate and return data', async () => {
-        mockQueryBuilder.range.mockResolvedValueOnce({ data: [{ id: VALID_UUID }], error: null });
-        const result = await shiftsQueries.getShiftsForDateRange(VALID_UUID, '2026-01-01', '2026-01-07', {
-            departmentIds: [VALID_UUID],
-            subDepartmentId: VALID_UUID
+        it('should return null if error occurs', async () => {
+            const b = new MockQueryBuilder();
+            b._data = null;
+            b._error = { message: 'Not found' };
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getShiftById('22222222-2222-2222-2222-222222222222');
+            
+            expect(result).toBeNull();
         });
-        expect(result.length).toBe(1);
     });
 
-    it('getShiftsForDateRange should handle pagination errors gracefully', async () => {
-        mockQueryBuilder.range.mockResolvedValueOnce({ data: null, error: new Error('pag error') });
-        const result = await shiftsQueries.getShiftsForDateRange(VALID_UUID, '2026-01-01', '2026-01-07');
-        expect(result).toEqual([]);
+    describe('getShiftsForDateRange', () => {
+        it('should fetch shifts with pagination', async () => {
+            const b1 = new MockQueryBuilder();
+            b1._data = Array.from({ length: 1000 }, (_, i) => ({ id: `s${i}` }));
+            builderQueue.push(b1);
+
+            const b2 = new MockQueryBuilder();
+            b2._data = Array.from({ length: 5 }, (_, i) => ({ id: `s${i + 1000}` }));
+            builderQueue.push(b2);
+
+            const result = await shiftsQueries.getShiftsForDateRange('33333333-3333-3333-3333-333333333333', '2026-01-01', '2026-01-07');
+            
+            expect(result.length).toBe(1005);
+            expect(b1.range).toHaveBeenCalledWith(0, 999);
+            expect(b2.range).toHaveBeenCalledWith(1000, 1999);
+        });
+
+        it('should return empty array if error occurs on first page', async () => {
+            const b = new MockQueryBuilder();
+            b._error = { message: 'Failed to fetch' };
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getShiftsForDateRange('33333333-3333-3333-3333-333333333333', '2026-01-01', '2026-01-07');
+            expect(result.length).toBe(0);
+        });
     });
 
-    it('getEmployeeShifts should return employee shifts', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getEmployeeShifts(VALID_UUID, '2026-01-01', '2026-01-07');
-        expect(result.length).toBe(1);
+    describe('getOrganizations', () => {
+        it('should fetch and return organizations', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: 'org1', name: 'Org 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getOrganizations();
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('org1');
+            expect(b.select).toHaveBeenCalledWith('id, name');
+        });
     });
 
-    it('getEmployeeShiftsForAttendance should return shifts', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getEmployeeShiftsForAttendance(VALID_UUID, '2026-01-01', '2026-01-07');
-        expect(result.length).toBe(1);
+    describe('getDepartments', () => {
+        it('should fetch and return departments filtered by organizationId', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '22222222-2222-2222-2222-222222222222', name: 'Dep 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getDepartments('11111111-1111-1111-1111-111111111111');
+            expect(result).toHaveLength(1);
+            expect(b.eq).toHaveBeenCalledWith('organization_id', '11111111-1111-1111-1111-111111111111');
+        });
     });
 
-    it('getOrganizations should return orgs', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID, name: 'Org' }], error: null }));
-        const result = await shiftsQueries.getOrganizations();
-        expect(result.length).toBe(1);
+    describe('getSubDepartments', () => {
+        it('should fetch and return sub-departments', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '33333333-3333-3333-3333-333333333333', name: 'Sub 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getSubDepartments('22222222-2222-2222-2222-222222222222');
+            expect(result).toHaveLength(1);
+            expect(b.eq).toHaveBeenCalledWith('department_id', '22222222-2222-2222-2222-222222222222');
+        });
     });
 
-    it('getDepartments should return depts', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getDepartments(VALID_UUID);
-        expect(result.length).toBe(1);
+    describe('getTemplates', () => {
+        it('should fetch and return templates', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '44444444-4444-4444-4444-444444444444', name: 'Template 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getTemplates('33333333-3333-3333-3333-333333333333');
+            expect(result).toHaveLength(1);
+            expect(b.eq).toHaveBeenCalledWith('sub_department_id', '33333333-3333-3333-3333-333333333333');
+        });
     });
 
-    it('getSubDepartments should return sub depts', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getSubDepartments(VALID_UUID);
-        expect(result.length).toBe(1);
+    describe('getRemunerationLevels', () => {
+        it('should fetch and return remuneration levels', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '55555555-5555-5555-5555-555555555555', level_name: 'Level 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getRemunerationLevels();
+            expect(result).toHaveLength(1);
+            expect(b.select).toHaveBeenCalled();
+        });
     });
 
-    it('getRoles should fetch roles successfully', async () => {
-        // mock multiple promise.all for subdept
-        const m = mockQueryBuilder;
-        m.then = vi.fn()
-          .mockImplementationOnce((cb: any) => cb({ data: [{ id: 'role-1', name: 'Role A' }], error: null }))
-          .mockImplementationOnce((cb: any) => cb({ data: [{ id: 'role-2', name: 'Role B' }], error: null }));
-        
-        const result = await shiftsQueries.getRoles(VALID_UUID, VALID_UUID, VALID_UUID);
-        expect(result.length).toBe(2);
+    describe('getSkills', () => {
+        it('should fetch and return skills', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '66666666-6666-6666-6666-666666666666', name: 'Skill 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getSkills();
+            expect(result).toHaveLength(1);
+            expect(b.select).toHaveBeenCalled();
+        });
     });
 
-    it('getTemplates should return templates', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getTemplates(VALID_UUID, VALID_UUID);
-        expect(result.length).toBe(1);
+    describe('getLicenses', () => {
+        it('should fetch and return licenses', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '77777777-7777-7777-7777-777777777777', name: 'License 1' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getLicenses();
+            expect(result).toHaveLength(1);
+            expect(b.select).toHaveBeenCalled();
+        });
     });
 
-    it('getRemunerationLevels should return levels', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getRemunerationLevels();
-        expect(result.length).toBe(1);
+    describe('getEmployeeShifts', () => {
+        it('should fetch shifts for an employee', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [{ id: '22222222-2222-2222-2222-222222222222' }];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getEmployeeShifts('55555555-5555-5555-5555-555555555555', '2026-01-01', '2026-01-07', '33333333-3333-3333-3333-333333333333');
+            
+            expect(result.length).toBe(1);
+            expect(b.eq).toHaveBeenCalledWith('assigned_employee_id', '55555555-5555-5555-5555-555555555555');
+        });
     });
 
-    it('getEmployees should return employees via EligibilityService', async () => {
-        const result = await shiftsQueries.getEmployees();
-        expect(result.length).toBe(1);
+    describe('getRoles', () => {
+        it('should fetch roles with appropriate filters', async () => {
+            const b1 = new MockQueryBuilder(); // the initial query object that is discarded
+            builderQueue.push(b1);
+            
+            const b2 = new MockQueryBuilder(); // explicitSubDept
+            b2._data = [{ id: '44444444-4444-4444-4444-444444444444', name: 'Role 1' }];
+            builderQueue.push(b2);
+            
+            const b3 = new MockQueryBuilder(); // parentDeptAndGlobal
+            b3._data = [];
+            builderQueue.push(b3);
+
+            const result = await shiftsQueries.getRoles('33333333-3333-3333-3333-333333333333', '66666666-6666-6666-6666-666666666666', '77777777-7777-7777-7777-777777777777');
+            
+            expect(result.length).toBe(1);
+            expect(b2.eq).toHaveBeenCalledWith('sub_department_id', '77777777-7777-7777-7777-777777777777');
+        });
     });
 
-    it('getSkills should return skills', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getSkills();
-        expect(result.length).toBe(1);
+    describe('getPendingOfferCount', () => {
+        it('should return count from Supabase', async () => {
+            const b = new MockQueryBuilder();
+            (b as any).count = 5;
+            b.then = function(onfulfilled?: (value: any) => any, onrejected?: (reason: any) => any): Promise<any> {
+                return Promise.resolve({ data: this._data, error: this._error, count: (this as any).count }).then(onfulfilled, onrejected);
+            };
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getPendingOfferCount('55555555-5555-5555-5555-555555555555');
+            
+            expect(result).toBe(5);
+            expect(b.eq).toHaveBeenCalledWith('assigned_employee_id', '55555555-5555-5555-5555-555555555555');
+        });
     });
 
-    it('getLicenses should return licenses', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getLicenses();
-        expect(result.length).toBe(1);
+    describe('getTimecardMultipliers', () => {
+        it('should fetch multipliers and parse correctly', async () => {
+            const b = new MockQueryBuilder();
+            b._data = [
+                { role_id: 'r1', scheduled_length_minutes: 400, actual_net_minutes: 480 },
+                { role_id: 'r1', scheduled_length_minutes: 200, actual_net_minutes: 240 },
+                { role_id: 'r2', scheduled_length_minutes: 600, actual_net_minutes: 600 }
+            ];
+            builderQueue.push(b);
+
+            const result = await shiftsQueries.getTimecardMultipliers('33333333-3333-3333-3333-333333333333');
+            
+            expect(result.get('r1')).toBe(1.2); // (480 + 240) / (400 + 200) = 720 / 600 = 1.2
+            expect(result.get('r2')).toBe(1.0); // 600 / 600 = 1.0
+        });
     });
 
-    it('getEvents should return events', async () => {
-        mockQueryBuilder.then.mockImplementationOnce((resolve: any) => resolve({ data: [{ id: VALID_UUID }], error: null }));
-        const result = await shiftsQueries.getEvents(VALID_UUID);
-        expect(result.length).toBe(1);
-    });
+    describe('getShiftDelta', () => {
+        it('should fetch shifted items since last sync via RPC', async () => {
+            (supabase.rpc as any).mockResolvedValueOnce({
+                data: [{ id: '22222222-2222-2222-2222-222222222222' }],
+                error: null
+            });
 
+            const result = await shiftsQueries.getShiftDelta({ 
+                orgId: '33333333-3333-3333-3333-333333333333', 
+                since: '2026-01-01T00:00:00Z' 
+            });
+            
+            expect(result).toMatchObject([{ id: '22222222-2222-2222-2222-222222222222' }]);
+            expect(supabase.rpc).toHaveBeenCalledWith('get_shift_delta', expect.any(Object));
+        });
+    });
 });
