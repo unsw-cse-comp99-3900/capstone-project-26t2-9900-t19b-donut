@@ -237,7 +237,7 @@ export function CalendarPane({
               className={cn(
                 'relative border rounded-md p-1.5 min-h-[80px] flex flex-col',
                 getStateClasses(state),
-                !isCurrentMonth && 'opacity-40',
+                !isCurrentMonth && 'opacity-60',
                 isTodayDate && 'ring-2 ring-blue-500 ring-offset-1'
               )}
               title={isLocked ? buildLockTooltip(dayAssigned) : undefined}

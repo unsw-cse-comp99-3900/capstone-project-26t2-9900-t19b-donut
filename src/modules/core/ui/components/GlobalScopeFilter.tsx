@@ -199,7 +199,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                     type="button"
                 >
                     <div className="flex flex-col items-start gap-0.5">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-white/30 leading-none">{label}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground leading-none">{label}</span>
                         <span className="truncate max-w-[120px] sm:max-w-[180px] text-xs sm:text-sm font-semibold">{displayText}</span>
                     </div>
                     {locked ? (

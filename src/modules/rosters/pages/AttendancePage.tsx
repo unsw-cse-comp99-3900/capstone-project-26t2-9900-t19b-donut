@@ -32,6 +32,7 @@ import { Button } from '@/modules/core/ui/primitives/button';
 import { Textarea } from '@/modules/core/ui/primitives/textarea';
 import { Label } from '@/modules/core/ui/primitives/label';
 import { ResponsiveDialog } from '@/modules/core/ui/components/ResponsiveDialog';
+import { PageState } from '@/modules/core/ui/components/PageState';
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from '@/modules/core/ui/primitives/popover';
@@ -517,7 +518,7 @@ const AttendancePage: React.FC = () => {
   const now = new Date();
   const isViewingToday = now >= parseISO(rangeStart) && now <= parseISO(rangeEnd);
 
-  const { data: logShifts = [], isLoading: logsLoading, refetch } = useQuery({
+  const { data: logShifts = [], isLoading: logsLoading, isError: logsError, error: logsErrorDetail, refetch } = useQuery({
     queryKey: shiftKeys.attendance(user?.id ?? '', rangeStart, rangeEnd),
     queryFn:  () => shiftsQueries.getEmployeeShiftsForAttendance(user!.id, rangeStart, rangeEnd),
     enabled:  !!user?.id,
@@ -704,55 +705,45 @@ const AttendancePage: React.FC = () => {
                 ? "bg-[#1c2333]/40 border-white/5 shadow-2xl shadow-black/20" 
                 : "bg-white/70 backdrop-blur-md border-white shadow-xl shadow-slate-200/50"
         )}>
-          {logsLoading ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 className="h-8 w-8 animate-spin text-primary/60" />
-                <span className="text-sm text-muted-foreground font-medium tracking-wide">
-                  Loading attendance records…
-                </span>
-              </div>
-            </div>
-          ) : (
+          <PageState
+            isLoading={logsLoading}
+            loadingMsg="Loading attendance records..."
+            isError={logsError}
+            errorTitle="Could not load attendance records"
+            errorMsg={logsErrorDetail instanceof Error ? logsErrorDetail.message : undefined}
+            onRetry={() => refetch()}
+            isEmpty={groupedLogs.length === 0}
+            emptyTitle="No attendance records"
+            emptyDesc={statusFilter !== 'all' ? 'Try removing the status filter.' : 'No shifts were found for this period.'}
+          >
             <div className="flex-1 min-h-0 overflow-y-auto space-y-4 px-4 lg:px-6 py-4 pb-32 scrollbar-none">
               {/* Totals */}
               {logShifts.length > 0 && <TotalsBar shifts={logShifts} />}
 
-
               {viewMode === 'card' ? (
-                groupedLogs.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
-                    <BarChart3 className="h-10 w-10 text-muted-foreground/40" />
-                    <p className="text-base font-bold text-foreground">No attendance records</p>
-                    <p className="text-sm text-muted-foreground">
-                      {statusFilter !== 'all' ? 'Try removing the filter' : 'No shifts found for this period'}
-                    </p>
-                  </div>
-                ) : (
-                  groupedLogs.map(({ date, shifts }) => {
-                    const d = parseISO(date);
-                    const isTodayDate = isToday(d);
-                    return (
-                      <div key={date}>
-                        {/* Day header */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className={cn(
-                            'text-xs font-black uppercase tracking-widest font-mono',
-                            isTodayDate ? 'text-emerald-500' : 'text-muted-foreground',
-                          )}>
-                            {isTodayDate ? 'Today' : format(d, 'EEEE')}
-                          </div>
-                          <div className="text-xs text-muted-foreground font-mono">{format(d, 'd MMMM yyyy')}</div>
-                          <div className="flex-1 h-px bg-border" />
-                          <div className="text-[10px] text-muted-foreground/60 font-mono">{shifts.length} shift{shifts.length > 1 ? 's' : ''}</div>
+                groupedLogs.map(({ date, shifts }) => {
+                  const d = parseISO(date);
+                  const isTodayDate = isToday(d);
+                  return (
+                    <div key={date}>
+                      {/* Day header */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className={cn(
+                          'text-xs font-black uppercase tracking-widest font-mono',
+                          isTodayDate ? 'text-emerald-500' : 'text-muted-foreground',
+                        )}>
+                          {isTodayDate ? 'Today' : format(d, 'EEEE')}
                         </div>
-                        <div className={cn('grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mb-4', accessibleView && 'accessible-card-grid')}>
-                          {shifts.map(s => <AttendanceCard key={s.id} shift={s} now={now} useGroupColoring={useGroupColoring} />)}
-                        </div>
+                        <div className="text-xs text-muted-foreground font-mono">{format(d, 'd MMMM yyyy')}</div>
+                        <div className="flex-1 h-px bg-border" />
+                        <div className="text-[10px] text-muted-foreground/60 font-mono">{shifts.length} shift{shifts.length > 1 ? 's' : ''}</div>
                       </div>
-                    );
-                  })
-                )
+                      <div className={cn('grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mb-4', accessibleView && 'accessible-card-grid')}>
+                        {shifts.map(s => <AttendanceCard key={s.id} shift={s} now={now} useGroupColoring={useGroupColoring} />)}
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
                 <div className="flex-1 min-h-0">
                   <TimesheetTable
@@ -767,7 +758,7 @@ const AttendancePage: React.FC = () => {
                 </div>
               )}
             </div>
-          )}
+          </PageState>
         </div>
       </div>
 

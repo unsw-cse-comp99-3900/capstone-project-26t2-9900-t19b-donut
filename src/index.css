@@ -133,9 +133,9 @@ html[data-accessible-view='true'] .accessible-page .opacity-60 {
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary: Electric Indigo */
-    --primary: 239 75% 55%;
-    /* #4f46e5 */
+    /* Primary: Shiftopia Blue */
+    --primary: 212 80% 42%;
+    /* #1565c0 */
     --primary-foreground: 210 40% 98%;
 
     /* Secondary: Muted Steel */
@@ -154,18 +154,18 @@ html[data-accessible-view='true'] .accessible-page .opacity-60 {
 
     --border: 217 33% 17%;
     --input: 217 33% 17%;
-    --ring: 243 75% 59%;
+    --ring: 212 80% 42%;
     --radius: 0.75rem;
 
     /* Sidebar variables */
     --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 243 75% 59%;
+    --sidebar-primary: 212 80% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 217 33% 17%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 243 75% 59%;
+    --sidebar-ring: 212 80% 42%;
   }
 
   * {

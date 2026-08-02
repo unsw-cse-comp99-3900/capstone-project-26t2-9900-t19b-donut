@@ -7,6 +7,7 @@ import { canUseFaceId } from '@/platform/native/biometrics';
 import { ArrowLeft, Mail, Lock, Loader2, AlertCircle, Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -85,15 +86,11 @@ const LoginPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f1113]">
-        <Loader2 className="h-10 w-10 text-purple-500 animate-spin" />
-      </div>
-    );
+    return <PageState isLoading loadingMsg="Loading your account..." className="min-h-screen bg-background" />;
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#0f1113] font-sans">
+    <div className="min-h-screen w-full flex flex-col bg-background font-sans md:flex-row">
 
       {/* LEFT SIDE */}
       <motion.div
@@ -120,7 +117,7 @@ const LoginPage: React.FC = () => {
         <div className="absolute bottom-12 left-12 z-10">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-              <ShieldCheck className="w-5 h-5 text-purple-400" />
+              <ShieldCheck className="w-5 h-5 text-[#2F80ED]" />
             </div>
             <span className="text-white/80 text-xs uppercase tracking-wider">
               Enterprise Grade Security
@@ -145,12 +142,12 @@ const LoginPage: React.FC = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
+        className="relative flex flex-1 items-center justify-center bg-card p-6 md:p-12"
       >
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex min-h-11 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[16px] font-semibold text-gray-200 transition hover:bg-white/10 hover:text-white md:left-12"
+          className="absolute left-6 top-[calc(env(safe-area-inset-top,0px)+1.25rem)] inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-2 text-[16px] font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground md:left-12"
           aria-label="Back to home"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -161,12 +158,16 @@ const LoginPage: React.FC = () => {
 
           {/* Header */}
           <header className="mb-10">
-            <h1 className="mb-3 text-[32px] font-bold leading-tight text-white sm:text-4xl">Sign in</h1>
-            <p className="text-[16px] leading-relaxed text-gray-300">
+            <Link to="/" className="mb-6 inline-flex items-center gap-3">
+              <img src="/icons/icon-192.png" alt="" className="h-10 w-10 rounded-xl" />
+              <span className="text-xl font-bold text-foreground">Shiftopia</span>
+            </Link>
+            <h1 className="mb-3 text-[32px] font-bold leading-tight text-foreground sm:text-4xl">Sign in</h1>
+            <p className="text-[16px] leading-relaxed text-muted-foreground">
               New to Shiftopia?{' '}
               <Link
                 to="/signup"
-                className="text-purple-400 hover:text-purple-300 underline underline-offset-4"
+                className="text-primary underline underline-offset-4 hover:text-primary/80"
               >
                 Create one
               </Link>
@@ -197,9 +198,9 @@ const LoginPage: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="login-email" className="text-[16px] font-medium text-gray-200">Email address</label>
+              <label htmlFor="login-email" className="text-[16px] font-medium text-foreground/80">Email address</label>
               <div className="relative mt-2">
-                <Mail aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Mail aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="login-email"
                   name="email"
@@ -211,16 +212,16 @@ const LoginPage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   aria-invalid={Boolean(loginError || authError)}
                   aria-describedby={loginError || authError ? 'login-error' : undefined}
-                  className="h-14 rounded-xl bg-[#25282c] pl-12 text-[16px] text-white placeholder:text-gray-400"
+                  className="h-14 rounded-xl border-border bg-muted/50 pl-12 text-[16px] text-foreground"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="login-password" className="text-[16px] font-medium text-gray-200">Password</label>
+              <label htmlFor="login-password" className="text-[16px] font-medium text-foreground/80">Password</label>
               <div className="relative mt-2">
-                <Lock aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <Lock aria-hidden="true" className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="login-password"
                   name="password"
@@ -231,14 +232,14 @@ const LoginPage: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   aria-invalid={Boolean(loginError || authError)}
                   aria-describedby={loginError || authError ? 'login-error' : undefined}
-                  className="h-14 rounded-xl bg-[#25282c] pl-12 pr-14 text-[16px] text-white placeholder:text-gray-400"
+                  className="h-14 rounded-xl border-border bg-muted/50 pl-12 pr-14 text-[16px] text-foreground"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   aria-pressed={showPassword}
-                  className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-gray-300"
+                  className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                 </button>
@@ -247,12 +248,12 @@ const LoginPage: React.FC = () => {
 
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-between gap-3 text-[16px]">
-              <label className="flex min-h-11 items-center gap-2 text-gray-300">
+              <label className="flex min-h-11 items-center gap-2 text-muted-foreground">
                 <input type="checkbox" className="h-5 w-5" />
                 Remember me
               </label>
 
-              <Link to="/forgot-password" className="text-purple-400">
+              <Link to="/forgot-password" className="text-primary hover:text-primary/80">
                 Forgot password?
               </Link>
             </div>
@@ -261,26 +262,26 @@ const LoginPage: React.FC = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="h-14 w-full rounded-xl bg-purple-600 text-[16px] hover:bg-purple-500"
+              className="h-14 w-full rounded-xl bg-primary text-[16px] text-primary-foreground hover:bg-primary/90"
             >
               {isSubmitting ? <Loader2 className="animate-spin" /> : 'Sign In'}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="mt-8 text-center text-[14px] text-gray-400">
+          <div className="mt-8 text-center text-[14px] text-muted-foreground">
             Or continue with
           </div>
 
           {/* OneLogin */}
           <Button
             variant="outline"
-            className="mt-4 h-14 w-full rounded-xl border-gray-600 text-[16px] text-white"
+            className="mt-4 h-14 w-full rounded-xl border-border text-[16px] text-foreground hover:bg-muted"
           >
             Login with OneLogin
           </Button>
 
-          <footer className="mt-12 text-center text-[14px] text-gray-400">
+          <footer className="mt-12 text-center text-[14px] text-muted-foreground">
             © 2026 Shiftopia Labor Management
           </footer>
         </div>

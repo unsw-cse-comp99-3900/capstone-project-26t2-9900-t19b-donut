@@ -5,6 +5,7 @@ import { Button } from '@/modules/core/ui/primitives/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/modules/core/ui/primitives/card';
 import { useAuth } from '@/platform/auth/useAuth';
 import { Navigate } from 'react-router-dom';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 /**
  * PendingAccessPage
@@ -15,7 +16,11 @@ import { Navigate } from 'react-router-dom';
 const PendingAccessPage: React.FC = () => {
     const { user, logout, isLoading } = useAuth();
 
-    if (!isLoading && !user) {
+    if (isLoading) {
+        return <PageState isLoading loadingMsg="Loading your access status..." className="min-h-screen" />;
+    }
+
+    if (!user) {
         return <Navigate to="/login" replace />;
     }
 

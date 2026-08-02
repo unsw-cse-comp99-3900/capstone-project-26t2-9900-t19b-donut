@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/modules/core/ui/primitives/card';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Badge } from '@/modules/core/ui/primitives/badge';
-import { Skeleton } from '@/modules/core/ui/primitives/skeleton';
 import { Megaphone, Trash2, Edit, MoreVertical, Settings, Users, MessageSquare } from 'lucide-react';
 import {
     DropdownMenu,
@@ -13,6 +12,7 @@ import {
 import { BroadcastGroupWithStats } from '../../model/broadcast.types';
 import { cn } from '@/modules/core/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 interface BroadcastGroupsViewProps {
     groups: BroadcastGroupWithStats[];
@@ -29,27 +29,15 @@ export const BroadcastGroupsView: React.FC<BroadcastGroupsViewProps> = ({
     onDeleteGroup,
     onEditGroup,
 }) => {
-    if (isLoading) {
+    if (isLoading || groups.length === 0) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                    <Skeleton key={i} className="h-48 w-full rounded-xl" />
-                ))}
-            </div>
-        );
-    }
-
-    if (groups.length === 0) {
-        return (
-            <Card className="border-dashed">
-                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                    <Megaphone className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                    <h3 className="text-lg font-semibold">No Broadcast Groups</h3>
-                    <p className="text-muted-foreground max-w-sm mt-2">
-                        Create your first group to start sending broadcasts to your team.
-                    </p>
-                </CardContent>
-            </Card>
+            <PageState
+                isLoading={isLoading}
+                loadingMsg="Loading broadcast groups..."
+                isEmpty={groups.length === 0}
+                emptyTitle="No broadcast groups"
+                emptyDesc="Create your first group to start sending broadcasts to your team."
+            />
         );
     }
 

@@ -21,10 +21,6 @@ import {
   Radio,
   ChevronLeft,
   Hash,
-  AlertTriangle,
-  RefreshCw,
-  Loader2,
-  WifiOff,
 } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { ScrollArea } from '@/modules/core/ui/primitives/scroll-area';
@@ -53,9 +49,10 @@ import type {
 import { GROUP_ICONS_SM, GROUP_ICON_BG } from '../constants';
 import { EmployeeGroupCard } from '../components/EmployeeGroupCard';
 import { ChannelItem } from '../components/ChannelItem';
-import { EmptyGroups, EmptyChannels } from '../components/EmptyStates';
+import { EmptyChannels } from '../components/EmptyStates';
 import { ChannelView } from '../views/ChannelView.view';
 import { OfflineDataBanner } from '@/platform/offline/OfflineDataBanner';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 // ============================================================================
 // TYPES
@@ -175,57 +172,19 @@ export function MyBroadcastsScreen({
     return result;
   }, [filteredGroups, effectiveGroupSearch]);
 
-  // Loading state
-  if (isLoading) {
+  if (isLoading || offlineState === 'offline-empty' || error) {
     return (
-      <div className="flex items-center justify-center h-screen w-full">
-        <div className="flex flex-col items-center gap-4 md:gap-6 p-6 md:p-8 rounded-2xl md:rounded-3xl bg-card border border-border backdrop-blur-3xl shadow-sm">
-          <Loader2 className="h-12 w-12 md:h-16 md:w-16 text-primary animate-spin" />
-          <div className="text-center">
-            <h3 className="text-lg md:text-xl font-bold text-foreground mb-1">Loading System</h3>
-            <p className="text-muted-foreground text-sm md:text-base">Retrieving broadcast frequencies...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (offlineState === 'offline-empty') {
-    return (
-      <div className="flex h-full w-full items-center justify-center p-6">
-        <div className="flex max-w-sm flex-col items-center gap-4 rounded-3xl border border-border bg-card p-8 text-center shadow-sm">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-            <WifiOff className="h-7 w-7 text-muted-foreground" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-foreground">No cached broadcasts available</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Reconnect once to load your broadcasts, then this page can show saved announcements offline.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen w-full p-4">
-        <div className="flex flex-col items-center gap-4 md:gap-6 p-6 md:p-8 max-w-md text-center rounded-2xl md:rounded-3xl bg-red-500/10 border border-red-500/20 backdrop-blur-3xl">
-          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-red-500/20 flex items-center justify-center shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-            <AlertTriangle className="h-8 w-8 md:h-10 md:w-10 text-red-500" />
-          </div>
-          <div>
-            <h3 className="text-lg md:text-xl font-bold text-foreground mb-2">Connection Error</h3>
-            <p className="text-red-700 dark:text-red-300 mb-4 md:mb-6 text-sm md:text-base">{error.message}</p>
-            <Button onClick={() => refetch()} className="gap-2 bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20">
-              <RefreshCw className="h-4 w-4" />
-              Retry Connection
-            </Button>
-          </div>
-        </div>
-      </div>
+      <PageState
+        isLoading={isLoading}
+        loadingMsg="Loading broadcasts..."
+        isError={Boolean(error)}
+        errorTitle="Could not load broadcasts"
+        errorMsg={error?.message}
+        onRetry={() => refetch()}
+        isEmpty={offlineState === 'offline-empty'}
+        emptyTitle="No cached broadcasts available"
+        emptyDesc="Reconnect once to load your broadcasts, then this page can show saved announcements offline."
+      />
     );
   }
 
@@ -324,9 +283,11 @@ export function MyBroadcastsScreen({
           emptyLabel="Offline - saved broadcasts are not available yet"
         />
         <div className="p-4 md:p-8">
-        {finalFilteredGroups.length === 0 ? (
-          <EmptyGroups />
-        ) : (
+        <PageState
+          isEmpty={finalFilteredGroups.length === 0}
+          emptyTitle="No broadcast groups"
+          emptyDesc="You have not been added to any matching broadcast groups."
+        >
           <div className={cn('grid gap-4 md:gap-6', gridCols)}>
             {finalFilteredGroups.map((group, index) => (
               <motion.div
@@ -343,7 +304,7 @@ export function MyBroadcastsScreen({
               </motion.div>
             ))}
           </div>
-        )}
+        </PageState>
         </div>
       </div>
     );

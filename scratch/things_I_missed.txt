@@ -183,13 +183,30 @@
   5. UI / UX
 ================================================================================
 
-[TODO] Loading / error / empty-state standardization
-  - Most pages have ad-hoc spinners and silent failures.
-  - Build a <PageState loading | error | empty /> primitive and roll out.
+[DONE 2026-07-31] Loading / error / empty-state standardization
+  - Shared <PageState> now owns accessible loading, error/retry, empty,
+    and ready-state rendering with consistent copy and layout.
+  - Rolled out across auth, rosters, attendance, bids, swaps, timesheets,
+    notifications, broadcasts, compliance, search, templates, users,
+    performance, insights, and appearance settings where page-level
+    async states exist. Local button and panel loading states stay local.
 
-[TODO] Accessibility (a11y) pass
-  - axe-core against the 5 most-used pages.
-  - Workforce / compliance tools get screen-reader scrutiny in audits.
+[DONE 2026-07-31] Accessibility (a11y) pass
+  - Playwright + axe-core covers Login, My Roster, Availability,
+    Employee Bids, and Timesheet at WCAG 2.0/2.1/2.2 A/AA.
+  - Run: npx playwright test tests/e2e/06-accessibility.spec.ts
+
+[DONE 2026-07-31] Shiftopia brand unification
+  - Unified the app icon, favicon/PWA icons, light/dark iOS launch
+    splashes, in-app wordmark, and auth entry branding.
+  - Standardized the primary palette on #1565C0, #2F80ED, #081B33,
+    and white; functional status colors remain distinct.
+
+[DONE 2026-07-31] Light / dark compatibility verification
+  - Captured and reviewed both themes for Login, My Roster,
+    Availability, Employee Bids, Timesheet, and Appearance Settings.
+  - Auth pages now use theme tokens instead of a forced dark surface;
+    Settings uses the Shiftopia blue default and a theme-aware menu.
 
 [TODO] Keyboard navigation in PeopleModeGrid
   - Virtualization removed; the 200-row cap helps but tab order through

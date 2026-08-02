@@ -160,7 +160,7 @@ export const AvailabilityCalendar: FC<AvailabilityCalendarProps> = ({
                     }}
                     className={cn(
                       'h-32 md:h-40 p-1 transition-colors relative group cursor-pointer hover:bg-muted/50',
-                      !isCurrentMonth && 'opacity-40'
+                      !isCurrentMonth && 'opacity-60'
                     )}
                   >
                     <div className="flex flex-col h-full">

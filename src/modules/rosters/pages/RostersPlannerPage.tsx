@@ -8,6 +8,7 @@ import { Badge } from '@/modules/core/ui/primitives/badge';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Separator } from '@/modules/core/ui/primitives/separator';
 import { cn } from '@/modules/core/lib/utils';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 // Components
 import { isShiftLocked } from '@/modules/rosters/domain/shift-locking.utils';
@@ -1120,18 +1121,9 @@ const NewRostersPage: React.FC = () => {
       {/* ── Main Content Area ─────────────────────────── */}
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="h-full rounded-[32px] overflow-hidden transition-all border flex flex-col bg-white/95 border-white shadow-xl shadow-slate-200/50 dark:bg-[#1c2333] dark:border-white/5 dark:shadow-2xl dark:shadow-black/20">
+          <PageState isLoading={isLoading} loadingMsg="Loading shifts...">
           <DndProvider backend={HTML5Backend}>
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col md:flex-row relative">
-        {/* Loading Overlay */}
-        {isLoading && (
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="text-center">
-              <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto mb-2" />
-              <p className="text-white/80 dark:text-white/80 font-medium">Loading shifts...</p>
-            </div>
-          </div>
-        )}
-
         {/* Grid Area - Using global background/layout */}
         <div
           className={cn(
@@ -1316,6 +1308,7 @@ const NewRostersPage: React.FC = () => {
           </div>
           </div>
           </DndProvider>
+          </PageState>
         </div>
       </div>
 

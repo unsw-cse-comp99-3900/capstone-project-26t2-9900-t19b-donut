@@ -69,7 +69,6 @@ type IconColorKey =
   | 'sectionRostering'
   | 'sectionManagement'
   | 'sectionFeatures'
-  | 'logo'
   | 'help'
   | 'contracts'
   | 'laborDemand'
@@ -97,7 +96,6 @@ const iconColorMap: Record<IconColorKey, string> = {
   sectionRostering: 'text-blue-400',
   sectionManagement: 'text-green-400',
   sectionFeatures: 'text-amber-400',
-  logo: 'text-white',
   help: 'text-blue-400',
   contracts: 'text-violet-400',
   laborDemand: 'text-fuchsia-400',
@@ -278,12 +276,14 @@ const AppSidebar: React.FC = () => {
       {/* ==================== HEADER ==================== */}
       <div className="p-6 border-b border-border/50">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-md">
-            <Sparkles className={cn('h-6 w-6', iconColorMap.logo)} />
-          </div>
+          <img
+            src="/icons/icon-192.png"
+            alt=""
+            className="h-10 w-10 rounded-xl shadow-md"
+          />
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              ShiftoPia <span className="text-[8px] text-primary/40 tracking-tight ml-2 font-light">v9.0</span>
+            <h1 className="text-xl font-bold text-primary">
+              Shiftopia
             </h1>
             <p className="text-xs text-muted-foreground">
               Workforce Management

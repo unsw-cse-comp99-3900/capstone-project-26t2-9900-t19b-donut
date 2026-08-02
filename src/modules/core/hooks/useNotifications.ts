@@ -184,6 +184,8 @@ export function useNotifications() {
     notifications,
     unreadCount,
     loading: query.offlineState === 'offline-empty' ? false : query.isPending || query.isLoading,
+    error: query.error as Error | null,
+    refetch: query.refetch,
     isOffline,
     isShowingCachedData: query.isShowingCachedData,
     offlineState: query.offlineState,

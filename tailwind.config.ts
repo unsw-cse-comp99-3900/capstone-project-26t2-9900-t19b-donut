@@ -69,9 +69,9 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				lovable: {
-					primary: '#4F46E5', // Electric Indigo
-					'primary-dark': '#4338CA',
-					'primary-light': '#818CF8',
+					primary: '#1565C0',
+					'primary-dark': '#081B33',
+					'primary-light': '#2F80ED',
 					secondary: '#10B981', // Emerald
 					accent: '#F59E0B', // Amber
 					background: '#0B1120', // Deep Navy

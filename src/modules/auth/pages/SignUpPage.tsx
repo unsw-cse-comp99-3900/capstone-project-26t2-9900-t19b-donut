@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/modules/core/ui/primitives/button';
 import { Input } from '@/modules/core/ui/primitives/input';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
 const SignUpPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -85,30 +86,26 @@ const SignUpPage: React.FC = () => {
     };
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#0f1113]">
-                <Loader2 className="h-10 w-10 text-purple-500 animate-spin" />
-            </div>
-        );
+        return <PageState isLoading loadingMsg="Loading your account..." className="min-h-screen bg-background" />;
     }
 
     if (isSuccess) {
         return (
-            <div className="min-h-screen w-full flex items-center justify-center p-6 bg-[#0f1113]">
+            <div className="flex min-h-screen w-full items-center justify-center bg-background p-6">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="w-full max-w-md p-10 rounded-2xl bg-[#1a1c1e] border border-white/5 shadow-2xl text-center"
+                    className="w-full max-w-md rounded-2xl border border-border bg-card p-10 text-center shadow-2xl"
                 >
                     <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                         <CheckCircle2 className="w-10 h-10 text-emerald-400" />
                     </div>
-                    <h2 className="mb-4 text-[32px] font-bold leading-tight text-white">Verification sent</h2>
-                    <p className="mb-8 text-[16px] leading-relaxed text-gray-300">
+                    <h2 className="mb-4 text-[32px] font-bold leading-tight text-foreground">Verification sent</h2>
+                    <p className="mb-8 text-[16px] leading-relaxed text-muted-foreground">
                         We've sent a link to <strong>{email}</strong>.
                     </p>
                     <Link to="/login">
-                        <Button className="h-14 w-full rounded-xl bg-purple-600 text-[16px] text-white hover:bg-purple-500">
+                        <Button className="h-14 w-full rounded-xl bg-primary text-[16px] text-primary-foreground hover:bg-primary/90">
                             Return to Sign In
                         </Button>
                     </Link>
@@ -118,7 +115,7 @@ const SignUpPage: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col md:flex-row bg-[#0f1113] font-sans">
+        <div className="flex min-h-screen w-full flex-col bg-background font-sans md:flex-row">
 
             {/* LEFT SIDE */}
             <motion.div
@@ -144,7 +141,7 @@ const SignUpPage: React.FC = () => {
                 <div className="absolute bottom-12 left-12 z-10">
                     <div className="flex items-center gap-2 mb-4">
                         <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                            <ShieldCheck className="w-5 h-5 text-purple-400" />
+                            <ShieldCheck className="w-5 h-5 text-[#2F80ED]" />
                         </div>
                         <span className="text-white/80 text-xs uppercase">Premium Experience</span>
                     </div>
@@ -167,15 +164,19 @@ const SignUpPage: React.FC = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="flex-1 flex items-center justify-center p-6 md:p-12 bg-[#1a1c1e]"
+                className="flex flex-1 items-center justify-center bg-card p-6 md:p-12"
             >
                 <div className="w-full max-w-md">
 
-                    <h1 className="mb-3 text-[32px] font-bold leading-tight text-white sm:text-4xl">Create an account</h1>
+                    <Link to="/" className="mb-6 inline-flex items-center gap-3">
+                        <img src="/icons/icon-192.png" alt="" className="h-10 w-10 rounded-xl" />
+                        <span className="text-xl font-bold text-foreground">Shiftopia</span>
+                    </Link>
+                    <h1 className="mb-3 text-[32px] font-bold leading-tight text-foreground sm:text-4xl">Create an account</h1>
 
-                    <p className="mb-6 text-[16px] leading-relaxed text-gray-300">
+                    <p className="mb-6 text-[16px] leading-relaxed text-muted-foreground">
                         Already have an account?{' '}
-                        <Link to="/login" className="text-purple-400">Log in</Link>
+                        <Link to="/login" className="text-primary hover:text-primary/80">Log in</Link>
                     </p>
 
                     <AnimatePresence>
@@ -197,22 +198,22 @@ const SignUpPage: React.FC = () => {
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div className="space-y-2">
-                                <label htmlFor="signup-first-name" className="text-[16px] font-medium text-gray-200">First name</label>
+                                <label htmlFor="signup-first-name" className="text-[16px] font-medium text-foreground/80">First name</label>
                                 <Input id="signup-first-name" name="given-name" autoComplete="given-name" value={firstName} onChange={e => setFirstName(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="signup-last-name" className="text-[16px] font-medium text-gray-200">Last name</label>
+                                <label htmlFor="signup-last-name" className="text-[16px] font-medium text-foreground/80">Last name</label>
                                 <Input id="signup-last-name" name="family-name" autoComplete="family-name" value={lastName} onChange={e => setLastName(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="signup-email" className="text-[16px] font-medium text-gray-200">Email address</label>
+                            <label htmlFor="signup-email" className="text-[16px] font-medium text-foreground/80">Email address</label>
                             <Input id="signup-email" name="email" type="email" inputMode="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="signup-password" className="text-[16px] font-medium text-gray-200">Password</label>
+                            <label htmlFor="signup-password" className="text-[16px] font-medium text-foreground/80">Password</label>
                             <div className="relative">
                                 <Input
                                     id="signup-password"
@@ -229,22 +230,22 @@ const SignUpPage: React.FC = () => {
                                     onClick={() => setShowPassword(!showPassword)}
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                     aria-pressed={showPassword}
-                                    className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-gray-300"
+                                    className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground"
                                 >
                                     {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
                                 </button>
                             </div>
-                            <p id="signup-password-help" className="text-[14px] leading-relaxed text-gray-300">
+                            <p id="signup-password-help" className="text-[14px] leading-relaxed text-muted-foreground">
                                 Use at least 6 characters.
                             </p>
                         </div>
 
                         <div className="space-y-2">
-                            <label htmlFor="signup-confirm-password" className="text-[16px] font-medium text-gray-200">Confirm password</label>
+                            <label htmlFor="signup-confirm-password" className="text-[16px] font-medium text-foreground/80">Confirm password</label>
                             <Input id="signup-confirm-password" name="confirm-password" type="password" autoComplete="new-password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
                         </div>
 
-                        <Button type="submit" disabled={isSubmitting} className="h-14 w-full bg-purple-600 text-[16px]">
+                        <Button type="submit" disabled={isSubmitting} className="h-14 w-full bg-primary text-[16px] text-primary-foreground hover:bg-primary/90">
                             {isSubmitting ? <Loader2 className="animate-spin" /> : 'Create account'}
                         </Button>
 

@@ -17,32 +17,10 @@ import { supabase } from '@/platform/supabase/client';
 import { toast } from '@/modules/core/ui/primitives/use-toast';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/platform/i18n';
+import { getBrandColorTokens } from '@/modules/core/lib/theme.utils';
+import { PageState } from '@/modules/core/ui/components/PageState';
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
-function hexToHsl(hex: string): string {
-  hex = hex.replace(/^#/, '');
-  if (hex.length !== 6) return '239 84% 67%'; // Fallback
-  const r = parseInt(hex.substring(0, 2), 16) / 255;
-  const g = parseInt(hex.substring(2, 4), 16) / 255;
-  const b = parseInt(hex.substring(4, 6), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0, s = 0, l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6;
-  }
-  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
-}
-
-const DEFAULT_BRAND_COLOR = '#A48AFB';
+const DEFAULT_BRAND_COLOR = '#1565C0';
 
 /* ============================================================
    APPEARANCE SETTINGS
@@ -87,11 +65,13 @@ const AppearanceSettings: React.FC = () => {
 
   // Live Preview Effect
   const updateLivePreview = (color: string) => {
-    const hex = color.replace('#', '');
-    if (/^[0-9A-F]{6}$/i.test(hex)) {
-      const hsl = hexToHsl(hex);
-      document.documentElement.style.setProperty('--primary', hsl);
-      document.documentElement.style.setProperty('--ring', hsl);
+    const tokens = getBrandColorTokens(color);
+    if (tokens) {
+      document.documentElement.style.setProperty('--primary', tokens.primary);
+      document.documentElement.style.setProperty('--ring', tokens.primary);
+      document.documentElement.style.setProperty('--primary-foreground', tokens.foreground);
+      document.documentElement.style.setProperty('--sidebar-primary', tokens.primary);
+      document.documentElement.style.setProperty('--sidebar-primary-foreground', tokens.foreground);
       setHexError(false);
     } else {
       setHexError(true);
@@ -124,11 +104,7 @@ const AppearanceSettings: React.FC = () => {
   };
 
   if (isOrgLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageState isLoading loadingMsg="Loading appearance settings..." />;
   }
 
   return (
@@ -190,7 +166,7 @@ const AppearanceSettings: React.FC = () => {
               {t('common.cancel')}
             </Button>
           </div>
-          {hexError && <p className="text-xs text-red-400 ml-1">Please enter a valid hex code (e.g. A48AFB)</p>}
+          {hexError && <p className="ml-1 text-xs text-destructive">Please enter a valid hex code (e.g. 1565C0)</p>}
         </div>
       </div>
 
@@ -227,7 +203,7 @@ const AppearanceSettings: React.FC = () => {
                 </div>
               </div>
               {chartStyle === style && (
-                <div className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-primary border-4 border-[#0d1424] flex items-center justify-center shadow-lg z-10 animate-scale-in">
+                <div className="absolute -right-2 -top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border-4 border-background bg-primary shadow-lg animate-scale-in">
                   <Check className="h-3.5 w-3.5 text-white" />
                 </div>
               )}
@@ -271,9 +247,9 @@ const AppearanceSettings: React.FC = () => {
                 <SelectValue placeholder="Select language" />
               </div>
             </SelectTrigger>
-            <SelectContent className="bg-[#1a2744] border-white/10 text-white backdrop-blur-xl">
+            <SelectContent className={cn('backdrop-blur-xl', isDark ? 'border-white/10 bg-[#1a2744] text-white' : 'border-slate-200 bg-white text-slate-900')}>
               {SUPPORTED_LOCALES.map(({ code, label, flag }) => (
-                <SelectItem key={code} value={code} className="focus:bg-white/10 focus:text-white">
+                <SelectItem key={code} value={code} className={isDark ? 'focus:bg-white/10 focus:text-white' : 'focus:bg-slate-100 focus:text-slate-900'}>
                   {flag} {label}
                 </SelectItem>
               ))}
@@ -316,7 +292,7 @@ const AppearanceSettings: React.FC = () => {
                 </div>
               </div>
               {cookieBanner === option && (
-                <div className="absolute -top-2 -right-2 h-7 w-7 rounded-full bg-primary border-4 border-[#0d1424] flex items-center justify-center shadow-lg z-10">
+                <div className="absolute -right-2 -top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border-4 border-background bg-primary shadow-lg">
                   <Check className="h-3.5 w-3.5 text-white" />
                 </div>
               )}
