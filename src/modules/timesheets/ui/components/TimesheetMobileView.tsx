@@ -159,8 +159,9 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                     {/* Search + Filter drawer trigger */}
                     <div className="flex items-center gap-2">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/40 pointer-events-none" />
+                            <Search aria-hidden="true" className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                             <Input
+                                aria-label="Search timesheets by employee, role, or ID"
                                 placeholder="Search employee, role, or ID..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery?.(e.target.value)}
@@ -168,10 +169,12 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                             />
                             {searchQuery && (
                                 <button
+                                    type="button"
                                     onClick={() => setSearchQuery?.('')}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-full text-muted-foreground/50 hover:text-foreground hover:bg-muted/50 transition-colors"
+                                    aria-label="Clear timesheet search"
+                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-11 w-11 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                                 >
-                                    <X className="h-3 w-3" />
+                                    <X aria-hidden="true" className="h-4 w-4" />
                                 </button>
                             )}
                         </div>
@@ -189,10 +192,12 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                     <div className="flex items-center justify-between gap-1 h-10">
                         <div className="flex items-center bg-muted/40 rounded-full border border-border/40 p-0.5 h-full">
                             <button
+                                type="button"
                                 onClick={() => onDateChange?.(subDays(selectedDate, 1))}
-                                className="h-8 w-8 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-full transition-colors active:scale-90"
+                                aria-label="Previous day"
+                                className="h-11 w-11 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-colors active:scale-90"
                             >
-                                <ChevronLeft className="h-4 w-4" />
+                                <ChevronLeft aria-hidden="true" className="h-4 w-4" />
                             </button>
                             <div className="px-2 font-black text-[12px] text-foreground flex items-center justify-center gap-1.5 min-w-[105px]">
                                 <span className={cn(
@@ -204,10 +209,12 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                                 {format(selectedDate, 'EEE, MMM dd')}
                             </div>
                             <button
+                                type="button"
                                 onClick={() => onDateChange?.(addDays(selectedDate, 1))}
-                                className="h-8 w-8 flex items-center justify-center text-muted-foreground/70 hover:text-foreground hover:bg-muted/50 rounded-full transition-colors active:scale-90"
+                                aria-label="Next day"
+                                className="h-11 w-11 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-colors active:scale-90"
                             >
-                                <ChevronRight className="h-4 w-4" />
+                                <ChevronRight aria-hidden="true" className="h-4 w-4" />
                             </button>
                         </div>
 
@@ -215,15 +222,16 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                             <button
                                 onClick={onExportPDF}
                                 aria-label="Export"
-                                className="h-10 w-10 flex items-center justify-center rounded-full bg-muted/50 border border-border/40 text-muted-foreground/70 hover:text-foreground hover:bg-muted/70 transition-all active:scale-90"
+                                className="h-11 w-11 flex items-center justify-center rounded-full bg-muted/70 border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-all active:scale-90"
                             >
                                 <Download className="h-4 w-4" />
                             </button>
                             <button
                                 onClick={onRefresh}
                                 disabled={isRefreshing}
-                                aria-label="Refresh"
-                                className="h-10 w-10 flex items-center justify-center rounded-full bg-muted/50 border border-border/40 text-primary/80 hover:text-primary hover:bg-primary/5 transition-all disabled:opacity-50 active:scale-90"
+                                aria-label={isRefreshing ? "Refreshing timesheets" : "Refresh timesheets"}
+                                aria-busy={isRefreshing}
+                                className="h-11 w-11 flex items-center justify-center rounded-full bg-muted/70 border border-border text-primary hover:text-primary hover:bg-primary/10 transition-all disabled:opacity-50 active:scale-90"
                             >
                                 <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
                             </button>
@@ -232,10 +240,10 @@ export const TimesheetMobileView: React.FC<TimesheetMobileViewProps> = ({
                                     onClick={handleToggleSelectMode}
                                     aria-label="Toggle Bulk Select"
                                     className={cn(
-                                        'h-10 w-10 flex items-center justify-center rounded-full border transition-all active:scale-90',
+                                        'h-11 w-11 flex items-center justify-center rounded-full border transition-all active:scale-90',
                                         isSelectMode
                                             ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30 scale-105'
-                                            : 'bg-muted/50 text-muted-foreground/70 border-border/40 hover:bg-muted/70',
+                                            : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted',
                                     )}
                                 >
                                     <CheckSquare className="h-4 w-4" />

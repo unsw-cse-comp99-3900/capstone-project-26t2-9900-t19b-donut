@@ -92,13 +92,13 @@ function DesktopOnlyScreen() {
               <p className="text-[12px] font-black text-foreground tracking-tight leading-none mb-1">{label}</p>
               <p className="text-[10px] text-muted-foreground leading-tight">{desc}</p>
             </div>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 flex-shrink-0 ml-auto" />
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0 ml-auto" />
           </div>
         ))}
       </div>
 
       {/* Footer hint */}
-      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
         Your workspace is available below
       </p>
     </div>

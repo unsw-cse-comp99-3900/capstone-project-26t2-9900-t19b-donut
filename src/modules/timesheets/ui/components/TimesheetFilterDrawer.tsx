@@ -240,6 +240,8 @@ export const FilterContent: React.FC<FilterContentProps> = ({
                 compact ? '' : 'pt-2 mt-1 border-t border-border/40',
             )}>
                 <button
+                    type="button"
+                    aria-label={activeCount > 0 ? `Open timesheet filters, ${activeCount} active` : 'Open timesheet filters'}
                     onClick={onReset}
                     disabled={!hasAny}
                     className="flex-1 h-9 rounded-xl border border-border/50 bg-muted/30 text-[11px] font-black uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all disabled:opacity-30 disabled:cursor-not-allowed active:scale-[0.98]"
@@ -295,7 +297,7 @@ export const TimesheetFilterDrawer: React.FC<TimesheetFilterDrawerProps> = ({
                         'relative h-11 w-11 shrink-0 flex items-center justify-center rounded-xl border transition-all active:scale-90',
                         open || activeCount > 0
                             ? 'bg-primary/10 border-primary/30 text-primary'
-                            : 'bg-background border-border text-muted-foreground/70 hover:text-foreground hover:bg-muted/50',
+                            : 'bg-background border-border text-muted-foreground hover:text-foreground hover:bg-muted/70',
                     )}
                 >
                     <Filter className="h-4 w-4" />
@@ -314,8 +316,8 @@ export const TimesheetFilterDrawer: React.FC<TimesheetFilterDrawerProps> = ({
                         Filters
                     </DrawerTitle>
                     <DrawerClose asChild>
-                        <button className="h-8 w-8 flex items-center justify-center rounded-full bg-muted/50 text-muted-foreground hover:text-foreground transition-colors">
-                            <X className="h-4 w-4" />
+                        <button type="button" aria-label="Close timesheet filters" className="h-11 w-11 flex items-center justify-center rounded-full bg-muted/70 text-muted-foreground hover:text-foreground transition-colors">
+                            <X aria-hidden="true" className="h-4 w-4" />
                         </button>
                     </DrawerClose>
                 </DrawerHeader>

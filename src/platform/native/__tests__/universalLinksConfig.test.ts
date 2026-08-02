@@ -9,7 +9,7 @@ const domain = 'capstone-project-26t2-9900-t19b-don.vercel.app';
 const appId = '2V86F43APL.com.shiftopia.app';
 
 describe('iOS Universal Links configuration', () => {
-  it('associates the iOS app with the production domain', () => {
+  it('associates release builds with the production domain without requiring it for debug signing', () => {
     const entitlements = readFileSync(
       resolve(root, 'ios/App/App/App.entitlements'),
       'utf8',
@@ -20,8 +20,20 @@ describe('iOS Universal Links configuration', () => {
     );
 
     expect(entitlements).toContain(`<string>applinks:${domain}</string>`);
-    expect(project).toContain('CODE_SIGN_ENTITLEMENTS = App/App.entitlements;');
-    expect(project).toContain('com.apple.AssociatedDomains');
+
+    const debugConfiguration = project.match(
+      /504EC3171FED79650016851F \/\* Debug \*\/ = \{.*?name = Debug;\s+\};/s,
+    )?.[0];
+    const releaseConfiguration = project.match(
+      /504EC3181FED79650016851F \/\* Release \*\/ = \{.*?name = Release;\s+\};/s,
+    )?.[0];
+
+    expect(debugConfiguration).toBeDefined();
+    expect(debugConfiguration).not.toContain('CODE_SIGN_ENTITLEMENTS');
+    expect(releaseConfiguration).toContain(
+      'CODE_SIGN_ENTITLEMENTS = App/App.entitlements;',
+    );
+    expect(project).not.toContain('com.apple.Push');
   });
 
   it('publishes an AASA rule for shared shift paths', () => {

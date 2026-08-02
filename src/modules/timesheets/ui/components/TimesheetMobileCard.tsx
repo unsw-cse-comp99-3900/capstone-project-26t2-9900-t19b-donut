@@ -55,10 +55,10 @@ const DataRow: React.FC<{
         style={style}
         className={cn(
             "flex items-center justify-between py-2 transition-all duration-300",
-            muted ? "opacity-30" : "opacity-100"
+            muted ? "opacity-70" : "opacity-100"
         )}
     >
-        <span className="text-[12px] font-medium text-foreground/50">
+        <span className="text-[12px] font-medium text-foreground/80">
             {label}
         </span>
         <div className="flex items-center gap-3">
@@ -71,7 +71,7 @@ const DataRow: React.FC<{
             </span>
             {end && (
                 <>
-                    <ArrowRight className="h-3 w-3 text-foreground/20" />
+                    <ArrowRight aria-hidden="true" className="h-3 w-3 text-foreground/70" />
                     <span className={cn(
                         "tabular-nums tracking-tight",
                         emphasis ? "text-[16px] font-bold text-foreground" : "text-[14px] font-medium text-foreground/90",
@@ -332,9 +332,12 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
             }}
             topContent={isSelectMode && (
                 <button
+                    type="button"
                     onClick={onToggleSelect}
+                    aria-label={`${isSelected ? 'Deselect' : 'Select'} timesheet for ${entry.employee}`}
+                    aria-pressed={isSelected}
                     className={cn(
-                        "shrink-0 h-10 w-10 rounded-xl border-2 flex items-center justify-center transition-all",
+                        "shrink-0 h-11 w-11 rounded-xl border-2 flex items-center justify-center transition-all",
                         isSelected ? "bg-primary border-primary shadow-lg" : "border-foreground/10 bg-foreground/5"
                     )}
                 >
@@ -347,37 +350,49 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
                         <div className="space-y-3">
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="space-y-1">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Adj In</Label>
+                                    <Label htmlFor={`mobile-adj-in-${entry.id}`} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Adjusted clock in</Label>
                                     <input 
+                                        id={`mobile-adj-in-${entry.id}`}
+                                        type="time"
                                         value={localAdjStart} 
                                         onChange={e => setLocalAdjStart(e.target.value)} 
-                                        className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-1 focus:ring-primary/20 outline-none" 
+                                        className="w-full min-h-11 bg-background border border-border rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Adj Out</Label>
+                                    <Label htmlFor={`mobile-adj-out-${entry.id}`} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Adjusted clock out</Label>
                                     <input 
+                                        id={`mobile-adj-out-${entry.id}`}
+                                        type="time"
                                         value={localAdjEnd} 
                                         onChange={e => setLocalAdjEnd(e.target.value)} 
-                                        className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-1 focus:ring-primary/20 outline-none" 
+                                        className="w-full min-h-11 bg-background border border-border rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                                 <div className="space-y-1">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Paid Break</Label>
+                                    <Label htmlFor={`mobile-paid-break-${entry.id}`} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Paid break (minutes)</Label>
                                     <input 
+                                        id={`mobile-paid-break-${entry.id}`}
+                                        type="number"
+                                        min="0"
+                                        inputMode="numeric"
                                         value={localPaidBreak} 
                                         onChange={e => setLocalPaidBreak(e.target.value)} 
-                                        className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-1 focus:ring-primary/20 outline-none" 
+                                        className="w-full min-h-11 bg-background border border-border rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <Label className="text-[10px] font-black uppercase tracking-widest opacity-40">Unpaid Break</Label>
+                                    <Label htmlFor={`mobile-unpaid-break-${entry.id}`} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Unpaid break (minutes)</Label>
                                     <input 
+                                        id={`mobile-unpaid-break-${entry.id}`}
+                                        type="number"
+                                        min="0"
+                                        inputMode="numeric"
                                         value={localUnpaidBreak} 
                                         onChange={e => setLocalUnpaidBreak(e.target.value)} 
-                                        className="w-full bg-foreground/5 border border-foreground/10 rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-1 focus:ring-primary/20 outline-none" 
+                                        className="w-full min-h-11 bg-background border border-border rounded-xl px-3 py-2 text-xs text-foreground font-bold tabular-nums focus:ring-2 focus:ring-primary outline-none"
                                     />
                                 </div>
                             </div>
@@ -391,7 +406,8 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
                                 <Button
                                     variant="outline"
                                     onClick={() => setIsEditing(false)}
-                                    className="h-11 px-4 rounded-xl border-border/50 text-foreground/40 hover:text-rose-500 hover:bg-rose-500/5 active:scale-95 transition-all"
+                                    aria-label="Cancel timesheet adjustment"
+                                    className="h-11 px-4 rounded-xl border-border text-foreground hover:text-rose-600 hover:bg-rose-500/10 active:scale-95 transition-all"
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
@@ -421,7 +437,7 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
                                     onClick={handleStartEditing}
                                     disabled={reviewLocked}
                                     title={reviewLocked ? 'Unlocks after clock-out, auto clock-out, or no-show' : undefined}
-                                    className="flex-1 h-9 rounded-xl border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 text-[9px] font-black uppercase tracking-widest transition-all active:scale-95 px-0 disabled:opacity-30"
+                                    className="flex-1 h-9 rounded-xl border-border text-muted-foreground hover:text-foreground hover:bg-muted text-[9px] font-black uppercase tracking-widest transition-all active:scale-95 px-0 disabled:opacity-50"
                                 >
                                     Edit
                                 </Button>
@@ -430,7 +446,7 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
                                         variant="outline"
                                         onClick={() => onMarkNoShow?.(String(entry.id))}
                                         disabled={!isShiftOver}
-                                        className="flex-1 h-9 rounded-xl border-rose-500/20 bg-rose-500/5 text-rose-600 dark:text-rose-400 text-[8px] font-black uppercase tracking-widest disabled:opacity-30 transition-all active:scale-95 px-1"
+                                        className="flex-1 h-9 rounded-xl border-rose-500/60 bg-rose-500/10 text-rose-700 dark:text-rose-300 text-[8px] font-black uppercase tracking-widest disabled:opacity-50 transition-all active:scale-95 px-1"
                                     >
                                         <UserX className="h-3 w-3 mr-1" /> No-Show
                                     </Button>
@@ -441,7 +457,7 @@ export const TimesheetMobileCard = forwardRef<HTMLDivElement, TimesheetMobileCar
                         ) : (
                             <div className="w-full flex flex-col gap-2">
                                 <div className="flex gap-2 items-center w-full">
-                                    <div className="flex-1 flex items-center justify-center h-9 bg-foreground/[0.04] border border-foreground/5 rounded-xl text-foreground/40 text-[9px] font-black uppercase tracking-widest">
+                                    <div className="flex-1 flex items-center justify-center h-9 bg-muted/60 border border-border rounded-xl text-muted-foreground text-[9px] font-black uppercase tracking-widest">
                                         Finalized Record
                                     </div>
                                     {!readOnly && (

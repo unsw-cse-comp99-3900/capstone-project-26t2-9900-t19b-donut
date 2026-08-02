@@ -60,7 +60,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, noPadding = false }) =>
       {/* Main Area */}
       <main
         className={cn(
-          "flex-1 min-w-0 min-h-0 transition-all duration-300 ease-in-out",
+          "accessible-page flex-1 min-w-0 min-h-0 transition-all duration-300 ease-in-out",
           isCollapsed ? "md:ml-0" : "md:ml-[280px]",
           // Roster pages must not scroll at top level
           noPadding

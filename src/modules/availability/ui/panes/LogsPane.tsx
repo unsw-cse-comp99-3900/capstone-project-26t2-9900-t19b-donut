@@ -175,18 +175,20 @@ function RuleItem({ rule, onEdit, onDelete }: RuleItemProps) {
               size="icon"
               onClick={onEdit}
               title="Edit rule"
-              className="h-8 w-8"
+              aria-label="Edit availability rule"
+              className="h-11 w-11"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil aria-hidden="true" className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={onDelete}
               title="Delete rule"
-              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+              aria-label="Delete availability rule"
+              className="h-11 w-11 text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 aria-hidden="true" className="h-4 w-4" />
             </Button>
           </div>
         </div>

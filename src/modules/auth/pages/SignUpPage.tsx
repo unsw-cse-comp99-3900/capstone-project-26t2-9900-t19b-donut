@@ -100,12 +100,12 @@ const SignUpPage: React.FC = () => {
                     <div className="mx-auto mb-6 w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                         <CheckCircle2 className="w-10 h-10 text-emerald-400" />
                     </div>
-                    <h2 className="mb-4 text-3xl font-bold text-foreground">Verification Sent</h2>
-                    <p className="mb-8 text-muted-foreground">
+                    <h2 className="mb-4 text-[32px] font-bold leading-tight text-foreground">Verification sent</h2>
+                    <p className="mb-8 text-[16px] leading-relaxed text-muted-foreground">
                         We've sent a link to <strong>{email}</strong>.
                     </p>
                     <Link to="/login">
-                        <Button className="h-14 w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Button className="h-14 w-full rounded-xl bg-primary text-[16px] text-primary-foreground hover:bg-primary/90">
                             Return to Sign In
                         </Button>
                     </Link>
@@ -126,7 +126,8 @@ const SignUpPage: React.FC = () => {
             >
                 <img
                     src="/auth-bg.jpeg"
-                    alt="Background"
+                    alt=""
+                    aria-hidden="true"
                     className="absolute inset-0 w-full h-full object-cover scale-105"
                 />
 
@@ -171,17 +172,23 @@ const SignUpPage: React.FC = () => {
                         <img src="/icons/icon-192.png" alt="" className="h-10 w-10 rounded-xl" />
                         <span className="text-xl font-bold text-foreground">Shiftopia</span>
                     </Link>
-                    <h1 className="mb-3 text-4xl font-bold text-foreground">Create an account</h1>
+                    <h1 className="mb-3 text-[32px] font-bold leading-tight text-foreground sm:text-4xl">Create an account</h1>
 
-                    <p className="mb-6 text-muted-foreground">
+                    <p className="mb-6 text-[16px] leading-relaxed text-muted-foreground">
                         Already have an account?{' '}
                         <Link to="/login" className="text-primary hover:text-primary/80">Log in</Link>
                     </p>
 
                     <AnimatePresence>
                         {signUpError && (
-                            <motion.div className="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex gap-2">
-                                <AlertCircle className="w-5 h-5" />
+                            <motion.div
+                                id="signup-error"
+                                role="alert"
+                                aria-live="assertive"
+                                aria-atomic="true"
+                                className="mb-4 flex gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-[16px] leading-relaxed text-red-300"
+                            >
+                                <AlertCircle aria-hidden="true" className="h-5 w-5 shrink-0" />
                                 {signUpError}
                             </motion.div>
                         )}
@@ -189,28 +196,56 @@ const SignUpPage: React.FC = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <Input placeholder="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} />
-                            <Input placeholder="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} />
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div className="space-y-2">
+                                <label htmlFor="signup-first-name" className="text-[16px] font-medium text-foreground/80">First name</label>
+                                <Input id="signup-first-name" name="given-name" autoComplete="given-name" value={firstName} onChange={e => setFirstName(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="signup-last-name" className="text-[16px] font-medium text-foreground/80">Last name</label>
+                                <Input id="signup-last-name" name="family-name" autoComplete="family-name" value={lastName} onChange={e => setLastName(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
+                            </div>
                         </div>
 
-                        <Input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <div className="space-y-2">
+                            <label htmlFor="signup-email" className="text-[16px] font-medium text-foreground/80">Email address</label>
+                            <Input id="signup-email" name="email" type="email" inputMode="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
+                        </div>
 
-                        <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                        />
+                        <div className="space-y-2">
+                            <label htmlFor="signup-password" className="text-[16px] font-medium text-foreground/80">Password</label>
+                            <div className="relative">
+                                <Input
+                                    id="signup-password"
+                                    name="new-password"
+                                    type={showPassword ? "text" : "password"}
+                                    autoComplete="new-password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    aria-describedby={signUpError ? 'signup-password-help signup-error' : 'signup-password-help'}
+                                    className="h-14 pr-14 text-[16px]"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    aria-pressed={showPassword}
+                                    className="absolute right-1 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground"
+                                >
+                                    {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+                                </button>
+                            </div>
+                            <p id="signup-password-help" className="text-[14px] leading-relaxed text-muted-foreground">
+                                Use at least 6 characters.
+                            </p>
+                        </div>
 
-                        <Input
-                            type="password"
-                            placeholder="Confirm Password"
-                            value={confirmPassword}
-                            onChange={e => setConfirmPassword(e.target.value)}
-                        />
+                        <div className="space-y-2">
+                            <label htmlFor="signup-confirm-password" className="text-[16px] font-medium text-foreground/80">Confirm password</label>
+                            <Input id="signup-confirm-password" name="confirm-password" type="password" autoComplete="new-password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} aria-describedby={signUpError ? 'signup-error' : undefined} className="h-14 text-[16px]" />
+                        </div>
 
-                        <Button className="h-14 w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                        <Button type="submit" disabled={isSubmitting} className="h-14 w-full bg-primary text-[16px] text-primary-foreground hover:bg-primary/90">
                             {isSubmitting ? <Loader2 className="animate-spin" /> : 'Create account'}
                         </Button>
 
