@@ -1,0 +1,1326 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/Users/zhangrui/Desktop/26T2/COMP9900/Shiftopia-Donut[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m src/modules/broadcasts/state/__tests__/useBroadcasts.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 261[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/PageState.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 349[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/ErrorBoundary.test.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 568[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/state/__tests__/useRosterMutations.test.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 631[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/__tests__/engine.bench.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 390[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/pages/__tests__/LaborDemandForecastingPage.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 170[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/projections/worker/__tests__/projection.worker.pool.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 96[2mms[22m[39m
+ [32m✓[39m src/modules/templates/state/__tests__/useTemplateEditor.test.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/state/__tests__/useRosterShifts.test.tsx [2m([22m[2m28 tests[22m[2m)[22m[33m 1577[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.queries.test.ts[2m > [22m[2mshiftsQueries[2m > [22m[2mgetTemplates[2m > [22m[2mshould fetch and return templates
+[22m[39m[shiftsQueries.getTemplates] Fetching with: {
+  subDepartmentId: [32m'33333333-3333-3333-3333-333333333333'[39m,
+  departmentId: [90mundefined[39m
+}
+
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.queries.test.ts[2m > [22m[2mshiftsQueries[2m > [22m[2mgetTemplates[2m > [22m[2mshould fetch and return templates
+[22m[39m[shiftsQueries.getTemplates] Found: [33m1[39m templates
+
+ [32m✓[39m src/modules/rosters/api/__tests__/shifts.queries.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-ui.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msends ONE atomic commit with all passing employees and never re-simulates
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m3[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'61688ca3-b9cf-4250-837d-c7c2353a789e'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2mforwards a non-null idempotency key to commitAtomic
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'f9431b74-8448-4b7e-959b-e12319fbcbc9'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msends every passing employee to the RPC (no client-side drops) and surfaces DB-level failures
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [ [32m'e2'[39m ],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'e753a225-8412-4b8a-91ae-17e6f11fab2c'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2msurfaces concurrency conflicts reported by the atomic RPC lost-update guard
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m0[39m,
+  failedEmployees: [ [32m'e1'[39m ],
+  concurrencyConflicts: [ [32m's1'[39m ],
+  idempotencyKey: [32m'84d9ee72-a6b7-4ac7-bfe7-5b7ba59a84f5'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts[2m > [22m[2mAutoSchedulerController.commit()[2m > [22m[2mexcludes non-passing proposals from the commit
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'04ce54ba-1248-48f5-bb8e-3a73513746f5'[39m
+}
+
+ [32m✓[39m src/modules/scheduling/__tests__/auto-scheduler-commit.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/timesheets/api/__tests__/timesheets.supabase.api.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/modules/planning/bidding/ui/views/OpenBidsView/__tests__/OpenBidsView.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 78[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mcommit[2m > [22m[2mshould call atomic commit and return results
+[22m[39m[AutoScheduler] Atomic commit complete: {
+  totalCommitted: [33m1[39m,
+  failedEmployees: [],
+  concurrencyConflicts: [],
+  idempotencyKey: [32m'6832840e-bdc7-46c1-8049-0199909e4f71'[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Compliance validation: 1ms
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Compliance repair: re-homed 0 of 1 rejected shift(s) in 1ms (1 left uncovered for compliance)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould run optimization and handle successful response
+[22m[39m[AutoScheduler] Audit complete: 0ms
+[AutoScheduler] Preview ready: {
+  run_id: [32m'ec425a9b'[39m,
+  status: [32m'OPTIMAL'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m1[39m,
+  fallback: [33mfalse[39m,
+  totalMs: [33m4[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer returns INFEASIBLE
+[22m[39m[AutoScheduler] Preview ready: {
+  run_id: [32m'e687cc0b'[39m,
+  status: [32m'INFEASIBLE'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m0[39m,
+  fallback: [33mtrue[39m,
+  totalMs: [33m14[39m
+}
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Starting — shifts=1 employees=1
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Found 1 past shifts — excluding from optimizer
+[AutoScheduler] Scaling limits for 0.14 week(s) (1 days)
+
+[90mstdout[2m | src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts[2m > [22m[2mautoSchedulerController[2m > [22m[2mrun[2m > [22m[2mshould fallback to greedy when optimizer throws CONNECTION_REFUSED
+[22m[39m[AutoScheduler] Preview ready: {
+  run_id: [32m'a2f9a19a'[39m,
+  status: [32m'UNKNOWN'[39m,
+  passing: [33m1[39m,
+  failing: [33m0[39m,
+  uncovered: [33m0[39m,
+  fallback: [33mtrue[39m,
+  totalMs: [33m3[39m
+}
+
+ [32m✓[39m src/modules/scheduling/__tests__/auto-scheduler.controller.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcreateSwapRequest[2m > [22m[2mshould create swap request and update shift status
+[22m[39m[API] Creating swap request: {
+  requesterV8ShiftId: [32m's1'[39m,
+  requestedByEmployeeId: [32m'e1'[39m,
+  swapWithEmployeeId: [32m'e2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcreateSwapRequest[2m > [22m[2mshould throw if shift is time locked
+[22m[39m[API] Creating swap request: {
+  requesterV8ShiftId: [32m's1'[39m,
+  requestedByEmployeeId: [32m'e1'[39m,
+  swapWithEmployeeId: [32m'e2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mgetAvailableSwaps[2m > [22m[2mshould apply filters and return swaps
+[22m[39m[API LOG] Fetched swaps count: [33m1[39m
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mmakeOffer[2m > [22m[2mshould make an offer with time lock check
+[22m[39m[API] Making offer on swap: { swapId: [32m'swap1'[39m, targetV8ShiftId: [32m's2'[39m, targetId: [32m'target1'[39m }
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mmakeOffer[2m > [22m[2mshould throw if self offering
+[22m[39m[API] Making offer on swap: { swapId: [32m'swap1'[39m, targetV8ShiftId: [32m's2'[39m, targetId: [32m'req1'[39m }
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mcancelSwapRequest[2m > [22m[2mshould update status and revert shift
+[22m[39m[API] Cancelling swap: swap1
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2macceptTrade[2m > [22m[2mshould check compliance and call sm_accept_trade
+[22m[39m[API] Accepting trade: {
+  swapId: [32m'swap1'[39m,
+  offerId: [32m'off1'[39m,
+  offererId: [32m'target1'[39m,
+  offerV8ShiftId: [32m's2'[39m
+}
+
+[90mstdout[2m | src/modules/planning/swapping/api/__tests__/swaps.api.test.ts[2m > [22m[2mswapsApi[2m > [22m[2mrejectTrade[2m > [22m[2mshould update offer status
+[22m[39m[API] Rejecting trade offer: off1
+
+ [32m✓[39m src/modules/planning/swapping/api/__tests__/swaps.api.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2muses the bulk RPC and groups results by employee
+[22m[39m[RosterFetcher] Fetching roster context for 2 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2muses the bulk RPC and groups results by employee
+[22m[39m[RosterFetcher] Bulk roster fetch successful (2 total shifts)
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mexcludes the candidate shifts themselves from the existing-roster context
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mexcludes the candidate shifts themselves from the existing-roster context
+[22m[39m[RosterFetcher] Bulk roster fetch successful (1 total shifts)
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mfalls back to per-employee chunked fetch when bulk RPC returns an error
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchExistingRoster[2m > [22m[2mreturns empty arrays for employees if both fetch paths fail
+[22m[39m[RosterFetcher] Fetching roster context for 1 employees...
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks employee as "has data" when availability_rules has any record
+[22m[39m[RosterFetcher] Availability: 1/1 employees have declared records (will be hard-filtered); 0 treated as universally available
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks employee as "no data" when availability_rules has no record
+[22m[39m[RosterFetcher] Availability: 0/1 employees have declared records (will be hard-filtered); 1 treated as universally available
+
+[90mstdout[2m | src/modules/scheduling/data/__tests__/roster-fetcher.test.ts[2m > [22m[2mRosterFetcher.fetchAvailability[2m > [22m[2mmarks "has data" via slot-presence inference if rules query fails
+[22m[39m[RosterFetcher] Availability: 1/1 employees have declared records (will be hard-filtered); 0 treated as universally available
+
+ [32m✓[39m src/modules/scheduling/data/__tests__/roster-fetcher.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/duration.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/structural-rules.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/fairness-ledger.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/roles.projector.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+[90mstdout[2m | src/modules/templates/state/__tests__/useTemplates.test.tsx[2m > [22m[2museTemplates[2m > [22m[2mfetchTemplates should load templates and update state
+[22m[39m[Templates] Raw fetch result: {
+  data: [ { id: [32m't-1'[39m, name: [32m'Template 1'[39m, groups: [] } ],
+  error: [1mnull[22m,
+  options: [90mundefined[39m
+}
+
+[90mstdout[2m | src/modules/templates/state/__tests__/useTemplates.test.tsx[2m > [22m[2museTemplates[2m > [22m[2mdeleteTemplate should remove template from state
+[22m[39m[Templates] Raw fetch result: {
+  data: [ { id: [32m't-1'[39m, name: [32m'Template 1'[39m, groups: [] } ],
+  error: [1mnull[22m,
+  options: [90mundefined[39m
+}
+
+ [32m✓[39m src/modules/templates/state/__tests__/useTemplates.test.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/bid/bid.happy.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/demand-uncertainty.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m src/modules/planning/swapping/ui/pages/__tests__/ManagerSwaps.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 80[2mms[22m[39m
+ [32m✓[39m src/modules/planning/swapping/ui/pages/__tests__/EmployeeSwaps.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m src/modules/planning/bidding/ui/pages/__tests__/EmployeeBids.page.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 72[2mms[22m[39m
+ [32m✓[39m src/modules/core/providers/__tests__/LocaleProvider.test.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/rest-requirements.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/__tests__/dst.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/demandFinalization.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[90mstdout[2m | src/modules/templates/api/__tests__/templates.service.test.ts[2m > [22m[2mtemplates.service[2m > [22m[2mdeleteTemplate[2m > [22m[2mshould call cascade rpc and then delete
+[22m[39m[Template Delete] Cascaded 10 shifts for template t-1
+
+ [32m✓[39m src/modules/planning/unified/__tests__/swap/swap.happy.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmaps RPC success to correct totals and per-employee breakdown
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 2 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmaps RPC success to correct totals and per-employee breakdown
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m3[39m, conflict_count: [33m0[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mpropagates concurrency conflicts from the RPC
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mpropagates concurrency conflicts from the RPC
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m1[39m, conflict_count: [33m1[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmarks employee as failed when committed=0 in per_employee
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mmarks employee as failed when committed=0 in per_employee
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m0[39m, conflict_count: [33m1[39m, failedEmployees: [ [32m'e1'[39m ] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2msets all employees as failed when RPC throws
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 2 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2msets all employees as failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=none
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mforwards the idempotency key to the RPC call
+[22m[39m[BulkAssignmentCommitter] Atomic commit: 1 employees, key=aaaaaaaa-0000-4000-8000-bbbbbbbbbbbb
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commitAtomic[2m > [22m[2mforwards the idempotency key to the RPC call
+[22m[39m[BulkAssignmentCommitter] Atomic commit result: { success_count: [33m1[39m, conflict_count: [33m0[39m, failedEmployees: [] }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts committed on RPC success
+[22m[39m[BulkAssignmentCommitter] Committing [33m2[39m shifts to e1
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts committed on RPC success
+[22m[39m[BulkAssignmentCommitter] RPC result: {
+  success: [33mtrue[39m,
+  total_requested: [33m2[39m,
+  success_count: [33m2[39m,
+  failure_count: [33m0[39m,
+  message: [32m'ok'[39m
+}
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] Committing [33m1[39m shifts to e1
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC returns success:false
+[22m[39m[BulkAssignmentCommitter] RPC result: { success: [33mfalse[39m, message: [32m'rpc fail'[39m }
+
+[90mstdout[2m | src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts[2m > [22m[2mAssignmentCommitter.commit (single-employee regression)[2m > [22m[2mmarks all shifts failed when RPC throws
+[22m[39m[BulkAssignmentCommitter] Committing [33m1[39m shifts to e1
+
+ [32m✓[39m src/modules/templates/api/__tests__/templates.service.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/bulk-assignment/__tests__/assignment-committer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/ruleBaseline.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/swap/swap.blocked.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-state.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/services/__tests__/shiftSynthesizer.orchestrator.test.ts[2m > [22m[2mshiftSynthesizer.orchestrator[2m > [22m[2msynthesizeAndInsertShifts[2m > [22m[2mshould synthesize shifts, insert them and return created count
+[22m[39m{"level":"info","message":"compliance check complete -- blocked shifts still inserted as Draft","timestamp":"2026-08-02T15:04:05.706Z","operation":"synthesizeAndInsertShifts","totalShifts":1,"complianceBlockedCount":1,"module":"shiftSynthesizer.orchestrator"}
+
+ [32m✓[39m src/modules/rosters/services/__tests__/shiftSynthesizer.orchestrator.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m src/platform/auth/access.policy.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/utils/__tests__/shift-calendar.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/services/__tests__/demandTensorBuilder.service.test.ts[2m > [22m[2mdemandTensorBuilder.service[2m > [22m[2mbuildScopeDemand[2m > [22m[2mshould build demand and handle empty events
+[22m[39m{"level":"info","message":"building scope demand","timestamp":"2026-08-02T15:04:05.955Z","operation":"buildScopeDemand","date":"2026-01-01","engineMode":"ml_only","baselineCount":0,"predictionRoleCount":0,"module":"demandTensorBuilder"}
+
+ [32m✓[39m src/modules/rosters/services/__tests__/demandTensorBuilder.service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/bidding-urgency.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/platform/native/__tests__/deepLinksSource.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/consecutive-days.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/daily-limits.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/services/__tests__/templateBuilder.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/utils/__tests__/shift-layout.utils.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | src/modules/rosters/api/__tests__/shifts.commands.test.ts[2m > [22m[2mshiftsCommands[2m > [22m[2mbulkUnassignShifts[2m > [22m[2mshould fetch preState and update shifts
+[22m[39m{"operation":"bulk_unassign","actor_id":"11111111-1111-1111-1111-111111111111","shift_ids":["22222222-2222-2222-2222-222222222222"],"removed_assignments":[{"shift_id":"22222222-2222-2222-2222-222222222222","removed_employee_id":"55555555-5555-5555-5555-555555555555","shift_date":"2026-01-01","start_time":"09:00","end_time":"17:00"}],"timestamp":"2026-08-02T15:04:07.032Z"}
+
+ [32m✓[39m src/modules/rosters/api/__tests__/shifts.commands.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/coverage.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/student-visa.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/ordinary-hours-avg.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/__tests__/employee-context-cache.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/ruleEvaluator.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/scheduling/__tests__/schema-contract.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/projections/group.projector.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/min-engagement.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/tts-urgency-flow.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/bid/bid.blocked.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/scheduling/audit/__tests__/auditor.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-fsm.test.ts [2m([22m[2m45 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/availability-rules.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/stale-compliance.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/sliceGridMapper.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/ui/my-roster/__tests__/ShiftShareLinkSource.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/platform/auth/__tests__/biometricAppLifecycleSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/projections/worker/__tests__/projectionWorkerBundlingSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/attendanceLayoutRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shiftSynthesizer.policy.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/core/__tests__/notificationsOfflineSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/settingsLayoutRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/shift-mutated.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/platform/native/__tests__/universalLinksConfig.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/service/__tests__/planning-request.service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/ui/my-roster/__tests__/ShiftDetailsOfflineSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/core/lib/__tests__/theme.utils.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/concurrency/select-offer.race.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/components/__tests__/MobileAccessGuardSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/employment-rules.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/modules/planning/unified/__tests__/edge/reopen.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/meal-break.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/__tests__/myBroadcastsOfflineSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/modules/timesheets/ui/components/__tests__/TimesheetContrastSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/state/__tests__/useRosterStore.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineRouteGuardSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/v8/rules/__tests__/spread-of-hours.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/api/__tests__/autoschedule.api.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/router/__tests__/shiftDeepLinkRouteSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/domain/__tests__/shift-events-rls.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m src/modules/compliance/__tests__/utils.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineQueryPersistenceSource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/core/__tests__/AppShellSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/core/pages/__tests__/IndexInstallPromptSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/api/__tests__/createShiftHierarchySource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/platform/offline/__tests__/offlineAwareQuerySource.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/auth/pages/__tests__/BiometricUnlockThemeSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/layout/__tests__/BottomNavbarPermissionsSource.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m src/modules/rosters/pages/__tests__/LaborDemandMobileLayoutSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/__tests__/broadcastNotificationsListSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/core/ui/primitives/__tests__/toastViewportSource.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/modules/broadcasts/api/__tests__/broadcasts.queries.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m100 passed[39m[22m[90m (100)[39m
+[2m      Tests [22m [1m[32m805 passed[39m[22m[90m (805)[39m
+[2m   Start at [22m 01:03:56
+[2m   Duration [22m 20.87s[2m (transform 8.90s, setup 9.50s, import 26.13s, tests 5.34s, environment 62.53s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   18.09 |    10.94 |   12.52 |   19.02 |                   
+ src               |       0 |      100 |       0 |       0 |                   
+  App.tsx          |       0 |      100 |       0 |       0 | 8                 
+ src/modules/auth  |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ .../auth/contexts |       0 |        0 |       0 |       0 |                   
+  AuthContext.tsx  |       0 |        0 |       0 |       0 | 30-221            
+ ...les/auth/pages |       0 |        0 |       0 |       0 |                   
+  ...nlockPage.tsx |       0 |        0 |       0 |       0 | 10-30             
+  LoginPage.tsx    |       0 |        0 |       0 |       0 | 12-239            
+  ...ccessPage.tsx |       0 |        0 |       0 |       0 | 16-92             
+  SignUpPage.tsx   |       0 |        0 |       0 |       0 | 17-245            
+  ...rizedPage.tsx |       0 |      100 |       0 |       0 | 8-11              
+ ...odules/auth/ui |       0 |        0 |       0 |       0 |                   
+  ...ctedRoute.tsx |       0 |        0 |       0 |       0 | 15-68             
+ ...s/availability |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...ailability/api |       0 |        0 |       0 |       0 |                   
+  ...y-view.api.ts |       0 |        0 |       0 |       0 | 63-204            
+  ...bility.api.ts |       0 |        0 |       0 |       0 | 30-175            
+  ...ty.service.ts |       0 |        0 |       0 |       0 | 53-215            
+ ...ability/layout |       0 |      100 |       0 |       0 |                   
+  ...topLayout.tsx |       0 |      100 |       0 |       0 | 23-24             
+  ...ileLayout.tsx |       0 |      100 |       0 |       0 | 22-23             
+  ...letLayout.tsx |       0 |      100 |       0 |       0 | 22-23             
+ ...lability/model |       0 |        0 |       0 |       0 |                   
+  ...lity.types.ts |       0 |        0 |       0 |       0 | 158-162           
+ ...lability/pages |       0 |        0 |       0 |       0 |                   
+  ...ilityPage.tsx |       0 |        0 |       0 |       0 | 21-75             
+ ...lability/state |       0 |        0 |       0 |       0 |                   
+  ...lity.store.ts |       0 |      100 |     100 |       0 | 3                 
+  ...ailability.ts |       0 |        0 |       0 |       0 | 34-129            
+  ...ailability.ts |       0 |        0 |       0 |       0 | 44-242            
+  ...ityEditing.ts |       0 |        0 |       0 |       0 | 66-182            
+ ...vailability/ui |       0 |        0 |       0 |       0 |                   
+  ...ityScreen.tsx |       0 |        0 |       0 |       0 | 82-377            
+ ...ty/ui/calendar |       0 |        0 |       0 |       0 |                   
+  ...yCalendar.tsx |       0 |        0 |       0 |       0 | 39-267            
+  ...ilityView.tsx |       0 |        0 |       0 |       0 | 19-97             
+  ...yCalendar.tsx |       0 |        0 |       0 |       0 | 58-271            
+  ...hListView.tsx |       0 |        0 |       0 |       0 | 26-309            
+ ...bility/ui/form |       0 |        0 |       0 |       0 |                   
+  ...ilityForm.tsx |       0 |        0 |       0 |       0 | 64-283            
+  ...ilityForm.tsx |       0 |        0 |       0 |       0 | 31-217            
+  ...tSelector.tsx |       0 |        0 |       0 |       0 | 48-363            
+ ...lity/ui/header |       0 |        0 |       0 |       0 |                   
+  ...ageHeader.tsx |       0 |        0 |       0 |       0 | 23-47             
+ ...bility/ui/list |       0 |        0 |       0 |       0 |                   
+  ...ilityList.tsx |       0 |        0 |       0 |       0 | 24-64             
+  ...yListItem.tsx |       0 |        0 |       0 |       0 | 28-86             
+ ...lity/ui/modals |       0 |        0 |       0 |       0 |                   
+  ...ityModals.tsx |       0 |        0 |       0 |       0 | 36-148            
+  ...pplyModal.tsx |       0 |        0 |       0 |       0 | 44-256            
+  ...tionModal.tsx |       0 |        0 |       0 |       0 | 48-501            
+ .../ui/navigation |       0 |        0 |       0 |       0 |                   
+  ...avigation.tsx |       0 |        0 |       0 |       0 | 24                
+ ...ility/ui/panes |       0 |        0 |       0 |       0 |                   
+  CalendarPane.tsx |       0 |        0 |       0 |       0 | 66-288            
+  ...igurePane.tsx |       0 |        0 |       0 |       0 | 69-400            
+  LogsPane.tsx     |       0 |        0 |       0 |       0 | 59-279            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...lability/utils |       0 |        0 |       0 |       0 |                   
+  ...tion.utils.ts |       0 |        0 |       0 |       0 | 22-363            
+ ...les/broadcasts |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...broadcasts/api |    3.96 |     4.36 |    8.21 |    4.87 |                   
+  ...dcasts.api.ts |       0 |        0 |       0 |       0 | 58-185            
+  ...s.commands.ts |       0 |        0 |       0 |       0 | 24-354            
+  ...dcasts.dto.ts |       0 |        0 |       0 |       0 | 11-119            
+  ...ts.queries.ts |    3.18 |        0 |       0 |       4 | ...27-462,476-503 
+  queryKeys.ts     |     100 |      100 |     100 |     100 |                   
+ ...adcasts/layout |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...oadcasts/model |       0 |        0 |       0 |       0 |                   
+  ...cast.types.ts |       0 |        0 |       0 |       0 |                   
+ ...oadcasts/state |   55.93 |    40.26 |      40 |   59.72 |                   
+  ...tAnalytics.ts |       0 |        0 |       0 |       0 | 27-46             
+  useBroadcasts.ts |   57.89 |    43.16 |    41.3 |   61.72 | ...56,761-762,777 
+ .../broadcasts/ui |       0 |        0 |       0 |       0 |                   
+  constants.tsx    |       0 |      100 |     100 |       0 | 23-88             
+  utils.ts         |       0 |        0 |       0 |       0 | 5-8               
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 17-35             
+  ...dcastItem.tsx |       0 |        0 |       0 |       0 | 47-219            
+  ChannelItem.tsx  |       0 |        0 |       0 |       0 | 13                
+  ...seSection.tsx |       0 |        0 |       0 |       0 | 30-243            
+  ...GroupCard.tsx |       0 |        0 |       0 |       0 | 15-19             
+  EmptyStates.tsx  |       0 |      100 |       0 |       0 | 4-29              
+  GroupCard.tsx    |       0 |        0 |       0 |       0 | 9-67              
+  GroupMembers.tsx |       0 |        0 |       0 |       0 | 17-92             
+  GroupsList.tsx   |       0 |        0 |       0 |       0 | 19-90             
+  MessageItem.tsx  |       0 |        0 |       0 |       0 | 28-126            
+  ...ipantItem.tsx |       0 |        0 |       0 |       0 | 15-55             
+  ...extEditor.tsx |       0 |        0 |       0 |       0 | 18-118            
+  StatCard.tsx     |       0 |      100 |       0 |       0 | 17-45             
+ ...sts/ui/dialogs |       0 |        0 |       0 |       0 |                   
+  ...berDialog.tsx |       0 |        0 |       0 |       0 | 17-61             
+  ...ormFields.tsx |       0 |        0 |       0 |       0 | 12-37             
+  ...oupDialog.tsx |       0 |        0 |       0 |       0 | 22-57             
+  ...oupDialog.tsx |       0 |        0 |       0 |       0 | 14-45             
+ ...casts/ui/pages |       0 |        0 |       0 |       0 |                   
+  ...ager.page.tsx |       0 |        0 |       0 |       0 | 11-55             
+  ...castsPage.tsx |       0 |        0 |       0 |       0 | 11-33             
+ ...sts/ui/screens |       0 |        0 |       0 |       0 |                   
+  ...gerScreen.tsx |       0 |        0 |       0 |       0 | 81-395            
+  ...stsScreen.tsx |       0 |        0 |       0 |       0 | 80-430            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...ns/ControlRoom |       0 |        0 |       0 |       0 |                   
+  Channels.tsx     |       0 |        0 |       0 |       0 | 49-255            
+  Participants.tsx |       0 |        0 |       0 |       0 | 39-149            
+  index.tsx        |       0 |        0 |       0 |       0 | 37-257            
+ ...casts/ui/views |       0 |        0 |       0 |       0 |                   
+  ...tics.view.tsx |       0 |        0 |       0 |       0 | 8-95              
+  ...oups.view.tsx |       0 |        0 |       0 |       0 | 25-85             
+  ...List.view.tsx |       0 |        0 |       0 |       0 | 11-121            
+  ...View.view.tsx |       0 |        0 |       0 |       0 | 22-156            
+ ...les/compliance |   11.61 |     6.83 |      13 |      13 |                   
+  bulk-engine.ts   |    0.71 |        0 |       0 |    0.85 | 68-500            
+  bulk-rest-gap.ts |    1.69 |        0 |       0 |    1.75 | 93-269            
+  ...udent-visa.ts |     1.4 |        0 |       0 |    1.53 | 68-222            
+  bulk-types.ts    |       0 |        0 |       0 |       0 |                   
+  ...ee-context.ts |   56.81 |    22.91 |   27.27 |    64.1 | ...38-139,186-206 
+  ...validation.ts |       0 |        0 |       0 |       0 | 57-202            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  prevalidation.ts |       0 |        0 |       0 |       0 | 51-200            
+  types.ts         |       0 |        0 |       0 |       0 | 158-172           
+  utils.ts         |   29.03 |     23.4 |   37.03 |   31.57 | ...83-293,356-433 
+ ...compliance/api |       0 |        0 |       0 |       0 |                   
+  ...liance.api.ts |       0 |        0 |       0 |       0 |                   
+ ...mpliance/hooks |       0 |        0 |       0 |       0 |                   
+  useCompliance.ts |       0 |        0 |       0 |       0 | 32-121            
+ .../compliance/ui |    2.01 |        0 |       0 |    2.28 |                   
+  ...anceBadge.tsx |       0 |        0 |       0 |       0 | 28-93             
+  ...anceModal.tsx |       0 |        0 |       0 |       0 | 61-383            
+  ...ancePanel.tsx |    2.77 |        0 |       0 |    3.17 | 51-78,103-642     
+  bucket-map.ts    |    8.69 |        0 |       0 |    9.52 | 45-80             
+  ...iancePanel.ts |       0 |        0 |       0 |       0 | 46-128            
+ ...iance/ui/pages |       0 |        0 |       0 |       0 |                   
+  ...tionsPage.tsx |       0 |        0 |       0 |       0 | 45-168            
+ .../compliance/v8 |    43.9 |    16.66 |   33.33 |   46.66 |                   
+  bridge.ts        |       0 |        0 |       0 |       0 | 15-39             
+  engine.ts        |   88.88 |       50 |     100 |    92.3 | 74                
+  index.ts         |       0 |        0 |       0 |       0 | 53-61             
+  metadata.ts      |     100 |      100 |     100 |     100 |                   
+  types.ts         |     100 |      100 |     100 |     100 |                   
+ ...ce/v8/adapters |    37.5 |    27.45 |   33.33 |   42.85 |                   
+  v1-to-v8.ts      |       0 |        0 |       0 |       0 | 19-93             
+  v2-to-v8.ts      |   88.23 |    73.68 |     100 |     100 | 7-38,54           
+ ...8/orchestrator |      44 |    34.21 |   42.62 |   45.02 |                   
+  aggregator.ts    |   80.39 |    57.69 |   82.35 |   86.48 | 87-102            
+  audit.ts         |   92.85 |    60.71 |   83.33 |      96 | 49                
+  eligibility.ts   |       0 |        0 |       0 |       0 | 21-57             
+  index.ts         |   59.09 |    41.17 |      50 |   59.09 | 42-52,84-105      
+  simulation.ts    |     100 |      100 |     100 |     100 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+  ...ined-state.ts |       0 |      100 |       0 |       0 | 34                
+  windows.ts       |    6.25 |        0 |   11.11 |    7.14 | 60-298            
+ ...estrator/batch |       0 |        0 |       0 |       0 |                   
+  ...-validator.ts |       0 |        0 |       0 |       0 | 45-186            
+  ...t-detector.ts |       0 |        0 |       0 |       0 | 35-196            
+  ...t-resolver.ts |       0 |        0 |       0 |       0 | 49-358            
+  ...ency-graph.ts |       0 |        0 |       0 |       0 | 45-203            
+  index.ts         |       0 |        0 |       0 |       0 | 50-292            
+  normalizer.ts    |       0 |        0 |       0 |       0 | 32-297            
+  ...ing-engine.ts |       0 |        0 |       0 |       0 | 38-88             
+  simulator.ts     |       0 |        0 |       0 |       0 | 31-181            
+  types.ts         |       0 |      100 |     100 |       0 | 123               
+ ...trator/bidding |       0 |        0 |       0 |       0 |                   
+  ...lict-graph.ts |       0 |        0 |       0 |       0 | 28-180            
+  evaluator.ts     |       0 |        0 |       0 |       0 | 38-75             
+  index.ts         |       0 |        0 |       0 |       0 | 50-253            
+  scorer.ts        |       0 |        0 |       0 |       0 | 45-149            
+  ...ion-engine.ts |       0 |        0 |       0 |       0 | 52-229            
+  types.ts         |       0 |      100 |     100 |       0 | 95                
+  validator.ts     |       0 |        0 |       0 |       0 | 58-136            
+ ...flict-resolver |       0 |        0 |       0 |       0 |                   
+  ...lict-graph.ts |       0 |        0 |       0 |       0 | 35-176            
+  ...y-resolver.ts |       0 |        0 |       0 |       0 | 50-206            
+  index.ts         |       0 |        0 |       0 |       0 | 50-205            
+  scorer.ts        |       0 |        0 |       0 |       0 | 59-204            
+  solver.ts        |       0 |        0 |       0 |       0 | 81-336            
+  types.ts         |       0 |      100 |     100 |       0 | 156               
+  validator.ts     |       0 |        0 |       0 |       0 | 60-143            
+ ...rator/swapping |       0 |        0 |       0 |       0 |                   
+  ...ce-checker.ts |       0 |      100 |       0 |       0 | 42-109            
+  ...t-resolver.ts |       0 |        0 |       0 |       0 | 41-102            
+  ...-validator.ts |       0 |        0 |       0 |       0 | 66-182            
+  index.ts         |       0 |        0 |       0 |       0 | 60-282            
+  simulator.ts     |       0 |        0 |       0 |       0 | 46-92             
+  types.ts         |       0 |      100 |     100 |       0 | 88                
+  validator.ts     |       0 |        0 |       0 |       0 | 42-137            
+ ...iance/v8/rules |   93.76 |     72.4 |     100 |   98.74 |                   
+  ...lity-rules.ts |   90.47 |    71.42 |     100 |     100 | 20-27             
+  ...utive-days.ts |   91.52 |    73.91 |     100 |   94.33 | 30-32             
+  daily-limits.ts  |   94.73 |    63.63 |     100 |     100 | 15-20,36          
+  ...ment-rules.ts |     100 |    84.61 |     100 |     100 | 32,91-92          
+  meal-break.ts    |   92.85 |       90 |     100 |     100 | 18                
+  ...engagement.ts |   94.73 |    85.71 |     100 |     100 | 18,38             
+  ...-hours-avg.ts |   94.33 |    76.92 |     100 |     100 | 19-27,67,89-98    
+  ...quirements.ts |   94.44 |    65.51 |     100 |     100 | 16-17,30-35,54    
+  ...d-of-hours.ts |   92.85 |    66.66 |     100 |     100 | 17,24-32,35       
+  ...ural-rules.ts |   95.34 |    60.86 |     100 |     100 | ...33,38-43,71-75 
+  student-visa.ts  |   91.48 |    72.41 |     100 |    97.5 | 56                
+ ...ules/__tests__ |     100 |      100 |     100 |     100 |                   
+  _helpers.ts      |     100 |      100 |     100 |     100 |                   
+ ...v8/swap-engine |    4.87 |        0 |       0 |    5.71 |                   
+  ...-evaluator.ts |      16 |        0 |       0 |   19.04 | 93-115,138-186    
+  ...int-engine.ts |       0 |        0 |       0 |       0 | 15-117            
+  ...e-scenario.ts |      50 |        0 |       0 |      50 | 32                
+  guards.ts        |       0 |        0 |       0 |       0 | 70-304            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...io-builder.ts |       0 |        0 |       0 |       0 | 22-159            
+  ...-evaluator.ts |      60 |      100 |       0 |      60 | 33-37             
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...ngine/services |    3.33 |        0 |       0 |     3.7 |                   
+  ...-validator.ts |    3.33 |        0 |       0 |     3.7 | 77-197            
+ ...p-engine/utils |    6.25 |        0 |       0 |    6.45 |                   
+  ...rio-window.ts |   33.33 |        0 |       0 |   33.33 | 58-59             
+  ...aggregator.ts |    3.44 |        0 |       0 |    3.57 | 55-181            
+ ...iance/v8/utils |   66.66 |    66.66 |      50 |   85.71 |                   
+  time.ts          |   66.66 |    66.66 |      50 |   85.71 | 25                
+ src/modules/core  |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ .../core/contexts |    3.55 |        0 |       0 |    4.02 |                   
+  ...tyContext.tsx |   16.66 |        0 |       0 |   19.04 | 14-42,46-48       
+  ...onContext.tsx |    4.54 |        0 |       0 |    5.55 | 71-75,79-228      
+  ...chContext.tsx |       0 |        0 |       0 |       0 | 11-103            
+  ThemeContext.tsx |       0 |        0 |       0 |       0 | 18-133            
+ ...les/core/hooks |   12.03 |     6.34 |   10.58 |   13.33 |                   
+  use-mobile.tsx   |    7.69 |        0 |       0 |    9.09 | 11-27             
+  use-toast.ts     |       0 |        0 |       0 |       0 | 8-187             
+  useBreakpoint.ts |   57.14 |       30 |      80 |    64.7 | 16-22             
+  ...tallPrompt.ts |       0 |        0 |       0 |       0 | 9-27              
+  useMinuteTick.ts |   66.66 |       50 |      60 |   72.72 | 21-25             
+  ...ifications.ts |       0 |        0 |       0 |       0 | 19-183            
+  usePagination.ts |       0 |        0 |       0 |       0 | 17-59             
+  ...bleSorting.ts |   29.62 |    11.76 |   28.57 |      32 | ...37,42-50,63-64 
+ ...dules/core/lib |    26.2 |    26.61 |   19.31 |   27.38 |                   
+  cn.ts            |       0 |      100 |       0 |       0 | 2                 
+  date.utils.ts    |   62.96 |    65.62 |      20 |   67.44 | ...-54,79,156-159 
+  error-handler.ts |       0 |        0 |       0 |       0 | 21-150            
+  logger.ts        |      75 |    57.14 |   71.42 |      75 | ...90-100,110,116 
+  performance.ts   |       0 |        0 |       0 |       0 | 42-221            
+  shift-helpers.ts |       0 |      100 |       0 |       0 | 11-59             
+  theme.utils.ts   |   85.18 |    53.33 |     100 |    91.3 | 23-24             
+  utils.ts         |    3.44 |        0 |   16.66 |       4 | 11-51             
+ ...les/core/model |       0 |        0 |       0 |       0 |                   
+  org.types.ts     |       0 |        0 |       0 |       0 |                   
+ ...les/core/pages |       0 |        0 |       0 |       0 |                   
+  Index.tsx        |       0 |        0 |       0 |       0 | 25-404            
+  ...tionsPage.tsx |       0 |        0 |       0 |       0 | 42-376            
+  NotFound.tsx     |       0 |      100 |       0 |       0 | 4-14              
+ ...core/providers |   53.12 |    15.38 |   63.63 |   55.17 |                   
+  ...eProvider.tsx |   80.95 |    33.33 |    87.5 |      80 | 27,33-35          
+  ...erWrapper.tsx |       0 |        0 |       0 |       0 | 25-55             
+ ...les/core/types |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ .../ui/components |   12.94 |     13.3 |    9.57 |   13.94 |                   
+  ...ngePicker.tsx |   41.66 |    39.13 |      25 |   41.66 | 36-42,47-53,58-59 
+  ...rfOverlay.tsx |       0 |        0 |       0 |       0 | 33-339            
+  ...eSelector.tsx |       0 |        0 |       0 |       0 | 17-177            
+  ...rBoundary.tsx |   96.66 |    79.16 |   91.66 |   96.55 | 236               
+  FunctionBar.tsx  |       0 |        0 |       0 |       0 | 25-129            
+  ...opeFilter.tsx |    1.25 |        0 |       0 |    1.52 | 85-270,324-569    
+  ...ardHeader.tsx |     100 |    78.57 |     100 |     100 | 119,140-163       
+  ...opeFilter.tsx |      20 |        0 |       0 |      20 | 21-27             
+  ...cessGuard.tsx |       0 |        0 |       0 |       0 | 20-124            
+  ...readcrumb.tsx |       0 |        0 |       0 |       0 | 15-56             
+  ...extHeader.tsx |       0 |        0 |       0 |       0 | 36-282            
+  ...tSelector.tsx |       0 |        0 |       0 |       0 | 27-135            
+  PageState.tsx    |     100 |      100 |     100 |     100 |                   
+  ...ageHeader.tsx |   88.88 |    77.77 |      75 |     100 | 70-79             
+  ...opeFilter.tsx |      20 |        0 |       0 |      20 | 21-27             
+  ...iveDialog.tsx |   14.28 |        0 |       0 |   14.28 | 50-150            
+  ...terBanner.tsx |    9.09 |        0 |       0 |      10 | 37-57             
+  SearchBar.tsx    |       0 |        0 |       0 |       0 | 7-34              
+  SearchDialog.tsx |       0 |        0 |       0 |       0 | 13-84             
+  ...eSelector.tsx |       0 |        0 |       0 |       0 | 19-74             
+  ...nctionBar.tsx |   18.86 |    27.55 |       5 |   20.83 | ...04-267,340-394 
+ ...ents/broadcast |       0 |        0 |       0 |       0 |                   
+  ...fications.tsx |       0 |        0 |       0 |       0 | 19-369            
+ .../core/ui/icons |       0 |        0 |       0 |       0 |                   
+  ...hieldIcon.tsx |       0 |        0 |       0 |       0 | 11-15             
+ ...core/ui/layout |       0 |        0 |       0 |       0 |                   
+  AppLayout.tsx    |       0 |        0 |       0 |       0 | 17-46             
+  BottomNavbar.tsx |       0 |        0 |       0 |       0 | 35-372            
+  Navbar.tsx       |       0 |        0 |       0 |       0 | 27-137            
+  PageLayout.tsx   |       0 |        0 |       0 |       0 | 39-97             
+  ...ngsLayout.tsx |       0 |        0 |       0 |       0 | 31-153            
+ ...layout/sidebar |       0 |        0 |       0 |       0 |                   
+  AppSidebar.tsx   |       0 |        0 |       0 |       0 | 77-459            
+  LogoSection.tsx  |       0 |        0 |       0 |       0 | 12-15             
+  NavItem.tsx      |       0 |        0 |       0 |       0 | 13-32             
+  NavSection.tsx   |       0 |        0 |       0 |       0 | 13-37             
+  ...tionLinks.tsx |       0 |        0 |       0 |       0 | 35-171            
+  SidebarUser.tsx  |       0 |        0 |       0 |       0 | 7-56              
+  ThemeToggle.tsx  |       0 |        0 |       0 |       0 | 19-80             
+  UserProfile.tsx  |       0 |        0 |       0 |       0 | 25-31             
+  UserSection.tsx  |       0 |        0 |       0 |       0 | 25-95             
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...core/ui/motion |   46.15 |      100 |       0 |   46.15 |                   
+  MotionNumber.tsx |       0 |      100 |       0 |       0 | 14-27             
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  presets.ts       |     100 |      100 |     100 |     100 |                   
+ .../ui/primitives |   28.07 |     4.32 |    5.65 |    28.2 |                   
+  accordion.tsx    |       0 |      100 |       0 |       0 | 7-54              
+  alert-dialog.tsx |   74.07 |      100 |    12.5 |   74.07 | ...,77,89,102,114 
+  alert.tsx        |       0 |      100 |       0 |       0 | 6-57              
+  aspect-ratio.tsx |       0 |      100 |     100 |       0 | 3                 
+  avatar.tsx       |   66.66 |      100 |       0 |   66.66 | 9,24,36           
+  badge.tsx        |      50 |      100 |       0 |      50 | 36                
+  breadcrumb.tsx   |       0 |        0 |       0 |       0 | 7-105             
+  button.tsx       |     100 |    66.66 |     100 |     100 | 50                
+  calendar.tsx     |      25 |        0 |       0 |      25 | 17-67             
+  card.tsx         |   66.66 |      100 |       0 |   66.66 | 9,24,36,51,63,71  
+  carousel.tsx     |       0 |        0 |       0 |       0 | 31-251            
+  chart.tsx        |       0 |        0 |       0 |       0 | 7-351             
+  checkbox.tsx     |   66.66 |      100 |       0 |   66.66 | 10                
+  collapsible.tsx  |       0 |      100 |     100 |       0 | 3-7               
+  command.tsx      |   65.38 |      100 |       0 |   65.38 | ...86,102,114,131 
+  context-menu.tsx |       0 |        0 |       0 |       0 | 7-180             
+  ...ge-picker.tsx |       0 |        0 |       0 |       0 | 30-87             
+  dialog.tsx       |   77.27 |      100 |   16.66 |   77.27 | 18,57,71,85,100   
+  drawer.tsx       |   79.16 |      100 |   28.57 |   79.16 | 26,59,70,81,96    
+  ...down-menu.tsx |   75.75 |    14.28 |   11.11 |   75.75 | ...20,144,160,173 
+  form.tsx         |   40.54 |        0 |       0 |   40.54 | ...30-132,147-154 
+  hover-card.tsx   |       0 |        0 |       0 |       0 | 6-25              
+  input-otp.tsx    |       0 |        0 |       0 |       0 | 7-67              
+  input.tsx        |     100 |      100 |     100 |     100 |                   
+  label.tsx        |      75 |      100 |       0 |      75 | 15                
+  menubar.tsx      |       0 |        0 |       0 |       0 | 7-215             
+  ...tion-menu.tsx |       0 |      100 |       0 |       0 | 8-114             
+  pagination.tsx   |       0 |        0 |       0 |       0 | 7-107             
+  popover.tsx      |     100 |      100 |     100 |     100 |                   
+  progress.tsx     |       0 |        0 |       0 |       0 | 6-24              
+  radio-group.tsx  |   66.66 |      100 |       0 |   66.66 | 11,25             
+  resizable.tsx    |       0 |        0 |       0 |       0 | 6-27              
+  scroll-area.tsx  |     100 |       80 |     100 |     100 | 35                
+  select.tsx       |   70.83 |        0 |       0 |   70.83 | ...71,103,115,138 
+  separator.tsx    |     100 |       75 |     100 |     100 | 20                
+  sheet.tsx        |   73.91 |        0 |       0 |   73.91 | ...,78,92,106,118 
+  sidebar.tsx      |       0 |        0 |       0 |       0 | 20-734            
+  skeleton.tsx     |       0 |      100 |       0 |       0 | 7                 
+  slider.tsx       |     100 |      100 |     100 |     100 |                   
+  sonner.tsx       |       0 |        0 |       0 |       0 | 6-9               
+  ...le-header.tsx |    9.09 |        0 |       0 |    9.09 | 22-42             
+  switch.tsx       |       0 |      100 |       0 |       0 | 6-25              
+  table.tsx        |       0 |      100 |       0 |       0 | 5-106             
+  tabs.tsx         |       0 |      100 |       0 |       0 | 7-52              
+  textarea.tsx     |   66.66 |      100 |       0 |   66.66 | 11                
+  toast.tsx        |      70 |        0 |       0 |      70 | ...6,62,77,96,108 
+  toaster.tsx      |       0 |        0 |       0 |       0 | 12-17             
+  toggle-group.tsx |    62.5 |        0 |       0 |    62.5 | 19,38-40          
+  toggle.tsx       |      75 |      100 |       0 |      75 | 33                
+  tooltip.tsx      |     100 |      100 |     100 |     100 |                   
+  use-toast.ts     |       0 |        0 |       0 |       0 |                   
+ ...dules/insights |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...s/insights/api |       0 |        0 |       0 |       0 |                   
+  insights.api.ts  |       0 |        0 |       0 |       0 | 13-73             
+ ...insights/hooks |       0 |        0 |       0 |       0 |                   
+  useDateRange.ts  |       0 |        0 |       0 |       0 | 6-72              
+  ...tBreakdown.ts |       0 |        0 |       0 |       0 | 6-8               
+  ...htsSummary.ts |       0 |        0 |       0 |       0 | 5-31              
+  ...ightsTrend.ts |       0 |        0 |       0 |       0 | 11-36             
+  ...icAnalysis.ts |       0 |        0 |       0 |       0 | 6-10              
+ ...insights/model |       0 |      100 |     100 |       0 |                   
+  metric.types.ts  |       0 |      100 |     100 |       0 | 21                
+ ...insights/pages |       0 |        0 |       0 |       0 |                   
+  AnalysisPage.tsx |       0 |        0 |       0 |       0 | 16-185            
+  GridPage.tsx     |       0 |        0 |       0 |       0 | 78-952            
+  InsightsPage.tsx |       0 |        0 |       0 |       0 | 18-56             
+ ...insights/state |       0 |      100 |       0 |       0 |                   
+  useInsights.ts   |       0 |      100 |       0 |       0 | 9                 
+  useMetric.ts     |       0 |      100 |       0 |       0 | 16                
+  ...etricTrend.ts |       0 |      100 |       0 |       0 | 9                 
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...etricCard.tsx |       0 |        0 |       0 |       0 | 15-23             
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 26-76             
+ ...ights/ui/views |       0 |        0 |       0 |       0 |                   
+  ChartsView.tsx   |       0 |      100 |       0 |       0 | 6-111             
+  ...ctionView.tsx |       0 |      100 |       0 |       0 | 5-6               
+  ...ceCostTab.tsx |       0 |        0 |       0 |       0 | 20-259            
+  ...cificView.tsx |       0 |      100 |       0 |       0 | 5-6               
+  ...aviorView.tsx |       0 |      100 |       0 |       0 | 13-14             
+  ...tricsView.tsx |       0 |        0 |       0 |       0 | 14-28             
+  ...udgetView.tsx |       0 |        0 |       0 |       0 | 6-15              
+  ...nningView.tsx |       0 |      100 |       0 |       0 | 5-6               
+  ...BasedView.tsx |       0 |      100 |       0 |       0 | 5-6               
+  OverviewTab.tsx  |       0 |        0 |       0 |       0 | 21-401            
+  ...iencyView.tsx |       0 |      100 |       0 |       0 | 13-14             
+  ...danceView.tsx |       0 |      100 |       0 |       0 | 13-14             
+  WorkforceTab.tsx |       0 |        0 |       0 |       0 | 30-277            
+  ...ationView.tsx |       0 |        0 |       0 |       0 | 14-30             
+ ...dules/planning |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...anning/bidding |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...ng/bidding/api |    3.09 |        0 |       0 |    3.37 |                   
+  bidding.api.ts   |    3.09 |        0 |       0 |    3.37 | 7-13,17-24,32-335 
+ .../bidding/hooks |       0 |        0 |       0 |       0 |                   
+  ...Compliance.ts |       0 |        0 |       0 |       0 | 54-162            
+ .../bidding/model |       0 |        0 |       0 |       0 |                   
+  bid.types.ts     |       0 |        0 |       0 |       0 |                   
+ ...ing/bidding/ui |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ .../ui/components |    7.04 |     2.62 |    6.34 |     7.4 |                   
+  ...anceBadge.tsx |       0 |        0 |       0 |       0 | 25-65             
+  ...anceModal.tsx |       0 |        0 |       0 |       0 | 28-371            
+  ...nceDialog.tsx |      50 |    66.66 |   33.33 |      50 | 34-39             
+  ...unityCard.tsx |   11.76 |        0 |       0 |   11.76 | 38-176            
+  ...ityDrawer.tsx |   10.52 |     2.94 |      20 |    12.5 | 30-140            
+  ...yListItem.tsx |     2.5 |        0 |       0 |     2.7 | 29-121            
+  ...stSection.tsx |      20 |        0 |       0 |      25 | 17-23             
+  ...onToolbar.tsx |    4.34 |        0 |       0 |    4.76 | 30-147            
+  ...atusBadge.tsx |       0 |        0 |       0 |       0 | 10-25             
+  ...BidDialog.tsx |      75 |       50 |      50 |   71.42 | 51-66             
+ ...dding/ui/pages |   24.92 |     8.68 |   11.88 |   27.15 |                   
+  ...Bids.page.tsx |   27.44 |     9.04 |    12.9 |   30.24 | ...6-656,673-1243 
+  ...Bids.page.tsx |       0 |        0 |       0 |       0 | 12-117            
+ ...dding/ui/utils |    2.17 |        0 |       0 |    2.46 |                   
+  ...ept-styles.ts |       0 |        0 |       0 |       0 | 4-65              
+  bid-grouping.ts  |       0 |        0 |       0 |       0 | 15-62             
+  ...ticipation.ts |       0 |        0 |       0 |       0 | 25-51             
+  bid-priority.ts  |   22.22 |        0 |       0 |   28.57 | 47-55             
+ ...s/OpenBidsView |   12.54 |     7.33 |    7.58 |   13.68 |                   
+  BidCard.tsx      |       0 |        0 |       0 |       0 | 16-81             
+  BidsList.tsx     |       0 |        0 |       0 |       0 | 14-68             
+  ...ticDialog.tsx |       0 |        0 |       0 |       0 | 46-266            
+  ...tionState.tsx |       0 |        0 |       0 |       0 | 11-14             
+  FunctionBar.tsx  |       0 |        0 |       0 |       0 | 24-83             
+  ShiftCard.tsx    |       0 |        0 |       0 |       0 | 33-49             
+  ...ilsHeader.tsx |       0 |        0 |       0 |       0 | 16-23             
+  ShiftsList.tsx   |       0 |        0 |       0 |       0 | 19-76             
+  hooks.ts         |       0 |        0 |       0 |       0 |                   
+  index.tsx        |    19.2 |    11.39 |   12.79 |   20.96 | ...1091,1120-1704 
+  types.ts         |       0 |        0 |       0 |       0 |                   
+  ...rarchyData.ts |       0 |        0 |       0 |       0 | 15-43             
+  useOpenShifts.ts |       0 |        0 |       0 |       0 | 27-127            
+  useShiftBids.ts  |       0 |        0 |       0 |       0 | 19-62             
+  useTimeTicker.ts |       0 |        0 |       0 |       0 | 10-20             
+  utils.ts         |    9.37 |        0 |       0 |   11.11 | ...26-142,149-161 
+ ...planning/hooks |       0 |        0 |       0 |       0 |                   
+  ...mentFilter.ts |       0 |        0 |       0 |       0 | 9-32              
+ ...nning/swapping |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...g/swapping/api |   62.39 |    46.28 |   68.75 |   67.12 |                   
+  swaps.api.ts     |   62.39 |    46.28 |   68.75 |   67.12 | ...23,848-852,867 
+ ...swapping/hooks |       0 |        0 |       0 |       0 |                   
+  ...Compliance.ts |       0 |        0 |       0 |       0 | 30-80             
+ ...swapping/model |       0 |        0 |       0 |       0 |                   
+  swap.types.ts    |       0 |        0 |       0 |       0 |                   
+ ...swapping/state |   32.81 |       40 |    3.57 |   33.87 |                   
+  useSwaps.ts      |   32.81 |       40 |    3.57 |   33.87 | ...16-237,244-264 
+ .../ui/components |    9.36 |     6.79 |    4.29 |   11.01 |                   
+  ...ovalModal.tsx |    1.02 |        0 |       0 |    1.14 | 98-198,214-666    
+  ...SwapModal.tsx |       0 |        0 |       0 |       0 | 74-561            
+  ...anceModal.tsx |       0 |        0 |       0 |       0 | 38-420            
+  ...viewModal.tsx |       0 |        0 |       0 |       0 | 103-1267          
+  ...onToolbar.tsx |    7.69 |        0 |       0 |    8.33 | 33-83             
+  ...SwapModal.tsx |   31.65 |    26.15 |   17.64 |    37.6 | ...19-498,623-633 
+  ...fersModal.tsx |   39.74 |    15.81 |   13.79 |   44.11 | ...63-564,682-697 
+ ...pping/ui/pages |   20.14 |     5.34 |   10.34 |    22.6 |                   
+  ...waps.page.tsx |   19.16 |     4.64 |     9.6 |    21.6 | ...1909,1935-1942 
+  ...waps.page.tsx |   22.03 |     7.07 |   12.24 |   24.51 | ...0-641,673-1008 
+ ...swapping/utils |       0 |        0 |       0 |       0 |                   
+  ...e-display.tsx |       0 |        0 |       0 |       0 | 49-508            
+ .../ui/components |       5 |        0 |       0 |    5.26 |                   
+  ...entHeader.tsx |       0 |        0 |       0 |       0 | 23-93             
+  ...entFilter.tsx |       0 |        0 |       0 |       0 | 16-29             
+  ...entSearch.tsx |       0 |        0 |       0 |       0 | 12-24             
+  ...ShiftCard.tsx |    7.14 |        0 |       0 |    7.69 | 121-450           
+ ...mponents/utils |       0 |        0 |       0 |       0 |                   
+  displayUtils.ts  |       0 |        0 |       0 |       0 | 5-114             
+ ...anning/unified |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 | 192-212           
+ ...ests__/helpers |    87.3 |       60 |      75 |   87.09 |                   
+  fixtures.ts      |     100 |      100 |     100 |     100 |                   
+  supabase-mock.ts |      75 |       50 |   72.72 |   74.19 | 39-40,53-58       
+ ...ied/compliance |   79.36 |    70.27 |   84.21 |   78.18 |                   
+  input-builder.ts |      48 |    47.61 |   57.14 |      50 | 48,53,191-270     
+  ...ot-builder.ts |     100 |      100 |     100 |     100 |                   
+ .../unified/hooks |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...Compliance.ts |       0 |        0 |       0 |       0 | 81-355            
+  ...ingActions.ts |       0 |        0 |       0 |       0 | 60-216            
+  ...ingRequest.ts |       0 |        0 |       0 |       0 | 26-186            
+  ...ngRequests.ts |       0 |        0 |       0 |       0 | 24-158            
+ ...nified/service |   71.69 |    65.68 |    90.9 |   71.69 |                   
+  ...st.service.ts |   71.69 |    65.68 |    90.9 |   71.69 | ...1186,1200,1221 
+ ...ing/unified/ui |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...ianceGate.tsx |       0 |        0 |       0 |       0 | 61-391            
+  ...ovalModal.tsx |       0 |        0 |       0 |       0 | 84-603            
+  OfferCard.tsx    |       0 |        0 |       0 |       0 | 65-280            
+  ...questCard.tsx |       0 |        0 |       0 |       0 | 90-569            
+  ...atusBadge.tsx |       0 |        0 |       0 |       0 | 42-114            
+ ...odules/rosters |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...es/rosters/api |   23.62 |    24.49 |   26.44 |    25.7 |                   
+  ...hedule.api.ts |   28.43 |    14.86 |   22.22 |   28.88 | ...67,374,384-440 
+  ...bility.api.ts |       4 |        0 |       0 |    4.16 | 31-100            
+  ...es.queries.ts |    7.69 |        0 |       0 |      10 | 15-45             
+  ...es.queries.ts |    6.25 |        0 |       0 |    8.33 | 52-109            
+  ...or.queries.ts |    7.69 |        0 |       0 |   11.11 | 46-78             
+  ...er.queries.ts |     2.7 |        0 |       0 |    3.03 | 51-207            
+  queryKeys.ts     |   67.74 |    51.51 |   62.96 |   67.74 | ...04,111,116-134 
+  ...ss.queries.ts |       0 |        0 |       0 |       0 | 7-19              
+  ...ry.queries.ts |    37.5 |        0 |       0 |    37.5 | 40-47             
+  rosters.api.ts   |     0.9 |        0 |       0 |    0.99 | 37-406            
+  shifts.api.ts    |     100 |      100 |     100 |     100 |                   
+  ...s.commands.ts |   31.64 |    40.67 |   26.31 |   35.09 | ...49,878,903-913 
+  shifts.dto.ts    |       0 |        0 |       0 |       0 |                   
+  ...ts.queries.ts |   29.08 |     25.2 |   39.58 |   30.67 | ...1417,1447-1448 
+  ...edback.dto.ts |     100 |      100 |     100 |     100 |                   
+  ...ck.queries.ts |     3.7 |        0 |       0 |       5 | 18-96             
+  ...ns.queries.ts |    2.08 |        0 |       0 |    2.56 | 34-157            
+  ...ts.queries.ts |   18.18 |        0 |       0 |      20 | 29-49             
+  ...es.queries.ts |       0 |        0 |       0 |       0 | 25-118            
+ .../api/contracts |    90.9 |        0 |       0 |     100 |                   
+  index.ts         |    90.9 |        0 |       0 |     100 | 249-251           
+ ...ulk-assignment |    2.22 |        0 |       0 |    2.56 |                   
+  ...controller.ts |    2.22 |        0 |       0 |    2.56 | 57-230            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...ignment/engine |   15.94 |    12.57 |   17.07 |   17.91 |                   
+  ...-committer.ts |     100 |    71.42 |     100 |     100 | 78-87,137,148-179 
+  ...-evaluator.ts |    9.52 |        0 |       0 |   11.76 | 41-117            
+  ...t-reporter.ts |    8.33 |        0 |       0 |      10 | 26-39             
+  ...-validator.ts |    1.06 |        0 |       0 |    1.35 | 28-260            
+  ...rio-loader.ts |    3.03 |        0 |       0 |    3.33 | 41-157            
+  shift-sorter.ts  |    2.43 |        0 |       0 |     2.5 | 24-117            
+ ...sters/contexts |    3.09 |        0 |       0 |    4.91 |                   
+  ...UIContext.tsx |    3.09 |        0 |       0 |    4.91 | ...41-193,251-254 
+ ...rosters/domain |    65.5 |    56.34 |   69.23 |   65.47 |                   
+  ...Resolution.ts |    8.41 |     1.49 |   13.33 |    9.37 | 69-330            
+  ...tion.types.ts |     100 |      100 |     100 |     100 |                   
+  ...ng-urgency.ts |   93.33 |      100 |     100 |    92.3 | 27                
+  ...ion-engine.ts |   22.03 |     6.06 |   42.85 |   17.85 | 51-143,177-178    
+  ...validation.ts |       0 |        0 |       0 |       0 | 38-187            
+  ...ncertainty.ts |   92.13 |    84.37 |     100 |   97.36 | 100-101           
+  ...ess-ledger.ts |   98.59 |    93.02 |     100 |     100 | 185,231,311       
+  ...Multiplier.ts |      84 |    83.33 |     100 |   83.33 | 103-106           
+  ...gine.types.ts |       0 |        0 |       0 |       0 |                   
+  ruleEvaluator.ts |   81.64 |    72.27 |     100 |   86.45 | ...22-325,327-331 
+  ruleMatcher.ts   |   82.05 |    76.47 |     100 |   79.31 | 52-53,58-62       
+  shift-fsm.ts     |   82.75 |     87.5 |      20 |   76.19 | 123-139           
+  ...king.utils.ts |   13.04 |        0 |       0 |   13.04 | 30-58,70-77,84    
+  ...tate.utils.ts |   88.88 |     90.9 |     100 |    87.5 | 33                
+  shift-ui.ts      |   52.02 |     40.4 |   64.28 |   50.88 | ...36-648,669-670 
+  shift.entity.ts  |   51.85 |     40.9 |      75 |   56.52 | ...33,253,272-284 
+  ...zer.policy.ts |      87 |    73.52 |      80 |   88.53 | ...93,333,423,453 
+  ...GridMapper.ts |   97.61 |    96.66 |     100 |     100 | 47                
+ ...omain/commands |       0 |        0 |       0 |       0 |                   
+  ...ft.command.ts |       0 |        0 |       0 |       0 | 90-452            
+  ...ft.command.ts |       0 |        0 |       0 |       0 | 49-101            
+  ...up.command.ts |       0 |        0 |       0 |       0 | 25-64             
+  ...ft.command.ts |       0 |        0 |       0 |       0 | 23-46             
+  ...er.command.ts |       0 |        0 |       0 |       0 | 26-80             
+  ...ft.command.ts |       0 |        0 |       0 |       0 | 32-67             
+ ...omain/policies |       0 |        0 |       0 |       0 |                   
+  ...ift.policy.ts |       0 |        0 |       0 |       0 | 31-111            
+  ...ter.policy.ts |       0 |        0 |       0 |       0 | 30-96             
+ ...in/projections |   84.61 |    71.42 |      50 |      90 |                   
+  constants.ts     |   84.61 |    71.42 |      50 |      90 | 102               
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...jections/cache |    37.5 |       25 |      60 |   42.85 |                   
+  ...tion.cache.ts |    37.5 |       25 |      60 |   42.85 | 56-61,72-79       
+ ...tions/pipeline |       0 |        0 |       0 |       0 |                   
+  ...onPipeline.ts |       0 |        0 |       0 |       0 | 45-232            
+ ...ons/projectors |   54.12 |    34.25 |   56.96 |   52.95 |                   
+  ....projector.ts |    3.33 |        0 |       0 |    3.77 | 24-198            
+  ....projector.ts |   82.14 |    66.31 |   77.41 |   80.61 | ...24-225,271-272 
+  ....projector.ts |       0 |        0 |       0 |       0 | 29-241            
+  ....projector.ts |    95.4 |    73.19 |      95 |      96 | 27,170,244        
+  shared.ts        |       0 |        0 |       0 |       0 | 24-82             
+  stats.util.ts    |     100 |       75 |     100 |     100 | 30                
+ ...jections/utils |   60.17 |    31.57 |   68.57 |   65.16 |                   
+  cost.ts          |   33.33 |        0 |   33.33 |   33.33 | 135-173           
+  coverage.ts      |     100 |      100 |     100 |     100 |                   
+  duration.ts      |     100 |    83.33 |     100 |     100 | 16-17,44          
+  fairness.ts      |   14.28 |    16.66 |   16.66 |   16.66 | 30-50             
+  fatigue.ts       |   82.02 |    53.84 |    90.9 |   83.33 | 40-52,73,164-166  
+  filters.ts       |       0 |        0 |       0 |       0 | 31-111            
+  workload.ts      |   85.71 |    68.75 |     100 |     100 | 32-47,78-83       
+ ...ons/utils/cost |   38.31 |    22.71 |   41.66 |   41.13 |                   
+  award-context.ts |      30 |     5.88 |   42.85 |   33.33 | 50-109,135-138    
+  constants.ts     |     100 |      100 |     100 |     100 |                   
+  index.ts         |      20 |     6.34 |      50 |   23.52 | ...,72-73,103-135 
+  security.ts      |    5.66 |        0 |       0 |       6 | 34-135            
+  standard.ts      |   52.99 |    39.77 |   66.66 |   55.96 | ...86,222,231,265 
+  ...nee_matrix.ts |      16 |        0 |       0 |      16 | 42-80             
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...cost/__bench__ |       0 |        0 |       0 |       0 |                   
+  context-bench.ts |       0 |        0 |       0 |       0 | 11-59             
+ ...ections/worker |   68.07 |    49.45 |   63.15 |   70.56 |                   
+  mappers.ts       |   35.29 |    57.33 |   31.25 |    37.5 | 126-147,182-219   
+  ...ker.client.ts |       0 |        0 |       0 |       0 | 29-151            
+  ...orker.pool.ts |   85.29 |    55.81 |   96.87 |   88.53 | ...71-475,500,506 
+  ...ion.worker.ts |       0 |        0 |       0 |       0 |                   
+  protocol.ts      |       0 |        0 |       0 |       0 |                   
+ ...rker/__bench__ |       0 |      100 |     100 |       0 |                   
+  pool-test.ts     |       0 |      100 |     100 |       0 | 15-19             
+ ...domain/queries |    1.98 |        0 |       0 |    2.22 |                   
+  ...Grid.query.ts |    3.92 |        0 |       0 |    4.25 | 64-222            
+  ...rchy.query.ts |       0 |        0 |       0 |       0 | 35-113            
+  ...riod.query.ts |       0 |        0 |       0 |       0 | 32-88             
+  ...ails.query.ts |       0 |        0 |       0 |       0 | 82-126            
+ .../rosters/hooks |    0.76 |        0 |       0 |    0.81 |                   
+  useMyRoster.ts   |    1.17 |        0 |       0 |    1.29 | 21-189            
+  ...ailability.ts |       0 |        0 |       0 |       0 | 35-76             
+  ...rojections.ts |       0 |        0 |       0 |       0 | 33-273            
+  useRosterView.ts |    2.27 |        0 |       0 |    2.32 | 15-99             
+  ...ewPrefetch.ts |    3.57 |        0 |       0 |     3.7 | 58-176            
+  ...tFiltering.ts |       0 |        0 |       0 |       0 | 8-223             
+  ...iftFormNav.ts |       0 |        0 |       0 |       0 | 22-25             
+ .../rosters/infra |    7.14 |        0 |       0 |    7.14 |                   
+  shifts.repo.ts   |    7.14 |        0 |       0 |    7.14 | 21-65             
+ .../rosters/model |       0 |        0 |       0 |       0 |                   
+  roster.types.ts  |       0 |        0 |       0 |       0 | 415-767           
+  shift.types.ts   |       0 |      100 |     100 |       0 | 119-162           
+ .../rosters/pages |   15.42 |    10.39 |    9.32 |   16.29 |                   
+  ...dancePage.tsx |       0 |        0 |       0 |       0 | 62-742            
+  ...stingPage.tsx |   44.01 |    29.08 |   20.56 |   46.37 | ...2391,2541-2691 
+  MyRosterPage.tsx |    3.57 |        0 |       0 |    4.08 | 41-94,149-323     
+  ...annerPage.tsx |    1.01 |        0 |       0 |    1.13 | 122-1418          
+  ...pLinkPage.tsx |       0 |        0 |       0 |       0 | 10-54             
+  ...tFormPage.tsx |       0 |        0 |       0 |       0 | 39-220            
+ ...ges/components |   13.33 |        0 |       0 |   15.38 |                   
+  ...tionModal.tsx |   13.33 |        0 |       0 |   15.38 | 65-252            
+ ...sters/services |   31.37 |    25.37 |   21.51 |   32.92 |                   
+  ...ce.service.ts |      25 |        0 |       0 |      25 | 99-132,148-155    
+  ...on.service.ts |   51.11 |    64.51 |   33.33 |   53.01 | 233-284,325-356   
+  ...er.service.ts |    39.4 |     29.6 |   29.03 |   42.63 | ...73-689,697-718 
+  ...ty.service.ts |    7.43 |     7.69 |    5.26 |    8.57 | ...63-264,269-337 
+  ...er.service.ts |   11.11 |        0 |       0 |   11.53 | 50-110            
+  ...er.service.ts |    1.31 |        0 |       0 |    1.51 | 27-31,50-263      
+  ...nt.service.ts |    4.44 |     2.63 |       0 |       5 | 73-279            
+  ...ne.service.ts |   98.55 |    81.25 |     100 |     100 | ...13,122-162,204 
+  ...chestrator.ts |   61.63 |    41.54 |      55 |   64.42 | ...51-556,575-578 
+  ...sizer.scan.ts |       0 |        0 |       0 |       0 | 19-243            
+  ...er.service.ts |     1.9 |        0 |       0 |     2.4 | 42-267            
+  ...er.service.ts |   30.66 |    34.37 |      50 |   23.72 | 87-228            
+ .../rosters/state |   36.12 |    18.75 |   36.36 |   39.26 |                   
+  useClockInOut.ts |       0 |        0 |       0 |       0 | 32-194            
+  ...cedRosters.ts |    4.16 |        0 |       0 |    4.16 | 10-152            
+  ...rMutations.ts |   73.37 |    56.66 |   68.62 |   80.51 | ...70-571,622-623 
+  ...sterShifts.ts |   36.23 |    16.01 |   42.28 |   40.32 | ...3-774,827-1316 
+  ...osterStore.ts |   24.21 |     10.2 |   24.44 |   24.41 | ...20-334,340-341 
+  ...rStructure.ts |     3.7 |        0 |       0 |    4.54 | 14-96             
+  ...terSummary.ts |       0 |        0 |       0 |       0 | 26-57             
+  ...tSynthesis.ts |       0 |        0 |       0 |       0 | 20-256            
+  ...orFeedback.ts |   21.42 |        0 |   11.11 |   21.42 | 25-76,87-95       
+ .../ui/components |    4.17 |     0.77 |    1.89 |    4.66 |                   
+  ...oupDialog.tsx |       0 |        0 |       0 |       0 | 43-139            
+  ...iftDialog.tsx |       0 |        0 |       0 |       0 | 46-298            
+  ...anceBadge.tsx |       0 |        0 |       0 |       0 | 15-80             
+  ...bilityBar.tsx |     7.4 |        0 |       0 |    7.54 | ...25-162,196-272 
+  ...nsToolbar.tsx |    1.78 |        0 |       0 |       2 | 148-149,172-784   
+  ...nceResult.tsx |       0 |        0 |       0 |       0 | 57-384            
+  ...ngePicker.tsx |    1.12 |        0 |       0 |     1.2 | 35-313            
+  CalendarView.tsx |       0 |        0 |       0 |       0 | 16-96             
+  ...abContent.tsx |    1.06 |        0 |       0 |    1.29 | 45-48,121-1337    
+  ...ceVisuals.tsx |       0 |        0 |       0 |       0 | 24-498            
+  ...DownPanel.tsx |     0.6 |        0 |       0 |    0.71 | 67-523            
+  ...eDateCell.tsx |   17.39 |        0 |       0 |   19.04 | 45-111,143-144    
+  GroupSection.tsx |       0 |        0 |       0 |       0 | 15-72             
+  ...tsSummary.tsx |    4.16 |        0 |       0 |    4.76 | 64-122            
+  ...mmaryCell.tsx |    6.66 |        0 |       0 |    6.66 | 35-74             
+  ...rCalendar.tsx |       0 |        0 |       0 |       0 | 37-148            
+  ...loyeeView.tsx |       0 |        0 |       0 |       0 | 23-212            
+  RosterFilter.tsx |       0 |        0 |       0 |       0 | 45-239            
+  ...erPopover.tsx |    6.25 |        0 |       0 |    7.14 | 26-200            
+  ...nctionBar.tsx |    6.75 |        0 |       0 |    7.35 | ...48-164,236-492 
+  RosterGroup.tsx  |       5 |        0 |       0 |       5 | 37-127            
+  RosterHeader.tsx |       0 |        0 |       0 |       0 | 32-243            
+  RosterModals.tsx |      20 |        0 |       0 |   23.52 | 20,25,105-144     
+  ...hiftModal.tsx |       0 |        0 |       0 |       0 | 84-419            
+  ...erSidebar.tsx |       0 |        0 |       0 |       0 | 10-44             
+  ...rSubGroup.tsx |    3.44 |        0 |       0 |    3.44 | 54-193            
+  ...rdCompact.tsx |       0 |        0 |       0 |       0 | 78-307            
+  ...ardLegend.tsx |   33.33 |        0 |       0 |   33.33 | 85-127            
+  ShiftChip.tsx    |       0 |        0 |       0 |       0 | 16-24             
+  ShiftItem.tsx    |      50 |        0 |       0 |      50 | 32                
+  ...uleHeader.tsx |   15.78 |        0 |       0 |      20 | 20-25,35-75       
+  ...ShiftCard.tsx |    6.36 |        0 |       0 |    7.69 | ...36-607,656-658 
+  ...Indicator.tsx |       0 |        0 |       0 |       0 | 18-69             
+  ...upSection.tsx |       0 |        0 |       0 |       0 | 12-59             
+  ...omptModal.tsx |    61.4 |    52.63 |   45.45 |   60.71 | ...23,236,263-313 
+  TimeGrid.tsx     |   10.81 |        0 |       0 |   13.33 | 16-174            
+  ...Navigator.tsx |    3.77 |        0 |       0 |    4.54 | 57-105,158-267    
+  ...osterGrid.tsx |       0 |        0 |       0 |       0 | 67-255            
+ ...ers/ui/dialogs |    1.63 |        0 |       0 |    1.77 |                   
+  ...terDialog.tsx |       0 |        0 |       0 |       0 | 34-317            
+  ...oupDialog.tsx |       0 |        0 |       0 |       0 | 30-165            
+  ...iftDialog.tsx |       8 |        0 |       0 |       8 | 68-250            
+  ...oupDialog.tsx |      10 |        0 |       0 |      10 | 50-124            
+  ...ateDialog.tsx |       0 |        0 |       0 |       0 | 55-537            
+  ...duleModal.tsx |       0 |        0 |       0 |       0 | 47-772            
+  ...iftsModal.tsx |       0 |        0 |       0 |       0 | 105-546           
+  ...mentPanel.tsx |       0 |        0 |       0 |       0 | 59-392            
+  ...signModal.tsx |    1.69 |        0 |       0 |    1.81 | 75-289            
+  ...oupDialog.tsx |   10.52 |        0 |       0 |   10.52 | 51-154            
+  ...oupDialog.tsx |   11.11 |        0 |       0 |   11.11 | 45-115            
+  ...iodDialog.tsx |       0 |        0 |       0 |       0 | 69-404            
+  ...terDialog.tsx |       0 |        0 |       0 |       0 | 36-538            
+  ...nsDialogs.tsx |   13.79 |        0 |       0 |   13.79 | ...41-192,225-244 
+ ...dAddShiftModal |    3.22 |        0 |       0 |    3.84 |                   
+  Lazy.tsx         |      20 |        0 |       0 |      25 | 13-24             
+  constants.ts     |       0 |      100 |     100 |       0 | 2-4               
+  index.tsx        |       0 |        0 |       0 |       0 | 22-94             
+  types.ts         |       0 |      100 |     100 |       0 | 9                 
+  utils.ts         |       0 |        0 |       0 |       0 | 4-60              
+ ...dal/components |       0 |        0 |       0 |       0 |                   
+  ...nmentStep.tsx |       0 |        0 |       0 |       0 | 36-309            
+  ...irmDialog.tsx |       0 |      100 |       0 |       0 | 19-24             
+  ...ianceStep.tsx |       0 |        0 |       0 |       0 | 6-11              
+  ContextBar.tsx   |       0 |        0 |       0 |       0 | 11-14             
+  ...chyColumn.tsx |       0 |        0 |       0 |       0 | 16-29             
+  ...efillCard.tsx |       0 |        0 |       0 |       0 | 15-85             
+  ModalFooter.tsx  |       0 |        0 |       0 |       0 | 40-232            
+  ModalHeader.tsx  |       0 |        0 |       0 |       0 | 30-38             
+  MultiSelect.tsx  |       0 |        0 |       0 |       0 | 31-147            
+  NotesStep.tsx    |       0 |      100 |       0 |       0 | 11-17             
+  ...mentsStep.tsx |       0 |        0 |       0 |       0 | 11-69             
+  RoleStep.tsx     |       0 |        0 |       0 |       0 | 22-206            
+  ScheduleStep.tsx |       0 |        0 |       0 |       0 | 60-699            
+  SearchSelect.tsx |       0 |        0 |       0 |       0 | 27-139            
+  ...PoolModal.tsx |       0 |        0 |       0 |       0 | 45-152            
+  ...erContent.tsx |       0 |        0 |       0 |       0 | 83-1360           
+  ...Indicator.tsx |       0 |        0 |       0 |       0 | 19-111            
+  ...rdStepper.tsx |       0 |        0 |       0 |       0 | 21-64             
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...iftModal/hooks |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...anceRunner.ts |       0 |        0 |       0 |       0 | 24-207            
+  ...Validation.ts |       0 |        0 |       0 |       0 | 19-153            
+  ...ftFormData.ts |       0 |        0 |       0 |       0 | 25-198            
+  ...chestrator.ts |       0 |        0 |       0 |       0 | 42-1102           
+  ...Navigation.ts |       0 |        0 |       0 |       0 | 34-88             
+ ...sters/ui/modes |    4.82 |        0 |       0 |    5.46 |                   
+  ...sModeView.tsx |    1.98 |        0 |       0 |    2.38 | 86-115,128-605    
+  ...pModeView.tsx |     2.9 |        0 |       0 |    3.24 | ...8-695,741-2775 
+  ...sterBoard.tsx |     3.7 |        0 |       0 |    4.34 | 41-101            
+  ...eModeGrid.tsx |   14.65 |        0 |       0 |   15.59 | ...92-806,881-949 
+  ...sModeView.tsx |     5.4 |        0 |       0 |    6.49 | ...99-302,308-704 
+  ...iftsPanel.tsx |    9.25 |        0 |       0 |   10.41 | ...37-164,214-343 
+  ...mode.types.ts |     100 |      100 |     100 |     100 |                   
+ ...s/ui/my-roster |    5.41 |        0 |       0 |    5.96 |                   
+  ...osterList.tsx |   11.53 |        0 |       0 |   13.63 | 34-120            
+  ...uestModal.tsx |     7.4 |        0 |       0 |       8 | ...4,49-56,68-228 
+  DayView.tsx      |   13.63 |        0 |       0 |   14.28 | 26-28,33-42,47-82 
+  ...ShiftCard.tsx |    4.16 |        0 |       0 |    4.76 | 18-44             
+  MonthView.tsx    |    7.81 |        0 |       0 |    8.47 | ...3,67-76,90-376 
+  ...fersModal.tsx |     2.1 |        0 |       0 |    2.17 | ...18-211,246-466 
+  ...rCalendar.tsx |      20 |        0 |       0 |      20 | 48-86             
+  ...sterShift.tsx |    3.33 |        0 |       0 |    3.84 | 27-75             
+  ...ilsDialog.tsx |    1.82 |        0 |       0 |    2.09 | 57,62-64,101-537  
+  ShiftPill.tsx    |    4.54 |        0 |       0 |    5.26 | 25-82             
+  ThreeDayView.tsx |   13.04 |        0 |       0 |   13.63 | 26-28,33-42,51-95 
+  WeekView.tsx     |      12 |        0 |       0 |   13.04 | 26-28,33-42,47-93 
+ ...sters/ui/views |       0 |        0 |       0 |       0 |                   
+  ...erDayView.tsx |       0 |        0 |       0 |       0 | 18-125            
+  ...rListView.tsx |       0 |        0 |       0 |       0 | 28-149            
+  ...MonthView.tsx |       0 |        0 |       0 |       0 | 23-139            
+  ...eeDayView.tsx |       0 |        0 |       0 |       0 | 14-65             
+  ...rWeekView.tsx |       0 |        0 |       0 |       0 | 16-174            
+ .../rosters/utils |   37.94 |    25.71 |   35.71 |   41.61 |                   
+  dnd.utils.ts     |       8 |        0 |       0 |   11.11 | 19-30,53-70       
+  gps.ts           |       0 |        0 |       0 |       0 | 40-224            
+  roster-utils.ts  |       0 |        0 |       0 |       0 | 13-74             
+  ...t-calendar.ts |   96.55 |    72.54 |     100 |   96.42 | 28,68             
+  ...yout.utils.ts |   94.11 |    88.88 |     100 |     100 | 19                
+ ...les/scheduling |   70.37 |    59.49 |   61.84 |   74.16 |                   
+  ...controller.ts |   70.37 |    59.49 |   61.84 |   74.16 | ...1382,1396,1405 
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  types.ts         |       0 |        0 |       0 |       0 |                   
+ ...heduling/audit |    96.7 |    84.74 |     100 |     100 |                   
+  auditor.ts       |    96.7 |    84.74 |     100 |     100 | 147-204,307-313   
+ ...cheduling/data |    96.9 |    89.74 |     100 |   96.51 |                   
+  ...er-fetcher.ts |    96.9 |    89.74 |     100 |   96.51 | 149,186-187       
+ ...ling/optimizer |       6 |     6.55 |    12.5 |    6.45 |                   
+  ...zer.client.ts |    7.57 |     8.16 |   22.22 |    8.19 | 44-49,68-292      
+  ...ion-parser.ts |    2.94 |        0 |       0 |    3.12 | 99-177            
+ .../scheduling/ui |       0 |        0 |       0 |       0 |                   
+  ...rInsights.tsx |       0 |        0 |       0 |       0 | 30-230            
+  ...ulerModal.tsx |       0 |        0 |       0 |       0 | 74-1239           
+  ...ulerPanel.tsx |       0 |        0 |       0 |       0 | 92-1143           
+  ...hisPerson.tsx |       0 |        0 |       0 |       0 | 16-28             
+ ...modules/search |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...s/search/pages |       0 |        0 |       0 |       0 |                   
+  SearchPage.tsx   |       0 |        0 |       0 |       0 | 11-116            
+ ...dules/settings |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...settings/hooks |       0 |        0 |       0 |       0 |                   
+  useSettings.ts   |       0 |        0 |       0 |       0 | 6-174             
+ ...settings/pages |       0 |        0 |       0 |       0 |                   
+  SettingsPage.tsx |       0 |        0 |       0 |       0 | 23-559            
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 22-54             
+ ...ules/templates |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ .../templates/api |   53.06 |    56.96 |      50 |      60 |                   
+  ...es.service.ts |   53.06 |    56.96 |      50 |      60 | ...89,292-299,303 
+ ...emplates/hooks |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...teHandlers.ts |       0 |        0 |       0 |       0 | 32-330            
+ .../hooks/queries |    2.38 |        0 |    4.87 |     2.8 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...ateQueries.ts |    2.38 |        0 |    4.87 |     2.8 | 29-32,46-446      
+ ...emplates/model |   11.65 |    25.09 |   11.11 |   12.37 |                   
+  ...late.types.ts |       0 |        0 |       0 |       0 |                   
+  ...ates.types.ts |   11.65 |    25.09 |   11.11 |   12.37 | ...58-614,626-643 
+ ...emplates/pages |       0 |        0 |       0 |       0 |                   
+  ...latesPage.tsx |       0 |        0 |       0 |       0 | 29-309            
+ ...emplates/state |   39.61 |    24.59 |   40.25 |    43.9 |                   
+  ...lateEditor.ts |   84.79 |    65.11 |     100 |   98.59 | 207-212           
+  ...teHandlers.ts |       0 |        0 |       0 |       0 | 32-330            
+  useTemplates.ts  |   32.51 |    14.78 |   23.28 |   34.72 | ...1242,1250-1296 
+ ...s/templates/ui |       0 |        0 |       0 |       0 |                   
+  constants.ts     |       0 |        0 |       0 |       0 | 11-68             
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...ngePicker.tsx |       0 |        0 |       0 |       0 | 25-115            
+  RosterGroup.tsx  |       0 |        0 |       0 |       0 | 32-176            
+  ShiftCard.tsx    |       0 |        0 |       0 |       0 | 38-225            
+  ...teContent.tsx |       0 |        0 |       0 |       0 | 11-172            
+  ...ateEditor.tsx |       0 |        0 |       0 |       0 | 91-426            
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 23-100            
+  ...ateHeader.tsx |       0 |        0 |       0 |       0 | 49-218            
+  ...teLibrary.tsx |       0 |        0 |       0 |       0 | 26-131            
+  ...esLibrary.tsx |       0 |        0 |       0 |       0 | 81-596            
+  ...esSidebar.tsx |       0 |        0 |       0 |       0 | 82-426            
+ ...ponents/editor |       0 |        0 |       0 |       0 |                   
+  SaveFeedback.tsx |       0 |        0 |       0 |       0 | 16-108            
+  ...rSkeleton.tsx |       0 |        0 |       0 |       0 | 14-161            
+  ...mptyState.tsx |       0 |        0 |       0 |       0 | 19-90             
+  ...GroupCard.tsx |       0 |        0 |       0 |       0 | 33-76             
+  ...eShiftRow.tsx |       0 |        0 |       0 |       0 | 23-140            
+  ...groupCard.tsx |       0 |        0 |       0 |       0 | 55-149            
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...tes/ui/dialogs |       0 |        0 |       0 |       0 |                   
+  ...oupDialog.tsx |       0 |        0 |       0 |       0 | 43-213            
+  ...ateDialog.tsx |       0 |        0 |       0 |       0 | 36-449            
+  ...ateDialog.tsx |       0 |        0 |       0 |       0 | 26-52             
+ ...emplates/utils |   66.66 |    66.66 |      75 |      80 |                   
+  id-generator.ts  |      50 |      100 |      50 |      50 | 16                
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...-sanitizer.ts |      75 |       50 |     100 |     100 | 9                 
+ ...les/timesheets |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...timesheets/api |   59.65 |    65.77 |   58.97 |   63.75 |                   
+  ...s.read.api.ts |       0 |        0 |       0 |       0 | 3-63              
+  ...pabase.api.ts |   76.54 |    70.38 |     100 |   80.95 | ...78-679,693-694 
+  ....write.api.ts |       0 |        0 |       0 |       0 | 8-83              
+ ...mesheets/model |       0 |        0 |       0 |       0 |                   
+  ...heet.types.ts |       0 |        0 |       0 |       0 |                   
+ ...mesheets/state |       0 |        0 |       0 |       0 |                   
+  ...etContext.tsx |       0 |        0 |       0 |       0 | 12-40             
+  ...heet.hooks.ts |       0 |        0 |       0 |       0 | 9-121             
+ .../timesheets/ui |       0 |        0 |       0 |       0 |                   
+  ...sheetPage.tsx |       0 |        0 |       0 |       0 | 37-272            
+ .../ui/components |    2.39 |     0.84 |    0.52 |    2.66 |                   
+  ...atusBadge.tsx |       0 |        0 |       0 |       0 | 18-68             
+  ...terDrawer.tsx |       0 |        0 |       0 |       0 | 37-332            
+  ...eetHeader.tsx |       0 |        0 |       0 |       0 | 60-224            
+  ...obileCard.tsx |       0 |        0 |       0 |       0 | 53-447            
+  ...obileView.tsx |       0 |        0 |       0 |       0 | 53-366            
+  TimesheetRow.tsx |       0 |        0 |       0 |       0 | 52-882            
+  ...atusBadge.tsx |       0 |        0 |       0 |       0 | 11-27             
+  ...heetTable.tsx |       0 |        0 |       0 |       0 | 44-362            
+  ...able.utils.ts |   41.46 |    22.58 |   16.66 |   47.05 | ...70,100,105-106 
+  ...ecardView.tsx |       0 |        0 |       0 |       0 | 22-107            
+  ...eet.export.ts |       0 |        0 |       0 |       0 | 6-144             
+ src/modules/users |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ ...ules/users/api |       0 |        0 |       0 |       0 |                   
+  ...ee.service.ts |       0 |        0 |       0 |       0 | 10-106            
+ ...es/users/hooks |       0 |        0 |       0 |       0 |                   
+  ...eeLicenses.ts |       0 |        0 |       0 |       0 | 39-154            
+  ...oyeeSkills.ts |       0 |        0 |       0 |       0 | 42-166            
+  useEmployees.ts  |       0 |        0 |       0 |       0 | 5-47              
+  ...nceMetrics.ts |       0 |        0 |       0 |       0 | 71-278            
+ ...es/users/model |       0 |        0 |       0 |       0 |                   
+  ...oyee.types.ts |       0 |        0 |       0 |       0 |                   
+  ...ance.types.ts |       0 |        0 |       0 |       0 |                   
+ ...es/users/pages |       0 |        0 |       0 |       0 |                   
+  ...mancePage.tsx |       0 |        0 |       0 |       0 | 40-408            
+  ProfilePage.tsx  |       0 |        0 |       0 |       0 | 31-284            
+  UsersPage.tsx    |       0 |        0 |       0 |       0 | 29-136            
+ .../ui/components |       0 |        0 |       0 |       0 |                   
+  ...ateDialog.tsx |       0 |        0 |       0 |       0 | 36-496            
+  ...actDialog.tsx |       0 |        0 |       0 |       0 | 29-819            
+  ...nseDialog.tsx |       0 |        0 |       0 |       0 | 27-202            
+  ...dSelector.tsx |       0 |        0 |       0 |       0 | 19-124            
+  ...tsSection.tsx |       0 |        0 |       0 |       0 | 39-338            
+  ...serDialog.tsx |       0 |        0 |       0 |       0 | 24-52             
+  ...esSection.tsx |       0 |        0 |       0 |       0 | 14-92             
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 23-51             
+  ...ceSection.tsx |       0 |        0 |       0 |       0 | 15-118            
+  ...tsSection.tsx |       0 |        0 |       0 |       0 | 15-85             
+  ...lsSection.tsx |       0 |        0 |       0 |       0 | 17-193            
+  ...nctionBar.tsx |       0 |        0 |       0 |       0 | 32-64             
+  ...tsSection.tsx |       0 |        0 |       0 |       0 | 19-121            
+ ...users/ui/hooks |       0 |        0 |       0 |       0 |                   
+  ...ntractForm.ts |       0 |        0 |       0 |       0 | 35-239            
+  ...erenceData.ts |       0 |        0 |       0 |       0 | 13-60             
+ src/platform/auth |    13.6 |    13.33 |   15.66 |   12.71 |                   
+  AuthProvider.tsx |     1.3 |        0 |       0 |    1.39 | 79-369            
+  ...erContext.tsx |       0 |        0 |       0 |       0 | 11-81             
+  access.policy.ts |   98.07 |       95 |     100 |     100 | 76,126            
+  auth.service.ts  |    2.12 |        0 |       0 |    2.63 | 10-159            
+  constants.ts     |       0 |      100 |     100 |       0 | 11                
+  types.ts         |       0 |        0 |       0 |       0 |                   
+  useAuth.ts       |       0 |        0 |       0 |       0 | 8-164             
+  ...copeFilter.ts |       0 |        0 |       0 |       0 | 40-211            
+ src/platform/i18n |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+ ...latform/native |   27.92 |     19.6 |   12.12 |    30.3 |                   
+  ...Bootstrap.tsx |       0 |        0 |       0 |       0 | 5-32              
+  ...references.ts |      20 |        0 |       0 |   22.22 | 5-26              
+  biometrics.ts    |   14.28 |        0 |       0 |      20 | 10-24             
+  deepLinks.ts     |   81.48 |       75 |   66.66 |   80.76 | 34,42-47          
+  ...ifications.ts |   11.53 |     3.84 |       0 |   13.33 | 23,26-85,90-121   
+ .../observability |   21.05 |     4.76 |      25 |      25 |                   
+  sentry.ts        |   21.05 |     4.76 |      25 |      25 | 6-52,61-70        
+ ...atform/offline |   14.81 |    30.76 |    23.8 |      16 |                   
+  ...ataBanner.tsx |       0 |        0 |       0 |       0 | 18-22             
+  ...outeGuard.tsx |       0 |        0 |       0 |       0 | 10-32             
+  ...ersistence.ts |   44.44 |    66.66 |   41.66 |   47.05 | 43-51,59-76       
+  ...AwareQuery.ts |       0 |        0 |       0 |       0 | 22-42             
+  ...lineStatus.ts |       0 |        0 |       0 |       0 | 4-24              
+ ...tform/supabase |   30.43 |     37.5 |   33.33 |   36.84 |                   
+  auth.ts          |       0 |        0 |       0 |       0 | 4-27              
+  client.ts        |   77.77 |       75 |     100 |   77.77 | 9,16              
+  types.ts         |       0 |      100 |     100 |       0 | 8546              
+ ...supabase/hooks |       0 |      100 |       0 |       0 |                   
+  ...imeUpdates.ts |       0 |      100 |       0 |       0 | 7-95              
+ ...m/supabase/rpc |   21.42 |     3.03 |   11.53 |   23.43 |                   
+  client.ts        |       5 |        0 |       0 |    5.26 | 34-36,51-131      
+  errors.ts        |   46.66 |     12.5 |      25 |   48.27 | ...18,121,124-130 
+  result.ts        |       0 |        0 |       0 |       0 | 26-92             
+ src/router        |     1.8 |        0 |       0 |    2.46 |                   
+  AppRouter.tsx    |       0 |        0 |       0 |       0 | 20-153            
+  routePrefetch.ts |    6.45 |        0 |       0 |    6.66 | 18-50,62-66       
+ src/scripts       |       0 |        0 |       0 |       0 |                   
+  check_db.ts      |       0 |        0 |       0 |       0 | 4-30              
+  check_db_v2.ts   |       0 |        0 |       0 |       0 | 4-30              
+-------------------|---------|----------|---------|---------|-------------------
