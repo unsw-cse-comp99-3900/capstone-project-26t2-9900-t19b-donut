@@ -23,7 +23,11 @@ import { Shift } from '@/modules/rosters';
 import { useDropShift } from '@/modules/rosters/state/useRosterShifts';
 import { AttendanceBadge } from '@/modules/rosters/ui/components/AttendanceBadge';
 import { buildShiftUniversalLink } from '@/platform/native/deepLinks';
-import { buildShiftCalendarFile } from '@/modules/rosters/utils/shift-calendar';
+import {
+  buildShiftCalendarFile,
+  buildGoogleCalendarUrl,
+  buildOutlookCalendarUrl,
+} from '@/modules/rosters/utils/shift-calendar';
 
 import { useSwaps } from '@/modules/planning';
 import { useToast } from '@/modules/core/hooks/use-toast';
@@ -106,6 +110,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
   const [cancelReason, setCancelReason] = useState('');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
   const [calendarStatus, setCalendarStatus] = useState<'idle' | 'ready' | 'failed'>('idle');
+  const [showCalendarOptions, setShowCalendarOptions] = useState(false);
 
   const dropShiftMutation = useDropShift();
   const isDropping = dropShiftMutation.isPending;
@@ -267,7 +272,7 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
     }
   };
 
-  const handleAddToCalendar = async () => {
+  const handleAddToAppleCalendar = async () => {
     const shareUrl = buildShiftShareUrl(shift.id);
 
     try {
@@ -310,6 +315,30 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
       if ((error as DOMException)?.name === 'AbortError') return;
       setCalendarStatus('failed');
     }
+  };
+
+  const handleAddToGoogleCalendar = () => {
+    const shareUrl = buildShiftShareUrl(shift.id);
+    const googleUrl = buildGoogleCalendarUrl({
+      shift,
+      shareUrl,
+      groupName,
+      subGroupName,
+    });
+    window.open(googleUrl, '_blank', 'noopener,noreferrer');
+    setCalendarStatus('ready');
+  };
+
+  const handleAddToOutlookCalendar = () => {
+    const shareUrl = buildShiftShareUrl(shift.id);
+    const outlookUrl = buildOutlookCalendarUrl({
+      shift,
+      shareUrl,
+      groupName,
+      subGroupName,
+    });
+    window.open(outlookUrl, '_blank', 'noopener,noreferrer');
+    setCalendarStatus('ready');
   };
 
   const confirmDrop = async () => {
@@ -400,13 +429,64 @@ const ShiftDetailsDialog: React.FC<ShiftDetailsDialogProps> = ({
             statusIcons={null}
             footerActions={
               <div className="flex flex-col gap-2 w-full">
-                <Button
-                  onClick={handleAddToCalendar}
-                  className="h-11 w-full rounded-2xl bg-primary font-black uppercase tracking-widest text-[11px] text-primary-foreground active:scale-95"
-                >
-                  <CalendarPlus size={16} className="mr-2" />
-                  Add to calendar
-                </Button>
+                {!showCalendarOptions ? (
+                  <Button
+                    onClick={() => setShowCalendarOptions(true)}
+                    className="h-11 w-full rounded-2xl bg-primary font-black uppercase tracking-widest text-[11px] text-primary-foreground active:scale-95"
+                  >
+                    <CalendarPlus size={16} className="mr-2" />
+                    Add to calendar
+                  </Button>
+                ) : (
+                  <div className="flex flex-col gap-2 p-2.5 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        Export to Calendar
+                      </span>
+                      <button
+                        onClick={() => setShowCalendarOptions(false)}
+                        className="text-[10px] font-bold text-muted-foreground hover:text-foreground"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          handleAddToAppleCalendar();
+                          setShowCalendarOptions(false);
+                        }}
+                        className="h-10 text-[10px] font-black uppercase tracking-wider px-1 active:scale-95"
+                      >
+                        Apple (.ics)
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          handleAddToGoogleCalendar();
+                          setShowCalendarOptions(false);
+                        }}
+                        className="h-10 text-[10px] font-black uppercase tracking-wider px-1 active:scale-95"
+                      >
+                        Google
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          handleAddToOutlookCalendar();
+                          setShowCalendarOptions(false);
+                        }}
+                        className="h-10 text-[10px] font-black uppercase tracking-wider px-1 active:scale-95"
+                      >
+                        Outlook
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 {calendarStatus !== 'idle' && (
                   <div
                     className={cn(

@@ -148,3 +148,64 @@ export const buildShiftCalendarFile = ({
   };
 };
 
+export const buildGoogleCalendarUrl = ({
+  shift,
+  shareUrl,
+  groupName,
+  subGroupName,
+}: ShiftCalendarOptions): string => {
+  const { start, end } = resolveShiftTimes(shift);
+  const roleName = shift.roles?.name || 'Shift';
+  const departmentName = shift.departments?.name;
+  const teamName = shift.sub_departments?.name || subGroupName;
+  const location = [groupName, teamName].filter(Boolean).join(' - ');
+  const description = [
+    departmentName ? `Department: ${departmentName}` : null,
+    teamName ? `Team: ${teamName}` : null,
+    `Open in Shiftopia: ${shareUrl}`,
+  ].filter((value): value is string => Boolean(value)).join('\n');
+
+  const startIso = formatUtc(start);
+  const endIso = formatUtc(end);
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `Shiftopia - ${roleName}`,
+    dates: `${startIso}/${endIso}`,
+    details: description,
+    ...(location ? { location } : {}),
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
+export const buildOutlookCalendarUrl = ({
+  shift,
+  shareUrl,
+  groupName,
+  subGroupName,
+}: ShiftCalendarOptions): string => {
+  const { start, end } = resolveShiftTimes(shift);
+  const roleName = shift.roles?.name || 'Shift';
+  const departmentName = shift.departments?.name;
+  const teamName = shift.sub_departments?.name || subGroupName;
+  const location = [groupName, teamName].filter(Boolean).join(' - ');
+  const description = [
+    departmentName ? `Department: ${departmentName}` : null,
+    teamName ? `Team: ${teamName}` : null,
+    `Open in Shiftopia: ${shareUrl}`,
+  ].filter((value): value is string => Boolean(value)).join('\n');
+
+  const params = new URLSearchParams({
+    rru: 'addevent',
+    subject: `Shiftopia - ${roleName}`,
+    startdt: start.toISOString(),
+    enddt: end.toISOString(),
+    body: description,
+    ...(location ? { location } : {}),
+  });
+
+  return `https://outlook.live.com/calendar/0/action/compose?${params.toString()}`;
+};
+
+
