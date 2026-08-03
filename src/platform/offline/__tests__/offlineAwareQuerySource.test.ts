@@ -28,6 +28,8 @@ describe('offline aware query abstraction', () => {
     expect(useOfflineAwareQuerySource).toContain('offline-with-cache');
     expect(useOfflineAwareQuerySource).toContain('offline-empty');
     expect(offlineDataBannerSource).toContain('OfflineQueryState');
+    expect(offlineDataBannerSource).toContain('updatedAt');
+    expect(offlineDataBannerSource).toContain('Last updated:');
   });
 
   it('uses the shared abstraction for My Roster offline cached data states', () => {

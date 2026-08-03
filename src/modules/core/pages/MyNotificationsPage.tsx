@@ -94,6 +94,7 @@ const MyNotificationsPage: React.FC = () => {
     dismiss,
     isOffline,
     offlineState,
+    dataUpdatedAt,
   } = useNotifications();
 
   const [searchQuery, setSearchQuery] = useState('');

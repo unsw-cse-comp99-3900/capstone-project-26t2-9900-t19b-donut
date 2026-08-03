@@ -28,7 +28,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
   compact,
   mobile,
 }) => {
-  const { broadcasts, isLoading, loadMore, hasMore, isLoadingMore, offlineState } =
+  const { broadcasts, isLoading, loadMore, hasMore, isLoadingMore, offlineState, dataUpdatedAt } =
     useEmployeeBroadcasts(channelId);
 
   const filteredBroadcasts = useMemo(() => {
@@ -120,6 +120,7 @@ export const ChannelView: React.FC<ChannelViewProps> = ({
 
       <OfflineDataBanner
         state={offlineState}
+        updatedAt={dataUpdatedAt}
         cachedLabel="Offline - showing saved messages"
         emptyLabel="Offline - saved messages are not available yet"
       />

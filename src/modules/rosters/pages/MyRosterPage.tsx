@@ -249,6 +249,7 @@ const MyRosterPage: React.FC = () => {
           <div className="flex h-full flex-col">
             <OfflineDataBanner
               state={offlineState}
+              updatedAt={dataUpdatedAt}
               cachedLabel="Offline - showing saved roster"
               emptyLabel="Offline - saved roster is not available yet"
             />

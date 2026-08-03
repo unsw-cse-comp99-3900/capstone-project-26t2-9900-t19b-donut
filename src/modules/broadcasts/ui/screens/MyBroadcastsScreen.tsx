@@ -92,7 +92,7 @@ export function MyBroadcastsScreen({
   const [channelSheetOpen, setChannelSheetOpen] = useState(false);
 
   // Data
-  const { groups, isLoading, error, refetch, offlineState } =
+  const { groups, isLoading, error, refetch, offlineState, dataUpdatedAt } =
     useEmployeeBroadcastGroups();
 
   // Online/Offline detection
@@ -279,6 +279,7 @@ export function MyBroadcastsScreen({
       <div className="w-full h-full overflow-y-auto">
         <OfflineDataBanner
           state={offlineState}
+          updatedAt={dataUpdatedAt}
           cachedLabel="Offline - showing saved broadcasts"
           emptyLabel="Offline - saved broadcasts are not available yet"
         />

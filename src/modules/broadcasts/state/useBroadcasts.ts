@@ -193,6 +193,7 @@ export function useEmployeeBroadcastGroups(
         isOffline: query.isOffline,
         isShowingCachedData: query.isShowingCachedData,
         offlineState: query.offlineState,
+        dataUpdatedAt: query.dataUpdatedAt,
     };
 }
 
@@ -648,6 +649,7 @@ export function useEmployeeBroadcasts(channelId: string | null): UseEmployeeBroa
         isOffline: query.isOffline,
         isShowingCachedData: query.isShowingCachedData,
         offlineState: query.offlineState,
+        dataUpdatedAt: query.dataUpdatedAt,
     };
 }
 
