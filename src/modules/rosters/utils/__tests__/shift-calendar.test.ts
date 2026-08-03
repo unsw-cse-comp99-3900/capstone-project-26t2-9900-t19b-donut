@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import type { Shift } from '@/modules/rosters/domain/shift.entity';
-import { buildShiftCalendarFile } from '../shift-calendar';
+import {
+  buildShiftCalendarFile,
+  buildGoogleCalendarUrl,
+  buildOutlookCalendarUrl,
+} from '../shift-calendar';
 
 const createShift = (overrides: Partial<Shift> = {}) => ({
   id: '7972e4cc-5857-4bc7-98c1-17d7564dbf44',
@@ -84,5 +88,29 @@ describe('buildShiftCalendarFile', () => {
       expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
     }
   });
+
+  it('builds a valid Google Calendar template URL', () => {
+    const googleUrl = buildGoogleCalendarUrl({
+      shift: createShift(),
+      shareUrl: 'https://shiftopia.example/shifts/7972e4cc-5857-4bc7-98c1-17d7564dbf44',
+      groupName: 'Convention',
+    });
+
+    expect(googleUrl).toContain('https://calendar.google.com/calendar/render?action=TEMPLATE');
+    expect(googleUrl).toContain('text=Shiftopia+-+Team+Member');
+    expect(googleUrl).toContain('dates=20260802T230000Z%2F20260803T070000Z');
+  });
+
+  it('builds a valid Outlook Calendar template URL', () => {
+    const outlookUrl = buildOutlookCalendarUrl({
+      shift: createShift(),
+      shareUrl: 'https://shiftopia.example/shifts/7972e4cc-5857-4bc7-98c1-17d7564dbf44',
+      groupName: 'Convention',
+    });
+
+    expect(outlookUrl).toContain('https://outlook.live.com/calendar/0/action/compose?rru=addevent');
+    expect(outlookUrl).toContain('subject=Shiftopia+-+Team+Member');
+  });
 });
+
 
