@@ -8,8 +8,8 @@ test.describe('Swap Shift Flow', () => {
       const email = process.env.MANAGER_EMAIL || 'manager@test.com';
       const password = process.env.MANAGER_PASSWORD || '123456';
       
-      await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
-      await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
+      await page.getByRole('textbox', { name: 'Email address' }).fill(email);
+      await page.getByRole('textbox', { name: 'Password' }).fill(password);
       await page.getByRole('button', { name: 'Sign In' }).click();
       await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
     });
@@ -63,8 +63,8 @@ test.describe('Swap Shift Flow', () => {
       const email = process.env.MANAGER_EMAIL || 'manager@test.com';
       const password = process.env.MANAGER_PASSWORD || '123456';
       
-      await page.getByRole('textbox', { name: 'name@company.com' }).fill(email);
-      await page.getByRole('textbox', { name: 'Enter your password' }).fill(password);
+      await page.getByRole('textbox', { name: 'Email address' }).fill(email);
+      await page.getByRole('textbox', { name: 'Password' }).fill(password);
       await page.getByRole('button', { name: 'Sign In' }).click();
       await expect(page).not.toHaveURL(/.*\/login/, { timeout: 30000 });
     });

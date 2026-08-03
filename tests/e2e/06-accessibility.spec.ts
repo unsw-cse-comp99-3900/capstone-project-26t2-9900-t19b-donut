@@ -25,13 +25,13 @@ test('top five pages have no automated WCAG A/AA violations', async ({ page }, t
   const findings = [];
 
   await page.goto('/login');
-  await expect(page.getByRole('textbox', { name: 'name@company.com' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Email address' })).toBeVisible();
   await page.waitForTimeout(1_000);
   findings.push(...await auditPage(page, 'Login'));
 
-  await page.getByRole('textbox', { name: 'name@company.com' })
+  await page.getByRole('textbox', { name: 'Email address' })
     .fill(process.env.MANAGER_EMAIL || 'manager@test.com');
-  await page.getByRole('textbox', { name: 'Enter your password' })
+  await page.getByRole('textbox', { name: 'Password' })
     .fill(process.env.MANAGER_PASSWORD || '123456');
   await page.getByRole('button', { name: 'Sign In' }).click();
   await expect(page).not.toHaveURL(/\/login/, { timeout: 30_000 });
