@@ -65,6 +65,7 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         isOffline,
         hasCachedData,
         isShowingCachedData,
+        dataUpdatedAt,
         refetch,
     } = useOfflineAwareQuery<Shift[]>({
         // Use the centralized query key factory
@@ -88,58 +89,53 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         // Filter from the cached array
         let daysShifts = shifts.filter(s => {
             // Exclude S3 (Published+Offered, awaiting acceptance) — they appear in MyOffers modal only.
-            // S3 encoding: lifecycle=Published, assignment_status=assigned, assignment_outcome=NULL
-            if (s.lifecycle_status === 'Published' && s.assignment_status === 'assigned' && !s.assignment_outcome) return false;
+            if (s.status === 'offered') return false;
 
-            // Include shifts starting today
-            if (s.shift_date === dateStr) return true;
+            const shiftStartStr = format(new Date(s.start_time), 'yyyy-MM-dd');
+            if (shiftStartStr === dateStr) return true;
 
-            // Include shifts starting yesterday that span into today
-            if (includeContinuations) {
-                const crossesMidnight = doesShiftTrulyCrossMidnight(s);
-                if (s.shift_date === prevDateStr && crossesMidnight) return true;
+            // Handle shifts crossing midnight
+            if (includeContinuations && shiftStartStr === prevDateStr) {
+                const endStr = format(new Date(s.end_time), 'yyyy-MM-dd');
+                return endStr === dateStr;
             }
-
             return false;
         });
 
-        // Apply Scope Filters
-        if (daysShifts.length > 0) {
-
-            // 1. Priority: Multi-select Scope (from MyRosterPage ScopeFilterBanner)
-            if (scope) {
-                // Filter by Organization (if specific ones selected)
-                if (scope.org_ids && scope.org_ids.length > 0) {
-                    daysShifts = daysShifts.filter(s => s.organization_id && scope.org_ids.includes(s.organization_id));
-                }
-
-                // Filter by Department (if specific ones selected)
-                if (scope.dept_ids && scope.dept_ids.length > 0) {
-                    daysShifts = daysShifts.filter(s => scope.dept_ids.includes(s.department_id));
-                }
-
-                // Filter by Sub-Department (if specific ones selected)
-                if (scope.subdept_ids && scope.subdept_ids.length > 0) {
-                    // Inclusion Fix: Include shifts that match selected sub-depts, 
-                    // OR are at the Department level (null sub_dept) if their parent department is match.
-                    daysShifts = daysShifts.filter(s => {
-                        const subDeptMatch = s.sub_department_id && scope.subdept_ids.includes(s.sub_department_id);
-                        const isDeptLevel = !s.sub_department_id;
-                        // If it's a department-level shift, we allow it if the department itself is in the scope.
-                        // Since scope.dept_ids usually contains the parents of subdept_ids, this is safe.
-                        return subDeptMatch || isDeptLevel;
-                    });
-                }
+        // Apply Scope Filter (Multi-Select)
+        // 1. Preferred: Explicit Scope Object (Multi-Select)
+        if (scope) {
+            // Filter by Organization (if specific ones selected)
+            if (scope.org_ids && scope.org_ids.length > 0) {
+                daysShifts = daysShifts.filter(s => s.organization_id && scope.org_ids.includes(s.organization_id));
             }
-            // 2. Fallback: Global Context (Single Select) - only if no explicit scope passed
-            else {
-                if (organizationId) {
-                    daysShifts = daysShifts.filter(s => s.organization_id === organizationId);
-                }
-                // We previously relaxed this, but if no scope is passed, maybe we should respect it? 
-                // However, the user complained it hid things.
-                // For now, let's keep the "Relaxed" behavior for the fallback case to be safe, 
-                // relying on the orgId.
+
+            // Filter by Department (if specific ones selected)
+            if (scope.dept_ids && scope.dept_ids.length > 0) {
+                daysShifts = daysShifts.filter(s => scope.dept_ids.includes(s.department_id));
+            }
+
+            // Filter by Sub-Department (if specific ones selected)
+            if (scope.subdept_ids && scope.subdept_ids.length > 0) {
+                // Inclusion Fix: Include shifts that match selected sub-depts, 
+                // OR are at the Department level (null sub_dept) if their parent department is match.
+                daysShifts = daysShifts.filter(s => {
+                    const subDeptMatch = s.sub_department_id && scope.subdept_ids.includes(s.sub_department_id);
+                    const isDeptLevel = !s.sub_department_id;
+                    // If it's a department-level shift, we allow it if the department itself is in the scope.
+                    // Since scope.dept_ids usually contains the parents of subdept_ids, this is safe.
+                    return subDeptMatch || isDeptLevel;
+                });
+            }
+        }
+        // 2. Fallback: Global Context (Single Select) - only if no explicit scope passed
+        else {
+            if (organizationId) {
+                daysShifts = daysShifts.filter(s => s.organization_id === organizationId);
+            }
+            // If departmentId is set, filter by it.
+            if (departmentId) {
+                daysShifts = daysShifts.filter(s => s.department_id === departmentId);
             }
         }
 
@@ -195,6 +191,7 @@ export const useMyRoster = (view: CalendarView, selectedDate: Date, scope?: Scop
         isOffline,
         hasCachedData,
         isShowingCachedData,
+        dataUpdatedAt,
         refetch,
         getShiftsForDate,
         goToPrevious,

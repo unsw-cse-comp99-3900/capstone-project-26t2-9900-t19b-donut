@@ -1,12 +1,14 @@
 import { WifiOff } from 'lucide-react';
 import { cn } from '@/modules/core/lib/utils';
 import type { OfflineQueryState } from './useOfflineAwareQuery';
+import { format } from 'date-fns';
 
 interface OfflineDataBannerProps {
   state: OfflineQueryState;
   className?: string;
   cachedLabel?: string;
   emptyLabel?: string;
+  updatedAt?: number | Date | null;
 }
 
 export function OfflineDataBanner({
@@ -14,10 +16,19 @@ export function OfflineDataBanner({
   className,
   cachedLabel = 'Offline - showing saved data',
   emptyLabel = 'Offline - saved data is not available yet',
+  updatedAt,
 }: OfflineDataBannerProps) {
   if (state === 'online') return null;
 
   const isShowingCache = state === 'offline-with-cache';
+
+  let timestampLabel = '';
+  if (isShowingCache && updatedAt) {
+    const date = typeof updatedAt === 'number' ? new Date(updatedAt) : updatedAt;
+    if (!isNaN(date.getTime()) && date.getTime() > 0) {
+      timestampLabel = ` • Last updated: ${format(date, 'MMM d, h:mm a')}`;
+    }
+  }
 
   return (
     <div
@@ -30,7 +41,10 @@ export function OfflineDataBanner({
       )}
     >
       <WifiOff className="h-4 w-4 flex-shrink-0" />
-      <span>{isShowingCache ? cachedLabel : emptyLabel}</span>
+      <span>
+        {isShowingCache ? `${cachedLabel}${timestampLabel}` : emptyLabel}
+      </span>
     </div>
   );
 }
+

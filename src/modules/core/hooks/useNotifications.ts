@@ -189,6 +189,7 @@ export function useNotifications() {
     isOffline,
     isShowingCachedData: query.isShowingCachedData,
     offlineState: query.offlineState,
+    dataUpdatedAt: query.dataUpdatedAt,
     seenIds,
     markSeen,
     markRead,
