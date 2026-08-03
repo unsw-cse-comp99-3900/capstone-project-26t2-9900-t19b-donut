@@ -59,7 +59,7 @@ describe('planningRequestService', () => {
         it('should create a BID request successfully', async () => {
             const shiftBuilder = new MockQueryBuilder();
             // far future shift
-            const futureDate = new Date(Date.now() + 10 * 60 * 60 * 1000).toISOString();
+            const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
             shiftBuilder._data = { id: 's1', shift_date: futureDate.split('T')[0], start_time: '12:00', workflow_status: 'IDLE' };
             builderQueue.push(shiftBuilder);
 
@@ -85,9 +85,9 @@ describe('planningRequestService', () => {
 
         it('should throw if time-locked', async () => {
             const shiftBuilder = new MockQueryBuilder();
-            // near future shift (< 4h)
-            const nearFuture = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
-            shiftBuilder._data = { id: 's1', shift_date: nearFuture.split('T')[0], start_time: '12:00', workflow_status: 'IDLE' };
+            // past shift is definitely time-locked
+            const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            shiftBuilder._data = { id: 's1', shift_date: pastDate.split('T')[0], start_time: '12:00', workflow_status: 'IDLE' };
             builderQueue.push(shiftBuilder);
 
             await expect(planningRequestService.createPlanningRequest({

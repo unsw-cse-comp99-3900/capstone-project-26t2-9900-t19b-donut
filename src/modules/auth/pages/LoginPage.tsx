@@ -167,7 +167,7 @@ const LoginPage: React.FC = () => {
               New to Shiftopia?{' '}
               <Link
                 to="/signup"
-                className="text-primary underline underline-offset-4 hover:text-primary/80"
+                className="text-blue-400 underline underline-offset-4 hover:text-blue-300"
               >
                 Create one
               </Link>
@@ -253,7 +253,7 @@ const LoginPage: React.FC = () => {
                 Remember me
               </label>
 
-              <Link to="/forgot-password" className="text-primary hover:text-primary/80">
+              <Link to="/forgot-password" className="text-blue-400 hover:text-blue-300">
                 Forgot password?
               </Link>
             </div>
