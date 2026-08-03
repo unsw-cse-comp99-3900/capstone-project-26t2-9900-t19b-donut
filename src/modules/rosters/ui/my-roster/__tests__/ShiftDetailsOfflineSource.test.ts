@@ -27,7 +27,7 @@ describe('shift details offline handling', () => {
     const weekSource = readSource('src/modules/rosters/ui/my-roster/WeekView.tsx');
     const monthSource = readSource('src/modules/rosters/ui/my-roster/MonthView.tsx');
 
-    expect(pageSource).toContain('offlineState, isOffline, getShiftsForDate');
+    expect(pageSource).toContain('offlineState, isOffline, dataUpdatedAt, getShiftsForDate');
     expect(pageSource).toContain('isOffline={isOffline}');
     expect(calendarSource).toContain('isOffline: boolean');
 
