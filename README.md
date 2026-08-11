@@ -69,7 +69,7 @@ data flow, and ownership.
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - npm 10+
 - Docker Desktop, when running the optimizer and ML services locally
 - Supabase CLI, only when applying database changes or deploying Edge Functions
@@ -155,9 +155,10 @@ docker compose logs -f
 docker compose down
 ```
 
-The CI workflow builds `Dockerfile.web` on every pull request and every push to
-`main`. This verifies that the production web image remains buildable; it does
-not publish the image to a container registry.
+The CI workflow type-checks, lints, tests, and builds the frontend and ML
+service, then validates the Compose file, builds all Docker images, and runs
+the optimizer test suite inside its image. It does not publish the images to a
+container registry.
 
 The Docker web application uses port 8080, while `npm run dev` uses port 5173,
 so both can run at the same time when needed.
@@ -181,7 +182,7 @@ settings.
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start the development server on port 8080 |
+| `npm run dev` | Start the development server on port 5173 |
 | `npm run build` | Create a production build |
 | `npm run preview` | Preview the production build |
 | `npm run type-check` | Check TypeScript types |

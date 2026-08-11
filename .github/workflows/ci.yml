@@ -29,19 +29,36 @@ env:
 
 jobs:
   verify:
-    name: Type-check, test, build
+    name: Type-check, test, and build all services
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
+    env:
+      # Public placeholders are sufficient for compile-time validation. Runtime
+      # integration continues to use a dedicated Supabase test environment.
+      VITE_SUPABASE_URL: https://example.supabase.co
+      VITE_SUPABASE_ANON_KEY: ci-public-anon-key
+      VITE_OPTIMIZER_URL: http://localhost:5005
+      VITE_ML_URL: http://localhost:8000
+      OPTIMIZER_AUTH_DISABLED: 'true'
+      ML_AUTH_DISABLED: 'true'
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+          cache-dependency-path: |
+            ml/requirements.txt
+            ml/requirements-dev.txt
+
       - name: Install dependencies
-        run: npm install --include=optional
+        run: npm ci --include=optional
 
       - name: Repair Linux native optional dependencies
         run: |
@@ -52,8 +69,6 @@ jobs:
       - name: Type-check
         run: npm run type-check
 
-      # Lint is temporarily disabled — eslint 9 / @typescript-eslint version
-      # mismatch breaks rule loading. Re-enable after upgrading the plugin.
       - name: Lint
         run: npm run lint
 
@@ -63,15 +78,20 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Build web Docker image
-        run: |
-          docker build \
-            --file Dockerfile.web \
-            --tag shiftopia-web:${{ github.sha }} \
-            --build-arg VITE_SUPABASE_URL=https://example.supabase.co \
-            --build-arg VITE_SUPABASE_ANON_KEY=ci-public-anon-key \
-            --build-arg VITE_SENTRY_RELEASE=${{ github.sha }} \
-            .
+      - name: Install ML test dependencies
+        run: python -m pip install -r ml/requirements-dev.txt
+
+      - name: ML tests
+        run: python -m pytest ml/tests
+
+      - name: Validate Docker Compose
+        run: docker compose config --quiet
+
+      - name: Build all Docker images
+        run: docker compose build
+
+      - name: Optimizer tests in Docker image
+        run: docker compose run --rm --no-deps optimizer python -m pytest tests
 
   deploy:
     name: Deploy (Vercel)
@@ -126,7 +146,7 @@ jobs:
       - uses: actions/setup-node@v5
         if: steps.guard.outputs.ok == 'true'
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Install Vercel CLI
         if: steps.guard.outputs.ok == 'true'
