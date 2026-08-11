@@ -31,6 +31,8 @@ services:
       # Rate limits (per-IP). Bump under load test; tighten in prod.
       - OPTIMIZER_RATE_OPTIMIZE=${OPTIMIZER_RATE_OPTIMIZE:-30/minute}
       - OPTIMIZER_RATE_AUDIT=${OPTIMIZER_RATE_AUDIT:-60/minute}
+      - OPTIMIZER_MAX_CONCURRENT_SOLVES=${OPTIMIZER_MAX_CONCURRENT_SOLVES:-2}
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
       # OpenTelemetry — set to a collector endpoint (e.g.
       # http://otel-collector:4317) to enable. Empty = no-op tracing.
       - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
@@ -54,6 +56,18 @@ services:
     environment:
       - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
       - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      # The browser ML client currently sends no bearer token, so local
+      # Docker runs must explicitly opt into the development auth bypass.
+      # Set this to false and configure ML_JWT_SECRET before exposing the
+      # service outside localhost.
+      - ML_AUTH_DISABLED=${ML_AUTH_DISABLED:-true}
+      - ML_JWT_SECRET=${ML_JWT_SECRET:-}
+      - ML_ALLOWED_ORIGINS=${ML_ALLOWED_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173}
+      - ML_VERIFY_MANIFEST_HASHES=${ML_VERIFY_MANIFEST_HASHES:-false}
+      - UVICORN_WORKERS=${UVICORN_WORKERS:-4}
+      # Optional: needed only when committed forecasts must be persisted.
+      # This server-side key is never passed to the Vite web image.
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-}
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8000/health']
@@ -70,9 +84,18 @@ services:
         VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:?Set VITE_SUPABASE_ANON_KEY in .env}
         VITE_OPTIMIZER_URL: ${VITE_OPTIMIZER_URL:-http://localhost:5005}
         VITE_ML_URL: ${VITE_ML_URL:-http://localhost:8000}
+        VITE_APNS_ENVIRONMENT: ${VITE_APNS_ENVIRONMENT:-development}
+        VITE_LOG_LEVEL: ${VITE_LOG_LEVEL:-info}
+        VITE_COMPLIANCE_BLOCKING_ENABLED: ${VITE_COMPLIANCE_BLOCKING_ENABLED:-true}
+        VITE_COMPLIANCE_REJECTION_PERSIST: ${VITE_COMPLIANCE_REJECTION_PERSIST:-true}
+        VITE_DEMAND_ENGINE_MODE: ${VITE_DEMAND_ENGINE_MODE:-ml_only}
+        VITE_DEMAND_SERVICE_LEVEL: ${VITE_DEMAND_SERVICE_LEVEL:-0.5}
         VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
         VITE_SENTRY_ENVIRONMENT: ${VITE_SENTRY_ENVIRONMENT:-production}
         VITE_SENTRY_RELEASE: ${VITE_SENTRY_RELEASE:-docker-local}
+        VITE_SENTRY_TRACES_SAMPLE_RATE: ${VITE_SENTRY_TRACES_SAMPLE_RATE:-0.1}
+        VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE: ${VITE_SENTRY_REPLAYS_SESSION_SAMPLE_RATE:-0}
+        VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: ${VITE_SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE:-1.0}
     container_name: superman-web
     ports:
       - '8080:80'
